@@ -63,6 +63,12 @@
             .table1 thead {
                 background-color: rgb(156, 156, 156);
             }
+
+            .button-container {
+                display: flex;
+                justify-content: flex-end; /* 오른쪽 정렬 */
+                margin-bottom: 20px; /* 아래쪽 여백 추가 */
+            }
         </style>
     </head>
     <body>
@@ -71,6 +77,9 @@
             <%= title %>
         </h2>
         <br>
+        <div class="button-container">
+            <button class="write-button btn btn-outline-dark" onclick="location.href='/notificationWrite'">공지사항 작성하기</button>
+        </div>
         <table class="table1" border="1">
             <thead>
                 <tr>
