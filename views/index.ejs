@@ -78,7 +78,14 @@
       </div>
     <% } %>
     <nav class="header d-flex justify-content-end">
-      <% if (rootLogin || usrLogin) { %> <!--로그인 됨-->
+      <% if (rootLogin) { %> <!--관리자 로그인 됨-->
+        <a href="/sellBoard/sellWrite" class="p-2">회원관리</a>
+        <a href="/myPage" class="p-2">게시판관리</a>
+        <a href="/message" class="p-2">사이트분석</a>
+      <% } %>
+    </nav>
+    <nav class="header d-flex justify-content-end">
+      <% if (usrLogin) { %> <!--유저 로그인 됨-->
         <a href="/sellBoard/sellWrite" class="p-2">판매하기</a>
         <a href="/myPage" class="p-2">마이페이지</a>
         <a href="/message" class="p-2">메세지</a>
