@@ -10,9 +10,8 @@
     <link rel='stylesheet' href='/vendors/bootstrap/css/bootstrap-grid.min.css' />
     <link rel='stylesheet' href='/vendors/bootstrap/css/bootstrap-reboot.min.css' />
 
-    <title>
-        <%= title %>
-    </title>
+    <title> <%= title %> </title>
+    <meta charset='utf-8'>
 
     <style>
         h2 {
@@ -57,57 +56,99 @@
 <body>
     <a href="/" id="home">로고</a>
 
-    <h2 class="d-flex justify-content-center">
-        <%= title %>
-    </h2>
+    <h2 class="d-flex justify-content-center"> <%= title %> </h2>
 
-    <form class="d-flex align-items-center flex-column">
+    <form action="/joinForm" method="post" onsubmit="return onWriteSubmit()" class="d-flex align-items-center flex-column">
         <div>
-            <span>아이디</span>
-            <input type="text" name="id" id="id">
+            <span>성</span>
+            <input type="text" name="Lname" id="Lname" maxlength="5">
+        </div>
+        <div>
+            <span>이름</span>
+            <input type="text" name="Fname" id="Fname" maxlength="10">
+        </div>
+        <div>
+            <span>아이디</span> <!--최대 20글자-->
+            <input type="text" name="id" id="id" maxlength="20">
             <button class="btn btn-dark" id="id_check">중복확인</button>
         </div>
         <div>
-            <span>비밀번호</span>
-            <input type="password" name="passwd" id="passwd">
+            <span>비밀번호</span> <!--최대 20글자-->
+            <input type="password" name="passwd" id="passwd" maxlength="20">
         </div>
         <div>
             <span>비밀번호 확인</span>
             <input type="password" name="passwd_check" id="passwd_check">
         </div>
         <div>
-            <span>닉네임</span>
-            <input type="text" name="nickname" id="nickname">
+            <span>닉네임</span> <!--최대 20글자-->
+            <input type="text" name="nickname" id="nickname" maxlength="20">
         </div>
         <div>
             <span>생일</span>
-            <input type="date" name="birth" id="birth">
+            <input type="date" name="Bdate" id="Bdate">
         </div>
         <div>
             <span>성별</span>
-            <select name="gender" id="gender">
-                <option value="none">선택안함</option>
-                <option value="man">남자</option>
-                <option value="woman">여자</option>
+            <select name="sex" id="sex">
+                <option value="male">남자</option>
+                <option value="female">여자</option>
             </select>
         </div>
         <div>
             <span>이메일</span>
             <input type="email" name="email" id="email">
         </div>
-        <div>
-            <span>비밀번호 찾기 질문</span>
-            <select name="passwdQuestion" id="passwdQuestion">
-                <option value="quest1">질문1</option>
-                <option value="quest2">질문2</option>
-            </select>
-        </div>
-        <div>
-            <span>응답</span>
-            <input type="text" name="passwdAnswer" id="passwdAnswer">
-        </div>
-        <button class="btn btn-dark">회원가입</button>
+        <button type="submit" class="btn btn-dark">회원가입</button>
     </form>
+
+    <script>
+        function onWriteSubmit(){
+            if ($("#pid").val().trim() == ""){
+                var message = "아이디를 입력해 주세요.";
+                $("#pid").val("");
+                $("#pid").focus();
+                alert(message);
+                return false;
+            }
+            if ($("#fname").val().trim() == ""){
+                var message = "이름을 입력하세요.";
+                $("#fname").val("");
+                $("#fname").focus();
+                alert(message);
+                return false;
+            }
+            if ($("#lname").val().trim() == ""){
+                var message = "성을 입력하세요.";
+                $("#lname").val("");
+                $("#lname").focus();
+                alert(message);
+                return false;
+            }
+            if ($("#passwd").val().trim() == ""){
+                var message = "비밀번호를 입력하세요.";
+                $("#passwd").val("");
+                $("#passwd").focus();
+                alert(message);
+                return false;
+            }
+            if ($("#nickname").val().trim() == ""){
+                var message = "닉네임을 입력하세요.";
+                $("#nickname").val("");
+                $("#nickname").focus();
+                alert(message);
+                return false;
+            }
+            if ($("#email").val().trim() == ""){
+                var message = "이메일을 입력하세요.";
+                $("#email").val("");
+                $("#email").focus();
+                alert(message);
+                return false;
+            }
+        }
+    </script>
+
 </body>
 
 </html>

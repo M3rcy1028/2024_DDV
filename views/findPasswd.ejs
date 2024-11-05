@@ -43,6 +43,15 @@
         form button {
             width: 300px;
         }
+
+        .link a {
+            text-decoration: none;
+            color: rgb(159, 156, 156);
+        }
+
+        .link span {
+            color: rgb(159, 156, 156);
+        }
     </style>
 </head>
 
@@ -59,18 +68,19 @@
             <input type="text" name="id" id="id">
         </div>
         <div>
-            <span>비밀번호 찾기 질문</span>
-            <select name="passwdQuestion" id="passwdQuestion">
-                <option value="quest1">질문1</option>
-                <option value="quest2">질문2</option>
-            </select>
-        </div>
-        <div>
-            <span>응답</span>
-            <input type="text" name="passwd" id="passwd">
+            <span>이메일</span>
+            <input type="text" name="email" id="email">
         </div>
         <button class="btn btn-dark">찾기</button>
     </form>
+
+    <div class="d-flex justify-content-center link">
+        <a class="me-2" href="/findId">아이디를 잊으셨나요?</a>
+        <span class="me-2">|</span>
+        <a class="me-2"  href="/joinForm">회원가입하기</a>
+        <span class="me-2">|</span>
+        <a class="me-2" href="/login">로그인하기</a>
+    </div>
 </body>
 
 </html>
