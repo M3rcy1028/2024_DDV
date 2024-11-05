@@ -78,7 +78,7 @@
         </h2>
         <br>
         <div class="button-container">
-            <button class="write-button btn btn-outline-dark" onclick="location.href='/notificationWrite'">공지사항 작성하기</button>
+            <button class="write-button btn btn-outline-dark" onclick="location.href='/roots/notificationWrite'">공지사항 작성하기</button>
         </div>
         <table class="table1" border="1">
             <thead>
@@ -98,7 +98,7 @@
                     <tr>
                         <td><%= oneItem.Bid %></td>
                         <td><%= oneItem.Rname %></td>
-                        <td><a href="/notificationRead/<%= oneItem.Bid %>"><%= oneItem.Title %></a></td>
+                        <td><a href="/roots/notificationRead/<%= oneItem.Bid %>"><%= oneItem.Title %></a></td>
                         <td><span class="date" data-date="<%= oneItem.Updated %>"></span></td>
                         <td><%= oneItem.Hit %></td>
                     </tr>

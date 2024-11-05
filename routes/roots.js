@@ -10,7 +10,7 @@ var connection = mysql.createConnection({
 });
 
   //공지사항 리스트 화면
-  router.get('/notification', function (req, res, next) {
+  router.get('/notificationList', function (req, res, next) {
     var sql = "SELECT Bid, Rname, Title, Updated, Hit FROM ROOTBOARD, ROOT WHERE Rid=Rnum ORDER BY Bid DESC;";
     connection.query(sql, (err, rows, fields)=>{
       if (err) {
@@ -18,7 +18,7 @@ var connection = mysql.createConnection({
         return res.status(500).send("데이터베이스 오류");
       }
       console.log('rows: '+JSON.stringify(rows));
-      res.render('notification', { title: '공지사항', rows: rows});
+      res.render('notificationList', { title: '공지사항', rows: rows});
     });
   })
   

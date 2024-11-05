@@ -3,7 +3,6 @@ var express = require('express');
 var path = require('path');
 var cookieParser = require('cookie-parser');
 var logger = require('morgan');
-var session = require('express-session');   // 로그인 유지
 
 var indexRouter = require('./routes/index');
 var usersRouter = require('./routes/users');
@@ -44,13 +43,5 @@ app.use(function (err, req, res, next) {
   res.status(err.status || 500);
   res.render('error');
 });
-
-// 로그인 유지
-app.use(session({
-  secret: '1234', // Use a strong secret
-  resave: false,
-  saveUninitialized: true,
-  cookie: { secure: true } 
-}));
 
 module.exports = app;
