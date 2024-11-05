@@ -11,7 +11,9 @@ var connection = mysql.createConnection({
 });
 
 var rootLogin = false;
+var rootid = "";
 var usrLogin = false;
+var usrid = "";
 
 //시작 화면
 router.get('/', function (req, res, next) {
@@ -74,6 +76,7 @@ router.post('/login', function (req, res, next) { // 유저 로그인 입력
     if (err) throw err;
     if (results.length > 0) { // db 반환값이 존재할 때
       usrLogin = true;
+      usrid = req.body.id;
       res.redirect('/'); // 회원가입 후 리다이렉트
     }
     else
@@ -100,6 +103,7 @@ router.post('/rootLogin', function (req, res, next) { // 관리자 로그인 입
     if (err) throw err;
     if (results.length > 0) { // db 반환값이 존재할 때
       rootLogin = true;
+      rootid = req.body.id;
       res.redirect('/'); // 회원가입 후 리다이렉트
     }
     else
@@ -114,6 +118,8 @@ router.post('/rootLogin', function (req, res, next) { // 관리자 로그인 입
 router.get('/logout', function (req, res, next) {
   rootLogin = false;
   usrLogin = false;
+  usrid = "";
+  rootid = "";
   res.redirect('/');
 })
 
