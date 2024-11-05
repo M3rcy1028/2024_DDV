@@ -1,0 +1,111 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <link rel='stylesheet' href='/stylesheets/style.css' />
+    <script src="/javascripts/jquery-3.7.1.min.js"></script>
+
+    <!-- Bootstrap CSS -->
+    <link rel='stylesheet' href='/vendors/bootstrap/css/bootstrap.min.css' />
+    <link rel='stylesheet' href='/vendors/bootstrap/css/bootstrap-grid.min.css' />
+    <link rel='stylesheet' href='/vendors/bootstrap/css/bootstrap-reboot.min.css' />
+
+    <title>
+        <%= title %>
+    </title>
+
+    <style>
+        h2 {
+            margin-bottom: 20px;
+        }
+
+        table tr {
+            margin-bottom: 10px;
+        }
+
+        table input {
+            width: 500px;
+            padding: 8px;
+            box-sizing: border-box;
+        }
+
+        table textarea {
+            width: 500px;
+            height: 200px;
+        }
+
+        table select {
+            width: 500px;
+            padding: 8px;
+            box-sizing: border-box;
+        }
+
+        table button {
+            width: 500px;
+        }
+    </style>
+</head>
+
+<body>
+    <a href="/" id="home">로고</a>
+
+    <h2 class="d-flex justify-content-center">
+        <%= title %>
+    </h2>
+
+    <form class="d-flex align-items-center flex-column">
+        <table>
+            <tr class="d-flex flex-column">
+                <td>상품 사진</td>
+                <td><input type="file" class="form-control" name="image" id="image"></td>
+            </tr>
+            <tr class="d-flex flex-column">
+                <td>제목</td>
+                <td><input type="text" name="title" id="title" readonly></td>
+            </tr>
+            <tr class="d-flex flex-column">
+                <td>내용</td>
+                <td><textarea name=" content" id="content" readonly></textarea></td>
+            </tr>
+            <tr class="d-flex flex-column">
+                <td>카테고리</td>
+                <td>
+                    <select name="category" id="category">
+                        <option value="category1">카테고리1</option>
+                        <option value="category2">카테고리2</option>
+                    </select>
+                </td>
+            </tr>
+            <tr class="d-flex flex-column">
+                <td>구매 날짜</td>
+                <td><input type="date" name="buyDate" id="buyDate" readonly></td>
+            </tr>
+            <tr class="d-flex flex-column">
+                <td>가격</td>
+                <td><input type="text" name="price" id="price"></td>
+            </tr>
+            <tr class="d-flex flex-column">
+                <td>거래 희망 장소</td>
+                <td><input type="text" name="place" id="place" readonly></td>
+            </tr>
+            <tr class="d-flex flex-column">
+                <td>판매 상태</td>
+                <td>
+                    <select name="category" id="category">
+                        <option value="available">거래 가능</option>
+                        <option value="trading">거래 중</option>
+                        <option value="complete">거래 완료</option>
+                    </select>
+                </td>
+            </tr>
+            <tr class="d-flex justify-content-center">
+                <td>
+                    <button type="submit" class="btn btn-dark">올리기</button>
+                </td>
+            </tr>
+        </table>
+    </form>
+
+</body>
+
+</html>

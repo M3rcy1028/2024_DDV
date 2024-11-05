@@ -1,0 +1,137 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+  <link rel='stylesheet' href='/stylesheets/style.css' />
+  <script src="/javascripts/jquery-3.7.1.min.js"></script>
+
+  <!-- Bootstrap CSS -->
+  <link rel='stylesheet' href='/vendors/bootstrap/css/bootstrap.min.css' />
+  <link rel='stylesheet' href='/vendors/bootstrap/css/bootstrap-grid.min.css' />
+  <link rel='stylesheet' href='/vendors/bootstrap/css/bootstrap-reboot.min.css' />
+
+  <title>
+    <%= title %>
+  </title>
+
+  <style>
+    .adver_carousel {
+      width: 1000px;
+      height: 300px;
+      overflow: hidden;
+      margin-top: 30px;
+    }
+
+    .adver_carousel .carousel-inner {
+      height: 100%;
+      object-fit: cover;
+    }
+
+    .search-box {
+      display: flex;
+      margin-left: 10px;
+    }
+
+    .search-box input {
+      width: 400px;
+    }
+
+    .search-btn {
+      margin-left: 10px;
+      margin-right: 10px;
+    }
+
+    .posts {
+      margin-top: 20px;
+      margin-bottom: 20px;
+    }
+  </style>
+</head>
+
+<body>
+
+  <div class="header d-flex justify-content-end">
+    <a href="/notification" class="p-2">공지사항</a>
+    <a href="/joinForm" class="p-2">회원가입</a>
+    <a href="/login" class="p-2">로그인</a>
+  </div>
+
+  <div class="d-flex mb-3">
+    <a href="/" id="home" class="me-auto p-2">로고</a>
+    <form class="search-box" action="" method="get">
+      <input class="search-txt" type="text" name="" placeholder="상품명 입력">
+      <button class="search-btn btn btn-dark" type="submit">검색</button>
+    </form>
+    <div class="header d-flex justify-content-end">
+      <a href="/sellBoard/sellWrite" class="p-2">판매하기</a>
+      <a href="/myPage" class="p-2">마이페이지</a>
+      <a href="/message" class="p-2">메세지</a>
+    </div>
+  </div>
+
+  <div class="d-flex flex-column">
+    <div class="d-flex justify-content-center">
+      <div id="advertisement" class="carousel slide carousel-fade adver_carousel" data-bs-ride="carousel">
+        <div class="carousel-inner">
+          <div class="carousel-item active">
+            <img src="/images/test1.jpg" class="d-block w-100" alt="광고이미지1">
+          </div>
+          <div class="carousel-item">
+            <img src="/images/test2.jpg" class="d-block w-100" alt="광고이미지2">
+          </div>
+        </div>
+        <button class="carousel-control-prev" type="button" data-bs-target="#advertisement" data-bs-slide="prev">
+          <span class="carousel-control-prev-icon" aria-hidden="true"></span>
+          <span class="visually-hidden">Previous</span>
+        </button>
+        <button class="carousel-control-next" type="button" data-bs-target="#advertisement" data-bs-slide="next">
+          <span class="carousel-control-next-icon" aria-hidden="true"></span>
+          <span class="visually-hidden">Next</span>
+        </button>
+      </div>
+    </div>
+
+    <div class="d-flex flex-column">
+      <div class="d-flex justify-content-center">
+        <h3 class="posts" id="recent">최근 게시글</h3>
+      </div>
+      <div class="d-flex justify-content-center">
+        <div class="card me-2" style="width: 15rem;">
+          <img src="/images/tomato.jpg" class="card-img-top" alt="...">
+          <div class="card-body">
+            <p class="title">토마토 팔아요</p>
+            <p class="title">1,000원</p>
+          </div>
+        </div>
+        <div class="card me-2" style="width: 15rem;">
+          <img src="/images/phone.jpg" class="card-img-top" alt="...">
+          <div class="card-body">
+            <p class="title">중고폰 팔아요</p>
+            <p class="title">50,000원</p>
+          </div>
+        </div>
+        <div class="card me-2" style="width: 15rem;">
+          <img src="/images/slipper.jpg" class="card-img-top" alt="...">
+          <div class="card-body">
+            <p class="title">슬리퍼 팔아요</p>
+            <p class="title">3,000원</p>
+          </div>
+        </div>
+        <div class="card" style="width: 15rem;">
+          <img src="/images/phone.jpg" class="card-img-top" alt="...">
+          <div class="card-body">
+            <p class="title">우주폰 팔아요</p>
+            <p class="title">5,000원</p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Bootstrap JS -->
+  <script src="/vendors/bootstrap/js/bootstrap.min.js"></script>
+  <script src="/vendors/bootstrap/js/bootstrap.bundle.min.js"></script>
+
+</body>
+
+</html>
