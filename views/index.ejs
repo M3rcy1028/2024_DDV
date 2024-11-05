@@ -49,25 +49,42 @@
 </head>
 
 <body>
-
-  <div class="header d-flex justify-content-end">
+  <nav class="header d-flex justify-content-end">
     <a href="/notification" class="p-2">공지사항</a>
-    <a href="/joinForm" class="p-2">회원가입</a>
-    <a href="/login" class="p-2">로그인</a>
-  </div>
-
-  <div class="d-flex mb-3">
+    <% if (!rootLogin && !usrLogin) { %>  <!--로그인 안 됨-->
+      <a href="/joinForm" class="p-2">회원가입</a>
+      <a href="/login" class="p-2">로그인</a>
+    <% } %>
+    <% if (rootLogin || usrLogin) { %> <!--로그인 됨-->
+      <a href="/logout" class="p-2">로그아웃</a>
+    <% } %>
+  </nav>
+  <nav class="d-flex mb-3">
     <a href="/" id="home" class="me-auto p-2">로고</a>
-    <form class="search-box" action="" method="get">
-      <input class="search-txt" type="text" name="" placeholder="상품명 입력">
-      <button class="search-btn btn btn-dark" type="submit">검색</button>
-    </form>
-    <div class="header d-flex justify-content-end">
-      <a href="/sellBoard/sellWrite" class="p-2">판매하기</a>
-      <a href="/myPage" class="p-2">마이페이지</a>
-      <a href="/message" class="p-2">메세지</a>
-    </div>
-  </div>
+    <% if (!rootLogin && !usrLogin) { %>  <!--로그인 안 됨-->
+      <div class="search-container mx-auto" style="flex-grow: 1; display: flex; justify-content: center;">
+        <form class="search-box d-flex" action="" method="get">
+          <input class="search-txt" type="text" name="" placeholder="상품명 입력">
+          <button class="search-btn btn btn-dark" type="submit">검색</button>
+        </form>
+      </div>
+    <% } %>
+    <% if (rootLogin || usrLogin) { %> <!--로그인 됨-->
+      <div class="search-container mx-auto">
+        <form class="search-box d-flex" action="" method="get">
+          <input class="search-txt" type="text" name="" placeholder="상품명 입력">
+          <button class="search-btn btn btn-dark" type="submit">검색</button>
+        </form>
+      </div>
+    <% } %>
+    <nav class="header d-flex justify-content-end">
+      <% if (rootLogin || usrLogin) { %> <!--로그인 됨-->
+        <a href="/sellBoard/sellWrite" class="p-2">판매하기</a>
+        <a href="/myPage" class="p-2">마이페이지</a>
+        <a href="/message" class="p-2">메세지</a>
+      <% } %>
+    </nav>
+  </nav>
 
   <div class="d-flex flex-column">
     <div class="d-flex justify-content-center">

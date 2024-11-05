@@ -51,14 +51,14 @@
     <h2 class="d-flex justify-content-center">
         <%= title %>
     </h2>
-    <form class="d-flex align-items-center flex-column">
+    <form action="/login" method="post" onsubmit="return onWriteSubmit()"  class="d-flex align-items-center flex-column">
         <div>
             <input type="text" name="id" id="id" placeholder="아이디">
         </div>
         <div>
             <input type="password" name="passwd" id="passwd" placeholder="비밀번호">
         </div>
-        <button class="btn btn-dark">로그인</button>
+        <button type="submit" class="btn btn-dark">로그인</button>
     </form>
 
     <div class="d-flex justify-content-center link">
@@ -74,4 +74,22 @@
     </div>
 </body>
 
+<script>
+    function onWriteSubmit(){
+        if ($("#id").val().trim() == ""){
+            var message = "아이디를 입력해 주세요.";
+            $("#id").val("");
+            $("#id").focus();
+            alert(message);
+            return false;
+        }
+        if ($("#passwd").val().trim() == ""){
+            var message = "비밀번호를 입력하세요.";
+            $("#passwd").val("");
+            $("#passwd").focus();
+            alert(message);
+            return false;
+        }
+    }
+</script>  
 </html>
