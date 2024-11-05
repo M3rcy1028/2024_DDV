@@ -53,12 +53,8 @@
         <%= title %>
     </h2>
 
-    <form class="d-flex align-items-center flex-column">
+    <form action="/roots/notificationWrite" method="post" onsubmit="return onWriteSubmit()" class="d-flex align-items-center flex-column">
         <table>
-            <tr class="d-flex flex-column">
-                <td>상품 사진</td>
-                <td><input type="file" class="form-control" name="image" id="image"></td>
-            </tr>
             <tr class="d-flex flex-column">
                 <td>제목</td>
                 <td><input type="text" name="title" id="title"></td>
@@ -67,35 +63,32 @@
                 <td>내용</td>
                 <td><textarea name="content" id="content"></textarea></td>
             </tr>
-            <tr class="d-flex flex-column">
-                <td>카테고리</td>
-                <td>
-                    <select name="category" id="category">
-                        <option value="category1">카테고리1</option>
-                        <option value="category2">카테고리2</option>
-                    </select>
-                </td>
-            </tr>
-            <tr class="d-flex flex-column">
-                <td>구매 날짜</td>
-                <td><input type="date" name="buyDate" id="buyDate"></td>
-            </tr>
-            <tr class="d-flex flex-column">
-                <td>가격</td>
-                <td><input type="text" name="price" id="price"></td>
-            </tr>
-            <tr class="d-flex flex-column">
-                <td>거래 희망 장소</td>
-                <td><input type="text" name="place" id="place"></td>
-            </tr>
             <tr class="d-flex justify-content-center">
-                <td>
-                    <button type="submit" class="btn btn-dark">올리기</button>
-                </td>
+                <td> <button class="btn btn-outline-dark" type="submit">올리기</button> </td>
             </tr>
+            <td>
+                <button class="btn btn-outline-dark" type="button" onclick="location.href='/roots/notificationList'">돌아가기</button>
+            </td>
         </table>
     </form>
-
+    <script>
+        function onWriteSubmit(){
+            if ($("#title").val().trim() == ""){
+                var message = "제목을 입력해 주세요.";
+                $("#title").val("");
+                $("#title").focus();
+                alert(message);
+                return false;
+            }
+            if ($("#content").val().trim() == ""){
+                var message = "본문 내용을 입력해 주세요.";
+                $("#content").val("");
+                $("#content").focus();
+                alert(message);
+                return false;
+            }
+        }
+    </script>
 </body>
 
 </html>

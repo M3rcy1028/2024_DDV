@@ -77,9 +77,11 @@
             <%= title %>
         </h2>
         <br>
-        <div class="button-container">
-            <button class="write-button btn btn-outline-dark" onclick="location.href='/roots/notificationWrite'">공지사항 작성하기</button>
-        </div>
+        <nav class="button-container">
+            <% if (rootLogin) { %> <!--관리자 로그인 됨-->
+                <button class="btn btn-outline-dark" onclick="location.href='/roots/notificationWrite'">공지사항 작성하기</button>
+            <% } %>
+        </nav>
         <table class="table1" border="1">
             <thead>
                 <tr>

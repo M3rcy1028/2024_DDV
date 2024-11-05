@@ -103,6 +103,9 @@ router.post('/rootLogin', function (req, res, next) { // 관리자 로그인 입
     if (results.length > 0) { // db 반환값이 존재할 때
       rootLogin = true;
       rootid = req.body.id;
+      module.exports.rootid = rootid;
+      module.exports.rootLogin = rootLogin;
+      console.log("관리자 아이디 : " + rootid);
       res.redirect('/'); // 회원가입 후 리다이렉트
     }
     else
@@ -119,6 +122,10 @@ router.get('/logout', function (req, res, next) {
   usrLogin = false;
   usrid = "";
   rootid = "";
+  module.exports.rootid = rootid;
+  module.exports.rootLogin = rootLogin;
+  module.exports.usrid = usrid;
+  module.exports.usrLogin = usrLogin;
   res.redirect('/');
 })
 
