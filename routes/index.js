@@ -1,6 +1,5 @@
 var express = require('express');
 var router = express.Router();
-var session = require('express-session');  // 로그인 수행
 var mysql = require('mysql');
 var connection = mysql.createConnection({
     connectionLimit: 5,

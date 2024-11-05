@@ -1,8 +1,16 @@
 var express = require('express');
 var router = express.Router();
+var mysql = require('mysql');
+var connection = mysql.createConnection({
+    connectionLimit: 5,
+    host: 'localhost',
+    user: 'root',
+    password: '1234',
+    database: 'tutorial'
+});
 
-//공지사항 리스트 화면
-router.get('/notification', function (req, res, next) {
+  //공지사항 리스트 화면
+  router.get('/notification', function (req, res, next) {
     var sql = "SELECT Bid, Rname, Title, Updated, Hit FROM ROOTBOARD, ROOT WHERE Rid=Rnum ORDER BY Bid DESC;";
     connection.query(sql, (err, rows, fields)=>{
       if (err) {
@@ -37,4 +45,8 @@ router.get('/notification', function (req, res, next) {
     });
   })
 
+  // 공지사항 글쓰기 화면=
+  router.get('/notificationWrite', function (req, res, next) {
+    res.render('notificationWrite', { title: '공지사항 작성하기' });
+  })
 module.exports = router;
