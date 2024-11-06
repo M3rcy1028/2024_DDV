@@ -1,0 +1,106 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <link rel='stylesheet' href='/stylesheets/style.css' />
+    <script src="/javascripts/jquery-3.7.1.min.js"></script>
+
+    <!-- Bootstrap CSS -->
+    <link rel='stylesheet' href='/vendors/bootstrap/css/bootstrap.min.css' />
+    <link rel='stylesheet' href='/vendors/bootstrap/css/bootstrap-grid.min.css' />
+    <link rel='stylesheet' href='/vendors/bootstrap/css/bootstrap-reboot.min.css' />
+
+    <title>
+        <%= title %>
+    </title>
+
+    <style>
+        h2 {
+            margin-bottom: 20px;
+        }
+
+        table tr {
+            margin-bottom: 10px;
+        }
+
+        table input {
+            width: 500px;
+            padding: 8px;
+            box-sizing: border-box;
+        }
+
+        table textarea {
+            width: 500px;
+            height: 200px;
+        }
+
+        table select {
+            width: 500px;
+            padding: 8px;
+            box-sizing: border-box;
+        }
+
+        table button {
+            width: 500px;
+        }
+    </style>
+</head>
+
+<body>
+    <a href="/" id="home">로고</a>
+
+    <h2 class="d-flex justify-content-center">
+        <%= title %>
+    </h2>
+
+    <form action="/roots/notificationUpdate" method="post" onsubmit="return onWriteSubmit()" class="d-flex align-items-center flex-column">
+        <table>
+            <input type="hidden" name="Bid" value="<%=row.Bid%>"/>
+            <tr class="d-flex flex-column">
+                <td>제목</td>
+                <td><input type="text" name="title" id="title" value="<%=row.Title || '' %>" required/></td>
+            </tr>
+            <tr class="d-flex flex-column">
+                <td>내용</td>
+                <td><textarea name="content" id="content" required><%=row.Content || '' %></textarea></td>
+            </tr>
+            <tr class="d-flex flex-column">
+                <td>비밀번호</td>
+                <td><input type="password" name="passwd" id="passwd"></td>
+            </tr>
+            <tr class="d-flex justify-content-center">
+                <td> <button class="btn btn-outline-success" type="submit">수정완료</button> </td>
+            </tr>
+            <td>
+                <button class="btn btn-outline-dark" type="button" onclick="location.href='/roots/notificationRead/<%=row.Bid%>'">돌아가기</button>
+            </td>
+        </table>
+    </form>
+    <script>
+        function onWriteSubmit(){
+            if ($("#title").val().trim() == ""){
+                var message = "제목을 입력해 주세요.";
+                $("#title").val("");
+                $("#title").focus();
+                alert(message);
+                return false;
+            }
+            if ($("#content").val().trim() == ""){
+                var message = "본문 내용을 입력해 주세요.";
+                $("#content").val("");
+                $("#content").focus();
+                alert(message);
+                return false;
+            }
+            if ($("#passwd").val().trim() == ""){
+                var message = "비밀번호를 입력해 주세요.";
+                $("#passwd").val("");
+                $("#passwd").focus();
+                alert(message);
+                return false;
+            }
+        }
+    </script>
+</body>
+
+</html>

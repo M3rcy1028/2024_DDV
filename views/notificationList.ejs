@@ -69,6 +69,26 @@
                 justify-content: flex-end; /* 오른쪽 정렬 */
                 margin-bottom: 20px; /* 아래쪽 여백 추가 */
             }
+            /* 페이지네이션 스타일 */
+            .pagination {
+                display: flex;
+                justify-content: center;
+                margin-top: 20px;
+            }
+            .pagination a {
+                margin: 0 5px;
+                padding: 5px 10px;
+                text-decoration: none;
+                border: 1px solid #ddd;
+                border-radius: 5px;
+            }
+            .pagination .active {
+                background-color: #007bff;
+                color: white;
+            }
+            .pagination a:hover {
+                background-color: #ddd;
+            }
         </style>
     </head>
     <body>
@@ -83,6 +103,17 @@
             <% } %>
         </nav>
         <table class="table1" border="1">
+            <!--정렬 버튼-->
+            <div class="button-container">
+                <form action="" method="get">
+                    <input type="hidden" name="page" value="<%= currentPage %>">
+                    <!-- No 기준 정렬 버튼 -->
+                    <button type="submit" name="sort" value="<%= sort === 'ASC' ? 'DESC' : 'ASC' %>" class="btn btn-outline-secondary">
+                        <%= sort === 'ASC' ? '내림차순' : '오름차순' %>
+                    </button>
+                </form>
+            </div>
+            <!--테이블 표시-->
             <thead>
                 <tr>
                     <th>No</th>
@@ -93,21 +124,32 @@
                 </tr>
             </thead>
             <tbody>
-<% 
-                    for (var i=0; i < rows.length; i++) { 
+            <% for (var i=0; i < rows.length; i++) { 
                         var oneItem = rows[i]; 
-%>
-                    <tr>
-                        <td><%= oneItem.Bid %></td>
-                        <td><%= oneItem.Rname %></td>
-                        <td><a href="/roots/notificationRead/<%= oneItem.Bid %>"><%= oneItem.Title %></a></td>
-                        <td><span class="date" data-date="<%= oneItem.Updated %>"></span></td>
-                        <td><%= oneItem.Hit %></td>
-                    </tr>
-<% 
-                } 
-%>
+            %>
+            <tr onclick="window.location.href='/roots/notificationRead/<%= oneItem.Bid %>'" style="cursor: pointer;">
+                    <td><%= oneItem.Bid %></td>
+                    <td><%= oneItem.Rname %></td>
+                    <td><%= oneItem.Title %></td>
+                    <td><span class="date" data-date="<%= oneItem.Updated %>"></span></td>
+                    <td><%= oneItem.Hit %></td>
+                </tr>
+            <% } %>
             </tbody>
+            <!-- 페이지네이션 -->
+            <div class="pagination">
+                <% if (currentPage > 1) { %>
+                    <a href="?page=<%= currentPage - 1 %>&sort=<%= sort %>&order=<%= order %>">이전</a>
+                <% } %>
+
+                <% for (var i = 1; i <= totalPages; i++) { %>
+                    <a href="?page=<%= i %>&sort=<%= sort %>&order=<%= order %>" class="<%= i === currentPage ? 'active' : '' %>"><%= i %></a>
+                <% } %>
+
+                <% if (currentPage < totalPages) { %>
+                    <a href="?page=<%= currentPage + 1 %>&sort=<%= sort %>&order=<%= order %>">다음</a>
+                <% } %>
+            </div>
         </table>
         <script>
             function formatDate(dateString) {
@@ -129,7 +171,6 @@
                     return `${date.getFullYear()}년 ${date.getMonth() + 1}월 ${date.getDate()}일`;
                 }
             }
-    
             // 페이지 로드 후 날짜 포맷팅
             document.addEventListener("DOMContentLoaded", function() {
                 const dateElements = document.querySelectorAll('.date');
