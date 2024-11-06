@@ -101,10 +101,10 @@
 </head>
 
 <body>
-    <a href="/" id="home">로고</a>
+    <a href="/" id="home" class="me-auto p-2">
+        <img src="/images/design/weblogo.jpg" alt="로고" style="height: 50px;">
+      </a>
     <br>
-    <br>
-    <button class="btn btn-outline-dark" type="button" onclick="location.href='/roots/manageUsrList' ">뒤로가기</button>
     <br>
     <h1><%= title %></h1>
     <h2>회원번호 <<%= row.Uno %>></h2>
@@ -113,9 +113,11 @@
             <input type="hidden" name="Uno" value="<%= row.Uno %>" />
             
             <div class="btn-container">
+                <button class="btn btn-outline-dark" type="button" onclick="location.href='/roots/manageUsrList' ">뒤로가기</button>
                 <button class="btn btn-outline-warning" type="submit">회원 수정하기</button>
+                <button class="btn btn-outline-danger" type="button" onclick="location.href='/roots/manageUsrDelete' ">회원 삭제하기</button>
             </div>
-
+            <br>
             <!-- Form Fields -->
             <div class="read-box">
                 <table class="type09">

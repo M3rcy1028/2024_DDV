@@ -242,7 +242,7 @@ router.get('/manageUsrList', function (req, res, next) {
   console.log("rootLogin:", rootLogin);
   // 페이지 번호를 쿼리에서 가져오기 (기본값은 1)
   const page = parseInt(req.query.page) || 1;
-  const limit = 10; // 한 페이지당 10명
+  const limit = 5; // 한 페이지당 10명
   const offset = (page - 1) * limit; // OFFSET 계산
   // 정렬 방향 설정 (기본값은 내림차순)
   const sort = req.query.sort || 'DESC'; 

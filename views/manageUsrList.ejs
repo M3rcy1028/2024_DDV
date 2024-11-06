@@ -84,7 +84,7 @@
                 border-radius: 5px;
             }
             .pagination .active {
-                background-color: #007bff;
+                background-color: #75c7eb;
                 color: white;
             }
             .pagination a:hover {
@@ -93,7 +93,9 @@
         </style>
     </head>
     <body>
-        <a href="/" id="home">로고</a>
+        <a href="/" id="home" class="me-auto p-2">
+            <img src="/images/design/weblogo.jpg" alt="로고" style="height: 50px;">
+          </a>
         <h2 class="d-flex justify-content-center">
             <%= title %>
         </h2>
@@ -148,21 +150,21 @@
                 } 
 %>
             </tbody>
-            <!-- 페이지네이션 -->
-            <div class="pagination">
-                <% if (currentPage > 1) { %>
-                    <a href="?page=<%= currentPage - 1 %>&sort=<%= sort %>&order=<%= order %>">이전</a>
-                <% } %>
-
-                <% for (var i = 1; i <= totalPages; i++) { %>
-                    <a href="?page=<%= i %>&sort=<%= sort %>&order=<%= order %>" class="<%= i === currentPage ? 'active' : '' %>"><%= i %></a>
-                <% } %>
-
-                <% if (currentPage < totalPages) { %>
-                    <a href="?page=<%= currentPage + 1 %>&sort=<%= sort %>&order=<%= order %>">다음</a>
-                <% } %>
-            </div>
         </table>
+        <!-- 페이지네이션 -->
+        <div class="pagination">
+            <% if (currentPage > 1) { %>
+                <a href="?page=<%= currentPage - 1 %>&sort=<%= sort %>&order=<%= order %>" class="btn btn-info">이전</a>
+            <% } %>
+
+            <% for (var i = 1; i <= totalPages; i++) { %>
+                <a href="?page=<%= i %>&sort=<%= sort %>&order=<%= order %>" class="btn btn-outline-info <%= i === currentPage ? 'active' : '' %>"><%= i %></a>
+            <% } %>
+
+            <% if (currentPage < totalPages) { %>
+                <a href="?page=<%= currentPage + 1 %>&sort=<%= sort %>&order=<%= order %>" class="btn btn-info">다음</a>
+            <% } %>
+        </div>
         <script>
             function formatDate(dateString, isBirthday = false) {
                 const date = new Date(dateString);
