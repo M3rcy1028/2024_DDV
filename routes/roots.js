@@ -242,7 +242,7 @@ router.get('/manageUsrList', function (req, res, next) {
   console.log("rootLogin:", rootLogin);
   // 페이지 번호를 쿼리에서 가져오기 (기본값은 1)
   const page = parseInt(req.query.page) || 1;
-  const limit = 5; // 한 페이지당 10명
+  const limit = 10; // 한 페이지당 10명
   const offset = (page - 1) * limit; // OFFSET 계산
   // 정렬 방향 설정 (기본값은 내림차순)
   const sort = req.query.sort || 'DESC'; 
@@ -365,6 +365,23 @@ router.post('/manageUsrUpdate', function (req, res, next) { // 회원 정보 수
         res.redirect('/roots/manageUsrInfo/' + req.body.Uno);
       }
     });
+  });
+});
+
+router.post('/manageUsrDelete', function (req, res, next) { // 삭제수행
+  var datas = [
+    req.body.Uno
+  ]
+  // 해당 게시물 삭제 쿼리
+  var sql1 = "DELETE FROM A USING ROOTBOARD A JOIN ROOT B ON Rnum=Rid WHERE Rid=? AND Rpwd=? AND Bid=?";
+  connection.query(sql1, datas, function(err, results) {
+    if (err) {
+      console.error("err: " + err);
+      return res.status(500).send("데이터베이스 오류 발생");
+    }
+    if (results.affectedRows == 0) {
+      res.send("<script>alert('비밀번호가 틀렸습니다.');history.back();</script>");
+    }
   });
 });
 
