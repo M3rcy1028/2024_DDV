@@ -15,42 +15,54 @@
     </title>
 
     <style>
-        h2 {
-            margin-bottom: 20px;
-        }
+
     </style>
 </head>
 
 <body>
-    <a href="/" id="home">로고</a>
+    <div class="header d-flex justify-content-end">
+        <a href="/notification" class="p-2">공지사항</a>
+        <a href="/joinForm" class="p-2">회원가입</a>
+        <a href="/login" class="p-2">로그인</a>
+    </div>
 
-    <h2 class="d-flex justify-content-center">
-        <%= title %>
-    </h2>
-
-    <div class="d-flex justify-content-center">
-        <div class="card me-2" style="width: 15rem;">
-            <img src="/images/tomato.jpg" class="card-img-top" alt="...">
-            <div class="card-body">
-                <p class="title">토마토 팔아요</p>
-                <p class="title">1,000원</p>
-            </div>
-        </div>
-        <div class="card me-2" style="width: 15rem;">
-            <img src="/images/phone.jpg" class="card-img-top" alt="...">
-            <div class="card-body">
-                <p class="title">중고폰 팔아요</p>
-                <p class="title">50,000원</p>
-            </div>
-        </div>
-        <div class="card" style="width: 15rem;">
-            <img src="/images/slipper.jpg" class="card-img-top" alt="...">
-            <div class="card-body">
-                <p class="title">슬리퍼 팔아요</p>
-                <p class="title">3,000원</p>
-            </div>
+    <div class="d-flex mb-3">
+        <a href="/" id="home" class="me-auto p-2">로고</a>
+        <div class="header d-flex justify-content-end">
+            <a href="/sellBoard/sellWrite" class="p-2">판매하기</a>
+            <a href="/myPage" class="p-2">마이페이지</a>
+            <a href="/message" class="p-2">메세지</a>
         </div>
     </div>
+
+    <div>
+        <a href="/sellBoard/sellList" , class="p-2">전체 보기</a>
+    </div>
+
+    <% for (var line=0; line<3; line++){ var oneItem=rows[i]; %>
+        <div class="card-group mb-5">
+            <% for (var i=0; i<4; i++) { var num=line*4 + i; console.log(num); if(num>= rows.length){
+                break;}
+                var oneItem=rows[num]; %>
+                <div class="card">
+                    <img src="<%= oneItem.Img %>" class="card-img-top" alt="판매 상품 이미지">
+                    <div class="card-body">
+                        <h5 class="card-title">
+                            <%= oneItem.Title %>
+                        </h5>
+                        <p class="card-text">
+                            <%= oneItem.Price %> 원
+                        </p>
+                    </div>
+                </div>
+                <% } %>
+        </div>
+        <% } %>
+
+            <!--
+    <div class="d-flex justify-content-center">
+        <div class="card me-2" style="width: 15rem;">
+        -->
 
 </body>
 
