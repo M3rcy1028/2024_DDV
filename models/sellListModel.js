@@ -9,7 +9,7 @@ var connection = mysql.createConnection({
 
 module.exports = {
     getList(page, itemNums, callback) {
-        const offset = (page - 1) * 12; //어디부터 시작할 건지
+        const offset = (page - 1) * itemNums; //어디부터 시작할 건지
         var sql = 'SELECT Bno, Img, Title, Price FROM board LIMIT ? OFFSET ?';
         //board에서 정보 가져오기
         connection.query(sql, [itemNums, offset], (err, rows, fileds) => {

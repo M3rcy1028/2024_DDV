@@ -9,7 +9,7 @@ router.get('/sellList', listController.getListFirst);
 router.get('/sellList/:page', listController.getList);
 
 //글쓰기 조회 화면
-router.get('/sellRead', function (req, res, next) {
+router.get('/sellRead/:Bno', function (req, res, next) {
     res.render('sellRead', { title: '판매 글보기' });
 })
 
