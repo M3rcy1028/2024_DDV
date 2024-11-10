@@ -16,5 +16,14 @@ module.exports = {
             if (err) throw err;
             callback(rows);
         })
+    },
+
+    getCategoryList(categoryName, callback) {
+        var sql = 'SELECT Bno, Img, Title, Price FROM board WHERE category=?';
+        //board에서 정보 가져오기
+        connection.query(sql, categoryName, (err, rows, fileds) => {
+            if (err) throw err;
+            callback(rows);
+        })
     }
 }

@@ -14,3 +14,14 @@ exports.getList = (req, res, next) => {
 exports.getListFirst = (req, res) => {
     res.redirect('/sellBoard/sellList/1');
 }
+
+exports.getCategoryList = (req, res, next) => {
+    var categories = res.locals.categories; //카테고리
+    var categoryNum = Number(req.params.categoryNum); //카테고리 번호
+    var categoryName = Object.keys(categories).find(key => categories[key] === categoryNum); //카테고리 이름
+
+    listModel.getCategoryList(categoryName, (rows) => {
+        console.log('rows: ' + JSON.stringify(rows));
+        res.render('sellListCategory', { title: "카테고리별 보기", rows: rows, categoryName: categoryName });
+    })
+}

@@ -9,6 +9,9 @@ router.get('/sellList', listController.getListFirst);
 //글쓰기 전체 조회 화면 (idx 페이지)
 router.get('/sellList/:page', listController.getList);
 
+//카테고리별 조회
+router.get('/sellList/category/:categoryNum', listController.getCategoryList);
+
 //글쓰기 조회 화면
 router.get('/sellRead/:Bno', readController.readData);
 

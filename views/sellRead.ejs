@@ -76,9 +76,11 @@
             </a>
 
             <ul class="dropdown-menu">
-                <li><a class="dropdown-item" href="#">농식품</a></li>
-                <li><a class="dropdown-item" href="#">전자기기</a></li>
-                <li><a class="dropdown-item" href="#">생활용품</a></li>
+                <% for(var category in categories){ %>
+                    <li><a class="dropdown-item" href="/sellBoard/sellList/category/<%=categories[category]%>">
+                            <%= category %>
+                        </a></li>
+                    <% }%>
             </ul>
         </div>
         <a href="/sellBoard/sellList" , class="link p-2">전체 보기</a>
