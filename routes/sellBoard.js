@@ -1,6 +1,7 @@
 var express = require('express');
 var router = express.Router();
 var listController = require('../controllers/sellListController.js');
+var readController = require('../controllers/sellReadController.js');
 
 //글쓰기 전체 조회 화면
 router.get('/sellList', listController.getListFirst);
@@ -9,9 +10,7 @@ router.get('/sellList', listController.getListFirst);
 router.get('/sellList/:page', listController.getList);
 
 //글쓰기 조회 화면
-router.get('/sellRead/:Bno', function (req, res, next) {
-    res.render('sellRead', { title: '판매 글보기' });
-})
+router.get('/sellRead/:Bno', readController.readData);
 
 //글쓰기 화면
 router.get('/sellWrite', function (req, res, next) {

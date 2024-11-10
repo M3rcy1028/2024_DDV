@@ -22,9 +22,7 @@
 
         .dropdown-menu .dropdown-item:active {
             background-color: #4D5154;
-            /* 클릭 시 배경색 */
             color: white;
-            /* 클릭 시 글자 색 */
         }
 
         .breadcrumb a {
@@ -96,7 +94,7 @@
         <nav style="--bs-breadcrumb-divider: '>';" aria-label="breadcrumb">
             <ol class="breadcrumb">
                 <li class="breadcrumb-item"><a href="/">홈</a></li>
-                <li class="breadcrumb-item active" aria-current="page"><a href="">전체보기</a></li>
+                <li class="breadcrumb-item active" aria-current="page"><b>전체보기</b></li>
             </ol>
         </nav>
     </div>
@@ -120,7 +118,7 @@
                         break;}
                         var oneItem=rows[num]; %>
                         <div class="col">
-                            <img src="<%= oneItem.Img %>" class="card-img-top" alt="판매 상품 이미지">
+                            <img src="<%= oneItem.Img %>" class="img-fluid border rounded mb-3" alt="판매 상품 이미지">
                             <b name="title" id="title">
                                 <a href="/sellBoard/sellRead/<%=oneItem.Bno%>">
                                     <%= oneItem.Title %>
@@ -134,28 +132,6 @@
                 </div>
                 <% } %>
         </div>
-
-        <!--
-    <% for (var line=0; line<3; line++){ var oneItem=rows[i]; %>
-        <div class="card-group mb-5">
-            <% for (var i=0; i<4; i++) { var num=line*4 + i; if(num>= rows.length){
-                break;}
-                var oneItem=rows[num]; %>
-                <div class="card">
-                    <img src="<%= oneItem.Img %>" class="card-img-top" alt="판매 상품 이미지">
-                    <div class="card-body">
-                        <p class="card-text">
-                            <%= oneItem.Price %> 원
-                        </p>
-                    </div>
-                </div>
-                <% } %>
-        </div>
-        <% } %>
-
-    <div class="d-flex justify-content-center">
-        <div class="card me-2" style="width: 15rem;">
-        -->
 
         <!-- Bootstrap JS -->
         <script src="/vendors/bootstrap/js/bootstrap.bundle.min.js"></script>

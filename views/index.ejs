@@ -46,6 +46,18 @@
       margin-bottom: 20px;
     }
   </style>
+
+  <style>
+    .link {
+      text-decoration: none;
+      color: black;
+    }
+
+    .dropdown-menu .dropdown-item:active {
+      background-color: #4D5154;
+      color: white;
+    }
+  </style>
 </head>
 
 <body>
@@ -69,9 +81,24 @@
     </div>
   </div>
 
-  <div>
-    <a href="/sellBoard/sellList" , class="p-2">전체 보기</a>
+  <hr> <!-- 구분선 -->
+
+  <div class="menu-bar d-flex">
+    <div class="dropdown me-2">
+      <a class="btn btn-dark dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+        카테고리
+      </a>
+
+      <ul class="dropdown-menu">
+        <li><a class="dropdown-item" href="#">농식품</a></li>
+        <li><a class="dropdown-item" href="#">전자기기</a></li>
+        <li><a class="dropdown-item" href="#">생활용품</a></li>
+      </ul>
+    </div>
+    <a href="/sellBoard/sellList" , class="link p-2">전체 보기</a>
   </div>
+
+  <hr> <!-- 구분선 -->
 
   <div class="d-flex flex-column">
     <div class="d-flex justify-content-center">
@@ -133,7 +160,6 @@
   </div>
 
   <!-- Bootstrap JS -->
-  <script src="/vendors/bootstrap/js/bootstrap.min.js"></script>
   <script src="/vendors/bootstrap/js/bootstrap.bundle.min.js"></script>
 
 </body>
