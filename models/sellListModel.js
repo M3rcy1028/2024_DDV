@@ -10,7 +10,7 @@ var connection = mysql.createConnection({
 module.exports = {
     getList(page, itemNums, callback) {
         const offset = (page - 1) * itemNums; //어디부터 시작할 건지
-        var sql = 'SELECT Bno, Img, Title, Price FROM board LIMIT ? OFFSET ?';
+        var sql = 'SELECT Bno, Img, Title, Price FROM board ORDER BY Bno DESC LIMIT ? OFFSET ?';
         //board에서 정보 가져오기
         connection.query(sql, [itemNums, offset], (err, rows, fileds) => {
             if (err) throw err;
@@ -19,7 +19,7 @@ module.exports = {
     },
 
     getCategoryList(categoryName, callback) {
-        var sql = 'SELECT Bno, Img, Title, Price FROM board WHERE category=?';
+        var sql = 'SELECT Bno, Img, Title, Price FROM board WHERE category=? ORDER BY Bno DESC ';
         //board에서 정보 가져오기
         connection.query(sql, categoryName, (err, rows, fileds) => {
             if (err) throw err;
