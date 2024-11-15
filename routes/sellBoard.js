@@ -4,6 +4,8 @@ var router = express.Router();
 var listController = require('../controllers/sellListController.js');
 var readController = require('../controllers/sellReadController.js');
 var writeController = require('../controllers/sellWriteController.js');
+var updateController = require('../controllers/sellUpdateController.js');
+var deleteController = require('../controllers/sellDeleteController.js');
 
 const multer = require('multer');
 const path = require("path");
@@ -37,9 +39,13 @@ router.get('/sellWrite', writeController.writeForm);
 //글쓰기 화면 (POST)
 router.post('/sellWrite', upload.single("image"), writeController.writeData);
 
-//글쓰기 수정 화면
-router.get('/sellUpdate', function (req, res, next) {
-    res.render('sellUpdate', { title: '판매 글 수정하기' });
-})
+//글쓰기 수정 화면 (GET)
+router.get('/sellUpdate', updateController.updateForm);
+
+//글쓰기 수정 화면 (POST)
+router.post('/sellUpdate', upload.single("image"), (req, res) => { updateController.updateData(req, res) });
+
+//글 삭제 (POST)
+router.post('/sellDelete', deleteController.deleteData);
 
 module.exports = router;

@@ -15,97 +15,194 @@
     </title>
 
     <style>
-        h2 {
-            margin-bottom: 20px;
+        .link {
+            text-decoration: none;
+            color: black;
+        }
+
+        .dropdown-menu .dropdown-item:active {
+            background-color: #4D5154;
+            color: white;
+        }
+    </style>
+
+    <style>
+        table {
+            border-collapse: separate;
+            border-spacing: 10px 10px;
+        }
+
+        table input {
+            width: 400px;
+            padding: 8px;
+        }
+
+        table select {
+            width: 400px;
+            padding: 8px;
+        }
+
+        table textarea {
+            width: 400px;
+            height: 200px;
         }
 
         table tr {
             margin-bottom: 10px;
         }
 
-        table input {
-            width: 500px;
-            padding: 8px;
-            box-sizing: border-box;
-        }
-
-        table textarea {
-            width: 500px;
-            height: 200px;
-        }
-
-        table select {
-            width: 500px;
-            padding: 8px;
-            box-sizing: border-box;
-        }
-
-        table button {
-            width: 500px;
+        #updateBtn {
+            width: 200px;
         }
     </style>
 </head>
 
 <body>
-    <a href="/" id="home">로고</a>
+    <div class="header d-flex justify-content-end">
+        <a href="/notification" class="p-2">공지사항</a>
+        <a href="/joinForm" class="p-2">회원가입</a>
+        <a href="/login" class="p-2">로그인</a>
+    </div>
 
-    <h2 class="d-flex justify-content-center">
+    <div class="d-flex mb-3">
+        <a href="/" id="home" class="me-auto p-2">로고</a>
+        <div class="header d-flex justify-content-end">
+            <a href="/sellBoard/sellWrite" class="p-2">판매하기</a>
+            <a href="/myPage" class="p-2">마이페이지</a>
+            <a href="/message" class="p-2">메세지</a>
+        </div>
+    </div>
+
+    <hr> <!-- 구분선 -->
+
+    <div class="menu-bar d-flex">
+        <div class="dropdown me-2">
+            <a class="btn btn-dark dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown"
+                aria-expanded="false">
+                카테고리
+            </a>
+
+            <ul class="dropdown-menu">
+                <% for(var category in categories){ %>
+                    <li><a class="dropdown-item" href="/sellBoard/sellList/category/<%=categories[category]%>">
+                            <%= category %>
+                        </a></li>
+                    <% }%>
+            </ul>
+        </div>
+        <a href="/sellBoard/sellList" , class="link p-2">전체 보기</a>
+    </div>
+
+    <hr> <!-- 구분선 -->
+
+    <h3 class="d-flex justify-content-center">
         <%= title %>
-    </h2>
+    </h3>
 
-    <form class="d-flex align-items-center flex-column">
-        <table>
-            <tr class="d-flex flex-column">
+    <form action="/sellBoard/sellUpdate" method="post" enctype="multipart/form-data" onsubmit="return onUpdateSubmit()">
+        <table class="d-flex justify-content-center">
+            <input type="hidden" name="idx" value="<%=row.Bno%>" />
+            <tr>
                 <td>상품 사진</td>
-                <td><input type="file" class="form-control" name="image" id="image"></td>
+                <td><input type="file" accept="image/jpeg, image/png" class="form-control" name="image" id="image"></td>
             </tr>
-            <tr class="d-flex flex-column">
+            <tr>
                 <td>제목</td>
-                <td><input type="text" name="title" id="title" readonly></td>
+                <td><input type="text" name="title" id="title" value="<%=row.Title%>">
+                </td>
             </tr>
-            <tr class="d-flex flex-column">
-                <td>내용</td>
-                <td><textarea name=" content" id="content" readonly></textarea></td>
-            </tr>
-            <tr class="d-flex flex-column">
+            <tr>
                 <td>카테고리</td>
                 <td>
                     <select name="category" id="category">
-                        <option value="category1">카테고리1</option>
-                        <option value="category2">카테고리2</option>
+                        <option value="">카테고리 선택</option>
+                        <% for (var category in categories) { %>
+                            <option value="<%= category %>" <%=row.Category===category ? 'selected' : '' %>>
+                                <%= category %>
+                            </option>
+                            <% } %>
                     </select>
                 </td>
             </tr>
-            <tr class="d-flex flex-column">
-                <td>구매 날짜</td>
-                <td><input type="date" name="buyDate" id="buyDate" readonly></td>
-            </tr>
-            <tr class="d-flex flex-column">
+            <tr>
                 <td>가격</td>
-                <td><input type="text" name="price" id="price"></td>
+                <td><input type="text" name="price" id="price" value="<%=row.Price%>"></td>
             </tr>
-            <tr class="d-flex flex-column">
+            <tr>
+                <td>내용</td>
+                <td><textarea name="content" id="content"><%=row.Content%></textarea></td>
+            </tr>
+            <tr>
+                <td>구매 날짜</td>
+                <td><input type="date" name="buyDate" id="buyDate" value="<%=row.Pdate%>" disabled readonly></td>
+            </tr>
+            <tr>
                 <td>거래 희망 장소</td>
-                <td><input type="text" name="place" id="place" readonly></td>
+                <td><input type=" text" name="place" id="place" value="<%=row.TradePlace%>" disabled readonly></td>
             </tr>
-            <tr class="d-flex flex-column">
-                <td>판매 상태</td>
+            <tr>
                 <td>
-                    <select name="category" id="category">
-                        <option value="available">거래 가능</option>
-                        <option value="trading">거래 중</option>
-                        <option value="complete">거래 완료</option>
-                    </select>
                 </td>
-            </tr>
-            <tr class="d-flex justify-content-center">
-                <td>
-                    <button type="submit" class="btn btn-dark">올리기</button>
+                <td class="d-flex justify-content-end">
+                    <button type="submit" class="btn btn-dark" id="updateBtn">수정하기</button>
                 </td>
             </tr>
         </table>
     </form>
 
+    <!--
+    <td>판매 상태</td>
+    <td>
+        <select name="category" id="category">
+            <option value="available">거래 가능</option>
+            <option value="trading">거래 중</option>
+            <option value="complete">거래 완료</option>
+        </select>
+    </td>
+    -->
+
+    <!-- Bootstrap JS -->
+    <script src="/vendors/bootstrap/js/bootstrap.bundle.min.js"></script>
+
+    <script>
+        function onUpdateSubmit() {
+            if ($("#image").val().trim() == "") {
+                var message = "상품 이미지를 선택해 주세요.";
+                $("#image").val("");
+                $("#image").focus();
+                alert(message);
+                return false;
+            }
+            if ($("#title").val().trim() == "") {
+                var message = "제목을 입력해 주세요.";
+                $("#title").val("");
+                $("#title").focus();
+                alert(message);
+                return false;
+            }
+            if ($("#category").val().trim() == "") {
+                var message = "카테고리를 선택해 주세요.";
+                $("#category").val("");
+                $("#category").focus();
+                alert(message);
+                return false;
+            }
+            if ($("#price").val().trim() == "") {
+                var message = "가격을 입력해 주세요.";
+                $("#price").val("");
+                $("#price").focus();
+                alert(message);
+                return false;
+            }
+            if ($("#content").val().trim() == "") {
+                var message = "내용을 입력해 주세요.";
+                $("#content").val("");
+                $("#content").focus();
+                alert(message);
+                return false;
+            }
+        }
+    </script>
 </body>
 
 </html>

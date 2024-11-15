@@ -50,6 +50,10 @@
         table tr {
             margin-bottom: 10px;
         }
+
+        #submitBtn {
+            width: 200px;
+        }
     </style>
 </head>
 
@@ -91,12 +95,12 @@
 
     <hr> <!-- 구분선 -->
 
-    <h3>
+    <h3 class="d-flex justify-content-center">
         <%= title %>
     </h3>
 
     <form action="/sellBoard/sellWrite" method="post" enctype="multipart/form-data" onsubmit="return onWriteSubmit()">
-        <table class="d-flex flex-column">
+        <table class="d-flex justify-content-center">
             <tr>
                 <td>상품 사진</td>
                 <td><input type="file" accept="image/jpeg, image/png" class="form-control" name="image" id="image"></td>
@@ -136,7 +140,9 @@
             </tr>
             <tr>
                 <td>
-                    <button type="submit" class="btn btn-dark">등록하기</button>
+                </td>
+                <td class="d-flex justify-content-end">
+                    <button type="submit" class="btn btn-dark" id="submitBtn">등록하기</button>
                 </td>
             </tr>
         </table>
@@ -144,6 +150,7 @@
 
     <!-- Bootstrap JS -->
     <script src="/vendors/bootstrap/js/bootstrap.bundle.min.js"></script>
+
     <script>
         function onWriteSubmit() {
             if ($("#image").val().trim() == "") {

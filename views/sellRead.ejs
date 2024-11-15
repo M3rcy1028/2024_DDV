@@ -123,19 +123,42 @@
                 <span class="mb-3" name="sub-info" id="sub-info">
                     게시일 <%= row.Updated %> | 조회수 <%= row.Hit %>
                 </span>
-                <p name="content" id="content">
+                <p class="mb-3" name="content" id="content">
                     <%= row.Content %>
                 </p>
+                <span>
+                    <b>거래장소</b>
+                    <%= row.TradePlace %>
+                </span>
             </div>
-            <div class="d-flex justify-content-end board-btn mt-auto">
-                <button type="button" class="btn btn-dark me-2">메세지 보내기</button>
-                <button type="button" class="btn btn-outline-dark"><i class="bi bi-heart me-2"></i>찜하기</button>
+            <div class="d-flex justify-content-between board-btn mt-auto">
+                <div>
+                    <button type="button" class="btn btn-dark">메세지 보내기</button>
+                    <button type="button" class="btn btn-outline-dark"><i class="bi bi-heart me-2"></i>찜하기</button>
+                </div>
+                <!-- 글 작성자에게만 보이는 버튼-->
+                <div class="d-flex">
+                    <form class="me-2" action="/sellBoard/sellUpdate" method="get">
+                        <input type="hidden" name="idx" value="<%=row.Bno%>" />
+                        <button type="submit" class="btn btn-dark" id="updateBtn">수정</button>
+                    </form>
+                    <form action="/sellBoard/sellDelete" method="post" onsubmit="return onDeleteSubmit()">
+                        <input type="hidden" name="idx" value="<%=row.Bno%>" />
+                        <button type="submit" class="btn btn-dark" id="deleteBtn">삭제</button>
+                    </form>
+                </div>
             </div>
         </div>
     </div>
 
     <!-- Bootstrap JS -->
     <script src="/vendors/bootstrap/js/bootstrap.bundle.min.js"></script>
+
+    <script>
+        function onDeleteSubmit() {
+            return confirm("정말 삭제하시겠습니까?"); //삭제 확인
+        }
+    </script>
 </body>
 
 </html>

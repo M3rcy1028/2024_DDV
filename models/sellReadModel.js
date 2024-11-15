@@ -9,9 +9,17 @@ var connection = mysql.createConnection({
 
 module.exports = {
     getData(Bno, callback) {
-        connection.query('SELECT Nickname, Bno, Bid, Title, Content, Img, Trade, Updated, Hit, Category, Price FROM usr, board WHERE Bno=? and usr.uid = board.bid;', Bno, (err, row, fileds) => {
+        var updateSql = 'UPDATE board SET Hit = Hit + 1 WHERE Bno = ?';
+        var selectSql = 'SELECT Nickname, Bno, Bid, Title, Content, Img, Trade, TradePlace, Updated, Hit, Category, Price FROM usr, board WHERE Bno=? and usr.uid = board.bid;'
+
+        //조회 수 증가
+        connection.query(updateSql, Bno, (err, result) => {
             if (err) throw err;
-            callback(row);
-        });
+            //게시글 조회
+            connection.query(selectSql, Bno, (err, row, fileds) => {
+                if (err) throw err;
+                callback(row);
+            })
+        })
     }
 }
