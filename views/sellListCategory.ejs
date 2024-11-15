@@ -126,7 +126,8 @@
                         var oneItem=rows[num]; %>
                         <div class="col">
                             <a href="/sellBoard/sellRead/<%=oneItem.Bno%>">
-                                <img src="<%= oneItem.Img %>" class="img-fluid border rounded mb-3" alt="판매 상품 이미지">
+                                <img src="<%= oneItem.Img %>" style="width: 240px; height: 280px; object-fit: cover;"
+                                    class="border rounded mb-3" alt="판매 상품 이미지">
                             </a>
                             <b name="title" id="title">
                                 <a href="/sellBoard/sellRead/<%=oneItem.Bno%>">

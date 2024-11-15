@@ -5,6 +5,20 @@ var listController = require('../controllers/sellListController.js');
 var readController = require('../controllers/sellReadController.js');
 var writeController = require('../controllers/sellWriteController.js');
 
+const multer = require('multer');
+const path = require("path");
+
+var storage = multer.diskStorage({
+    destination: function (req, file, cb) {
+        cb(null, "public/images/product");
+    },
+    filename: function (req, file, cb) {
+        cb(null, file.originalname);
+    },
+});
+
+var upload = multer({ storage: storage });
+
 //글쓰기 전체 조회 화면
 router.get('/sellList', listController.getListFirst);
 
@@ -21,7 +35,7 @@ router.get('/sellRead/:Bno', readController.readData);
 router.get('/sellWrite', writeController.writeForm);
 
 //글쓰기 화면 (POST)
-router.post('/sellWrite', writeController.writeData);
+router.post('/sellWrite', upload.single("image"), writeController.writeData);
 
 //글쓰기 수정 화면
 router.get('/sellUpdate', function (req, res, next) {
