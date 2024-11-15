@@ -1,7 +1,9 @@
 var express = require('express');
 var router = express.Router();
+
 var listController = require('../controllers/sellListController.js');
 var readController = require('../controllers/sellReadController.js');
+var writeController = require('../controllers/sellWriteController.js');
 
 //글쓰기 전체 조회 화면
 router.get('/sellList', listController.getListFirst);
@@ -15,10 +17,11 @@ router.get('/sellList/category/:categoryNum', listController.getCategoryList);
 //글쓰기 조회 화면
 router.get('/sellRead/:Bno', readController.readData);
 
-//글쓰기 화면
-router.get('/sellWrite', function (req, res, next) {
-    res.render('sellWrite', { title: '판매 글쓰기' });
-})
+//글쓰기 화면 (GET)
+router.get('/sellWrite', writeController.writeForm);
+
+//글쓰기 화면 (POST)
+router.post('/sellWrite', writeController.writeData);
 
 //글쓰기 수정 화면
 router.get('/sellUpdate', function (req, res, next) {
