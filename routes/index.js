@@ -1,9 +1,23 @@
 var express = require('express');
 var router = express.Router();
+var mysql = require('mysql');
+var connection = mysql.createConnection({
+  connectionLimit: 5,
+  host: 'localhost',
+  user: 'root',
+  password: '1234',
+  database: 'tutorial'
+});
 
 //시작 화면
 router.get('/', function (req, res, next) {
-  res.render('index', { title: '중고장터' });
+  var sql = 'SELECT Bno, Img, Title, Price FROM board ORDER BY Bno DESC LIMIT 8 OFFSET 0'; //최신 게시글 8개
+
+  connection.query(sql, (err, rows) => {
+    if (err) throw err;
+    console.log(rows);
+    res.render('index', { title: '중고장터', rows: rows });
+  });
 });
 
 //회원가입 화면
