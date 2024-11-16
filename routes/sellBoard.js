@@ -28,7 +28,10 @@ router.get('/sellList', listController.getListFirst);
 router.get('/sellList/:page', listController.getList);
 
 //카테고리별 조회
-router.get('/sellList/category/:categoryNum', listController.getCategoryList);
+router.get('/sellList/category/:categoryNum', listController.getCategoryListFirst);
+
+//카테고리별 조회 (idx 페이지)
+router.get('/sellList/category/:categoryNum/:page', listController.getCategoryList);
 
 //글쓰기 조회 화면
 router.get('/sellRead/:Bno', readController.readData);
