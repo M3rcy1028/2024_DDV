@@ -115,7 +115,9 @@
                     <b>
                         <%= row.Title %>
                     </b>
-                    <span class="badge text-bg-dark"><%- row.Trade %></span>
+                    <span class="badge text-bg-dark">
+                        <%= row.Trade %>
+                    </span>
                 </h2>
                 <h2 class="mb-3" name="price" id="price">
                     <%= row.Price %>원
@@ -124,7 +126,7 @@
                     게시일 <%= row.Updated %> | 조회수 <%= row.Hit %>
                 </span>
                 <p class="mb-3" name="content" id="content">
-                    <%= row.Content %>
+                    <%- row.Content %>
                 </p>
                 <span>
                     <b>거래장소</b>

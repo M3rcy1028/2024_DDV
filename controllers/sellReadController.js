@@ -18,6 +18,12 @@ module.exports = {
             const newUpdate = year + '.' + month + '.' + date; //년도.월.날짜 형태로 표기
             row[0].Updated = newUpdate;
 
+            //개행 문자를 <br> 태그로 변경
+            var newContent = row[0].Content;
+            newContent = newContent.replaceAll("\r\n", '<br>');
+            console.log(newContent);
+            row[0].Content = newContent;
+
             res.render('sellRead', { title: "글 조회", row: row[0] });
         });
     }

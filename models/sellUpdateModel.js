@@ -15,7 +15,7 @@ exports.getData = (Bno, callback) => {
 }
 
 exports.updateData = (datas, callback) => {
-    var sql = "UPDATE board SET title=?, content=?, image=? category=? price=? WHERE Bno=?";
+    var sql = "UPDATE board SET Title=?, Content=?, Img=?, Category=?, Price=? WHERE Bno=?";
     connection.query(sql, datas, function (err, result) {
         if (err) console.error("글 수정 중 에러 발생 err : " + err);
         callback(result);

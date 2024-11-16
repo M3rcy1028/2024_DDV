@@ -11,7 +11,7 @@ var connection = mysql.createConnection({
 
 //시작 화면
 router.get('/', function (req, res, next) {
-  var sql = 'SELECT Bno, Img, Title, Price FROM board ORDER BY Bno DESC LIMIT 8 OFFSET 0'; //최신 게시글 8개
+  var sql = 'SELECT Bno, Img, Title, Price, Trade FROM board ORDER BY Bno DESC LIMIT 8 OFFSET 0'; //최신 게시글 8개
 
   connection.query(sql, (err, rows) => {
     if (err) throw err;
