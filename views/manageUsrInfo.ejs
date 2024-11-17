@@ -1,0 +1,238 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <link rel='stylesheet' href='/stylesheets/style.css' />
+    <script src="/javascripts/jquery-3.7.1.min.js"></script>
+
+    <!-- Bootstrap CSS -->
+    <link rel='stylesheet' href='/vendors/bootstrap/css/bootstrap.min.css' />
+    <link rel='stylesheet' href='/vendors/bootstrap/css/bootstrap-grid.min.css' />
+    <link rel='stylesheet' href='/vendors/bootstrap/css/bootstrap-reboot.min.css' />
+
+    <!-- Bootstrap Icon -->
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
+
+    <title>
+        <%= title %>
+    </title>
+
+    <style>
+        h2 {
+            margin-bottom: 20px;
+        }
+
+        .read-box {
+            width: 900px;
+            padding: 20px;
+            border-radius: 5px;
+            box-shadow: 0.5px 0.5px 2px 1px #eee;
+        }
+
+        .board-content span {
+            margin-bottom: 10px;
+        }
+
+        .sub-info span {
+            color: gray;
+        }
+
+        .board-content p {
+            height: 100%;
+        }
+
+        .btn-container {
+            display: flex;
+            gap: 10px; /* 버튼 간격 */
+        }
+        .profile-image {
+            width: 150px;
+            height: 150px;
+            border-radius: 50%;
+            object-fit: cover;
+            box-shadow: 0 0 5px rgba(0, 0, 0, 0.3);
+        }
+        /* 테이블 디자인 */
+        table.type09, table.type09 th, table.type09 td {
+            text-align: center;
+        }
+        table.type09 {
+            border-collapse: collapse;
+            text-align: left;
+            line-height: 1.5;
+        }
+        table.type09 thead th {
+            padding: 10px;
+            font-weight: bold;
+            vertical-align: top;
+            vertical-align: middle;
+            color: #369;
+            border-bottom: 3px solid #036;
+        }
+        table.type09 tbody th {
+            width: 200px;
+            padding: 10px;
+            font-weight: bold;
+            vertical-align: top;
+            vertical-align: middle;
+            border-bottom: 1px solid #ccc;
+            background: #f3f6f7;
+        }
+        table.type09 td {
+            width: 350px;
+            padding: 10px;
+            vertical-align: top;
+            vertical-align: middle;
+            border-bottom: 1px solid #ccc;
+        }
+        table.type09 td input[type="text"] {
+            width: 80%;
+            box-sizing: border-box; /* 패딩과 테두리를 포함하여 열의 전체 너비 사용 */
+        }
+        table.type09 td input[type="number"] {
+            width: 80%;
+            box-sizing: border-box; 
+        }
+        table.type09 td input[type="file"] {
+            width: 80%;
+            box-sizing: border-box; 
+        }
+    </style>
+</head>
+
+<body>
+    <a href="/" id="home" class="me-auto p-2">
+        <img src="/images/design/weblogo.jpg" alt="로고" style="height: 50px;">
+      </a>
+    <br>
+    <br>
+    <h1><%= title %></h1>
+    <h2>회원번호 <<%= row.Uno %>></h2>
+    
+    <div style="display: flex; gap: 10px;">
+    <!-- 뒤로 가기 및 삭제하기 버튼 -->
+    <form action="/roots/manageUsrDelete" method="post">
+        <input type="hidden" name="Uno" value="<%= row.Uno %>" />
+        <div class="btn-container">
+            <button class="btn btn-outline-dark" type="button" onclick="location.href='/roots/manageUsrList' ">뒤로가기</button>
+            <button class="btn btn-outline-danger" type="submit">회원 삭제하기</button>
+        </div>
+    </form>
+    <!-- 수정하기 및 유저 정보 테이블 -->
+    <form action="/roots/manageUsrUpdate" method="post" enctype="multipart/form-data">
+        <input type="hidden" name="Uno" value="<%= row.Uno %>" />
+        <input type="hidden" name="ProfileImg" value="<%= row.ProfileImg %>" />
+        <div class="btn-container">
+            <button class="btn btn-outline-warning" type="submit">회원 수정하기</button>
+        </div>
+        <br>
+        <!-- 유저 정보 테이블 -->
+        <div class="read-box">
+            <table class="type09">
+                <!-- colnumn header -->
+                <thead>
+                    <tr>
+                        <th scope="cols">변수명</th>
+                        <th scope="cols">...</th>
+                        <th scope="cols">...</th>
+                    </tr>
+                </thead>
+                <tr>
+                    <th scope="row">프로필 사진</th>
+                    <td><img src="<%= row.ProfileImg %>" alt="Profile Image" class="profile-image" /></td>
+                    <td><input type="file" name="image"/></td>
+                </tr>
+                <tr>
+                    <th scope="row">성 / 이름</th>
+                    <td><input type="text" name="lname" id="lname" value="<%= row.Lname || '' %>" required/></td>
+                    <td><input type="text" name="fname" id="fname" value="<%= row.Fname || '' %>" required/></td>
+                </tr>
+                <tr>
+                    <th scope="row">아이디 / 비밀번호</th>
+                    <td><input type="text" name="pid" id="pid" value="<%= row.Pid || '' %>" required/></td>
+                    <td><input type="text" name="passwd" id="passwd" value="<%= row.Pwd || '' %>" required/></td>
+                </tr>
+                <tr>
+                    <th scope="row">닉네임 / 성별</th>
+                    <td><input type="text" name="nickname" id="nickname" value="<%= row.Nickname || '' %>" required/></td>
+                    <td><select name="sex" id="sex" style="width: 80%;" required>
+                        <option value="Male" <%= row.Sex === 'Male' ? 'selected' : '' %>>Male</option>
+                        <option value="Female" <%= row.Sex === 'Female' ? 'selected' : '' %>>Female</option>
+                    </select></td>
+                </tr>
+                <tr>
+                    <th scope="row">생일 / 이메일</th>
+                    <td><input type="date" style="width: 80%;" name="bdate" id="bdate" 
+                        value="<%= row.Bdate ? new Date(row.Bdate).toLocaleDateString('en-CA') : '' %>" 
+                        required/></td>
+                    <td><input type="email" style="width: 80%;" name="email" id="email" value="<%= row.Email || '' %>" required/></td>
+                </tr>
+                <tr>
+                    <th scope="row">포인트 / 신뢰도</th>
+                    <td><input type="number" name="money" id="money" value="<%= row.Money || '' %>" required/></td>
+                    <td><input type="number" name="trust" id="trust" value="<%= row.Trust || '' %>" required/></td>
+                </tr>
+                <tr>
+                    <th scope="row">소개문구</th>
+                    <td colspan="2"><input type="text" style="width: 90%;" name="state" id="state" value="<%= row.State || '' %>" required/></span></td>
+                </tr>
+                <tr>
+                    <th scope="row">가입일</th>
+                    <td colspan="2"><span class="date" data-date="<%= row.Login %>"></span></td>
+                </tr>
+            </table>
+        </div>
+    </form>
+    </div>
+    <script>
+        // 프로필 파일이 선택되었을 때, label 텍스트 업데이트
+        function updateLabel() {
+            const fileInput = document.getElementById('image');
+            const label = document.getElementById('image-label');
+
+            if (fileInput.files.length > 0) {
+                label.textContent = fileInput.files[0].name; // 파일명이 표시됨
+            } else {
+                label.textContent = '새로운 프로필 사진 업로드'; // 기본 텍스트
+            }
+        }
+
+        function formatDate(dateString) {
+            const date = new Date(dateString);
+    
+            const year = date.getFullYear();
+            const month = String(date.getMonth() + 1).padStart(2, '0'); // 월은 0부터 시작하므로 1을 더함
+            const day = String(date.getDate()).padStart(2, '0');
+            const hours = String(date.getHours()).padStart(2, '0');
+            const minutes = String(date.getMinutes()).padStart(2, '0');
+            const seconds = String(date.getSeconds()).padStart(2, '0');
+            
+            return `${year}-${month}-${day} ${hours}:${minutes}:${seconds}`;
+        }
+    
+        // 페이지 로드 후 날짜 포맷팅
+        document.addEventListener("DOMContentLoaded", function() {
+            const dateElements = document.querySelectorAll('.date');
+            dateElements.forEach(el => {
+                const dateValue = el.getAttribute('data-date');
+                el.textContent = formatDate(dateValue);
+            });
+        });
+        // 프로필 이미지 띄우기
+        document.querySelector('form').addEventListener('submit', function(e) {
+            const fileInput = document.querySelector('input[name="image"]');
+            const profileImgInput = document.createElement('input');
+            profileImgInput.type = 'hidden';
+            profileImgInput.name = 'ProfileImg';
+
+            // 파일이 선택되지 않았다면 기본 이미지 경로를 전송
+            if (!fileInput.files.length) {
+                profileImgInput.value = '<%= row.ProfileImg || "/images/profile/basic_profile.jpg" %>';
+            }
+
+            // 폼에 기본 이미지 경로를 추가
+            this.appendChild(profileImgInput);
+        });
+    </script>
+</body>
+</html>

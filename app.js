@@ -1,12 +1,14 @@
 var createError = require('http-errors');
 var express = require('express');
 var path = require('path');
+var multer = require('multer');
 var cookieParser = require('cookie-parser');
 var logger = require('morgan');
 
 var indexRouter = require('./routes/index');
 var usersRouter = require('./routes/users');
 var vendorRouter = require('./routes/vendor');
+var rootsRouter = require('./routes/roots');
 var sellBoardRouter = require('./routes/sellBoard');
 
 var app = express();
@@ -23,6 +25,7 @@ app.use(express.static(path.join(__dirname, 'public')));
 
 app.use('/', indexRouter);
 app.use('/users', usersRouter);
+app.use('/roots', rootsRouter); // root 추가
 app.use('/vendors', vendorRouter);
 app.use('/sellBoard', sellBoardRouter);
 
