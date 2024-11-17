@@ -108,74 +108,82 @@
     <br>
     <h1><%= title %></h1>
     <h2>회원번호 <<%= row.Uno %>></h2>
-    <div style="display: flex; gap: 20px;">
-        <form action="/roots/manageUsrUpdate" method="post" enctype="multipart/form-data">
-            <input type="hidden" name="Uno" value="<%= row.Uno %>" />
-            
-            <div class="btn-container">
-                <button class="btn btn-outline-dark" type="button" onclick="location.href='/roots/manageUsrList' ">뒤로가기</button>
-                <button class="btn btn-outline-warning" type="submit">회원 수정하기</button>
-                <button class="btn btn-outline-danger" type="button" onclick="location.href='/roots/manageUsrDelete' ">회원 삭제하기</button>
-            </div>
-            <br>
-            <!-- Form Fields -->
-            <div class="read-box">
-                <table class="type09">
-                    <thead>
-                        <tr>
-                          <th scope="cols">변수명</th>
-                          <th scope="cols">...</th>
-                          <th scope="cols">...</th>
-                        </tr>
-                    </thead>
+    
+    <div style="display: flex; gap: 10px;">
+    <!-- 뒤로 가기 및 삭제하기 버튼 -->
+    <form action="/roots/manageUsrDelete" method="post">
+        <input type="hidden" name="Uno" value="<%= row.Uno %>" />
+        <div class="btn-container">
+            <button class="btn btn-outline-dark" type="button" onclick="location.href='/roots/manageUsrList' ">뒤로가기</button>
+            <button class="btn btn-outline-danger" type="submit">회원 삭제하기</button>
+        </div>
+    </form>
+    <!-- 수정하기 및 유저 정보 테이블 -->
+    <form action="/roots/manageUsrUpdate" method="post" enctype="multipart/form-data">
+        <input type="hidden" name="Uno" value="<%= row.Uno %>" />
+        <input type="hidden" name="ProfileImg" value="<%= row.ProfileImg %>" />
+        <div class="btn-container">
+            <button class="btn btn-outline-warning" type="submit">회원 수정하기</button>
+        </div>
+        <br>
+        <!-- 유저 정보 테이블 -->
+        <div class="read-box">
+            <table class="type09">
+                <!-- colnumn header -->
+                <thead>
                     <tr>
-                        <th scope="row">프로필 사진</th>
-                        <td><img src="<%= row.ProfileImg %>" alt="Profile Image" class="profile-image" /></td>
-                        <td><input type="file" name="image"/></td>
+                        <th scope="cols">변수명</th>
+                        <th scope="cols">...</th>
+                        <th scope="cols">...</th>
                     </tr>
-                    <tr>
-                        <th scope="row">성 / 이름</th>
-                        <td><input type="text" name="lname" id="lname" value="<%= row.Lname || '' %>" required/></td>
-                        <td><input type="text" name="fname" id="fname" value="<%= row.Fname || '' %>" required/></td>
-                    </tr>
-                    <tr>
-                        <th scope="row">아이디 / 비밀번호</th>
-                        <td><input type="text" name="pid" id="pid" value="<%= row.Pid || '' %>" required/></td>
-                        <td><input type="text" name="passwd" id="passwd" value="<%= row.Pwd || '' %>" required/></td>
-                    </tr>
-                    <tr>
-                        <th scope="row">닉네임 / 성별</th>
-                        <td><input type="text" name="nickname" id="nickname" value="<%= row.Nickname || '' %>" required/></td>
-                        <td><select name="sex" id="sex" style="width: 80%;" required>
-                            <option value="Male" <%= row.Sex === 'Male' ? 'selected' : '' %>>Male</option>
-                            <option value="Female" <%= row.Sex === 'Female' ? 'selected' : '' %>>Female</option>
-                        </select></td>
-                    </tr>
-                    <tr>
-                        <th scope="row">생일 / 이메일</th>
-                        <td><input type="date" style="width: 80%;" name="bdate" id="bdate" 
-                            value="<%= row.Bdate ? new Date(row.Bdate).toLocaleDateString('en-CA') : '' %>" 
-                            required/></td>
-                        <td><input type="email" style="width: 80%;" name="email" id="email" value="<%= row.Email || '' %>" required/></td>
-                    </tr>
-                    <tr>
-                        <th scope="row">포인트 / 신뢰도</th>
-                        <td><input type="number" name="money" id="money" value="<%= row.Money || '' %>" required/></td>
-                        <td><input type="number" name="trust" id="trust" value="<%= row.Trust || '' %>" required/></td>
-                    </tr>
-                    <tr>
-                        <th scope="row">소개문구</th>
-                        <td colspan="2"><input type="text" style="width: 90%;" name="state" id="state" value="<%= row.State || '' %>" required/></span></td>
-                    </tr>
-                    <tr>
-                        <th scope="row">가입일</th>
-                        <td colspan="2"><span class="date" data-date="<%= row.Login %>"></span></td>
-                    </tr>
-                </table>
-            </div>
-        </form>
+                </thead>
+                <tr>
+                    <th scope="row">프로필 사진</th>
+                    <td><img src="<%= row.ProfileImg %>" alt="Profile Image" class="profile-image" /></td>
+                    <td><input type="file" name="image"/></td>
+                </tr>
+                <tr>
+                    <th scope="row">성 / 이름</th>
+                    <td><input type="text" name="lname" id="lname" value="<%= row.Lname || '' %>" required/></td>
+                    <td><input type="text" name="fname" id="fname" value="<%= row.Fname || '' %>" required/></td>
+                </tr>
+                <tr>
+                    <th scope="row">아이디 / 비밀번호</th>
+                    <td><input type="text" name="pid" id="pid" value="<%= row.Pid || '' %>" required/></td>
+                    <td><input type="text" name="passwd" id="passwd" value="<%= row.Pwd || '' %>" required/></td>
+                </tr>
+                <tr>
+                    <th scope="row">닉네임 / 성별</th>
+                    <td><input type="text" name="nickname" id="nickname" value="<%= row.Nickname || '' %>" required/></td>
+                    <td><select name="sex" id="sex" style="width: 80%;" required>
+                        <option value="Male" <%= row.Sex === 'Male' ? 'selected' : '' %>>Male</option>
+                        <option value="Female" <%= row.Sex === 'Female' ? 'selected' : '' %>>Female</option>
+                    </select></td>
+                </tr>
+                <tr>
+                    <th scope="row">생일 / 이메일</th>
+                    <td><input type="date" style="width: 80%;" name="bdate" id="bdate" 
+                        value="<%= row.Bdate ? new Date(row.Bdate).toLocaleDateString('en-CA') : '' %>" 
+                        required/></td>
+                    <td><input type="email" style="width: 80%;" name="email" id="email" value="<%= row.Email || '' %>" required/></td>
+                </tr>
+                <tr>
+                    <th scope="row">포인트 / 신뢰도</th>
+                    <td><input type="number" name="money" id="money" value="<%= row.Money || '' %>" required/></td>
+                    <td><input type="number" name="trust" id="trust" value="<%= row.Trust || '' %>" required/></td>
+                </tr>
+                <tr>
+                    <th scope="row">소개문구</th>
+                    <td colspan="2"><input type="text" style="width: 90%;" name="state" id="state" value="<%= row.State || '' %>" required/></span></td>
+                </tr>
+                <tr>
+                    <th scope="row">가입일</th>
+                    <td colspan="2"><span class="date" data-date="<%= row.Login %>"></span></td>
+                </tr>
+            </table>
+        </div>
+    </form>
     </div>
-
     <script>
         // 프로필 파일이 선택되었을 때, label 텍스트 업데이트
         function updateLabel() {

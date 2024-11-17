@@ -327,14 +327,15 @@ router.post('/manageUsrUpdate', function (req, res, next) { // 회원 정보 수
       return res.status(500).send("파일 업로드 오류 발생");
     }
     // 업로드된 파일 정보 출력
-    console.log("req.file:", req.file);
-    console.log("profile:", req.body.ProfileImg);
+    console.log("req.file:"+ req.file);
+    console.log("profile:"+ req.body.ProfileImg);
     // 파일 경로 결정
     var image = req.body.ProfileImg || '/images/profile/basic_profile.jpg';
     if (req.file) {
       image = `/images/profile/${req.file.filename}`;  // 새로 업로드된 파일 경로
     }
-
+    console.log('저장될 이미지', image);
+    console.log('업로드된 이미지', req.body.ProfileImg);
     // 받아온 데이터를 쿼리할 데이터 배열로 구성
     var datas = [
       req.body.lname, // 성
@@ -368,20 +369,17 @@ router.post('/manageUsrUpdate', function (req, res, next) { // 회원 정보 수
   });
 });
 
-router.post('/manageUsrDelete', function (req, res, next) { // 삭제수행
+router.post('/manageUsrDelete', function (req, res, next) { // 회원 삭제수행
   var datas = [
     req.body.Uno
   ]
-  // 해당 게시물 삭제 쿼리
-  var sql1 = "DELETE FROM A USING ROOTBOARD A JOIN ROOT B ON Rnum=Rid WHERE Rid=? AND Rpwd=? AND Bid=?";
+  var sql1 = "DELETE FROM PERSON USING PERSON JOIN USR ON Pid=Uid WHERE Uno=?";
   connection.query(sql1, datas, function(err, results) {
     if (err) {
       console.error("err: " + err);
       return res.status(500).send("데이터베이스 오류 발생");
-    }
-    if (results.affectedRows == 0) {
-      res.send("<script>alert('비밀번호가 틀렸습니다.');history.back();</script>");
-    }
+    } 
+    res.redirect('/roots/manageUsrList');
   });
 });
 

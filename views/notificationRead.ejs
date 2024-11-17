@@ -74,7 +74,7 @@
             </tr>
         </table>
     </div>
-
+    <!-- 수정 폼 -->
     <form action="/roots/notificationUpdate" method="get">
         <input type="hidden" name="Bid" value="<%= row.Bid %>" />
         <% if (rootLogin && UpdateEnable) { %>
@@ -83,7 +83,6 @@
             </div>
         <% } %>
     </form>
-
     <!-- 삭제 폼 -->
     <form action="/roots/notificationDelete" method="post" onsubmit="return confirm('정말 삭제하시겠습니까?');">
         <input type="hidden" name="Bid" value="<%= row.Bid %>" />
