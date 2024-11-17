@@ -1,0 +1,187 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <link rel='stylesheet' href='/stylesheets/style.css' />
+        <script src="/javascripts/jquery-3.7.1.min.js"></script>
+
+        <!-- Bootstrap CSS -->
+        <link rel='stylesheet' href='/vendors/bootstrap/css/bootstrap.min.css' />
+        <link rel='stylesheet' href='/vendors/bootstrap/css/bootstrap-grid.min.css' />
+        <link rel='stylesheet' href='/vendors/bootstrap/css/bootstrap-reboot.min.css' />
+
+        <title>
+            <%= title %>
+        </title>
+
+        <style>
+            .adver_carousel {
+                width: 1000px;
+                height: 300px;
+                overflow: hidden;
+                margin-top: 30px;
+            }
+
+            .adver_carousel .carousel-inner {
+                height: 100%;
+                object-fit: cover;
+            }
+
+            .search-box {
+                display: flex;
+                margin-left: 10px;
+            }
+
+            .search-box input {
+                width: 400px;
+            }
+
+            .search-btn {
+                margin-left: 10px;
+                margin-right: 10px;
+            }
+
+            .posts {
+                margin-top: 20px;
+                margin-bottom: 20px;
+            }
+
+            /* 테이블 스타일 추가 */
+            .table1 {
+                width: 100%;
+                border-collapse: collapse;
+                box-shadow: 0 0 10px rgba(0, 0, 0, 0.15);
+                border-radius: 10px;
+                overflow: hidden;
+                border: 1px solid black;
+            }
+
+            .table1 th, .table1 td {
+                padding: 10px;
+                text-align: left;
+            }
+
+            .table1 thead {
+                background-color: #75c7eb;
+                
+            }
+
+            .button-container {
+                display: flex;
+                justify-content: flex-end; /* 오른쪽 정렬 */
+                margin-bottom: 20px; /* 아래쪽 여백 추가 */
+            }
+            /* 페이지네이션 스타일 */
+            .pagination {
+                display: flex;
+                justify-content: center;
+                margin-top: 20px;
+            }
+            .pagination a {
+                margin: 0 5px;
+                padding: 5px 10px;
+                text-decoration: none;
+                border: 1px solid #ddd;
+                border-radius: 5px;
+            }
+            .pagination .active {
+                background-color: #0dcaf0;
+                color: white;
+            }
+            .pagination a:hover {
+                background-color: #ddd;
+            }
+        </style>
+    </head>
+    <body>
+        <a href="/" id="home" class="me-auto p-2">
+            <img src="/images/design/weblogo.jpg" alt="로고" style="height: 50px;">
+          </a>
+        <h2 class="d-flex justify-content-center">
+            <%= title %>
+        </h2>
+        <br>
+        <nav class="button-container">
+            <% if (rootLogin) { %> <!--관리자 로그인 됨-->
+                <button class="btn btn-outline-dark" onclick="location.href='/roots/notificationWrite'">공지사항 작성하기</button>
+            <% } %>
+        </nav>
+        <table class="table1">
+            <!--정렬 버튼-->
+            <div class="button-container">
+                <form action="" method="get">
+                    <input type="hidden" name="page" value="<%= currentPage %>">
+                    <!-- No 기준 정렬 버튼 -->
+                    <button type="submit" name="sort" value="<%= sort === 'ASC' ? 'DESC' : 'ASC' %>" class="btn btn-outline-secondary">
+                        <%= sort === 'ASC' ? '게시글 번호 내림차순' : '게시글 번호 오름차순' %>
+                    </button>
+                </form>
+            </div>
+            <!--테이블 표시-->
+            <thead>
+                <tr>
+                    <th>No</th>
+                    <th>작성자</th>
+                    <th>제목</th>
+                    <th>날짜</th>
+                    <th>조회수</th>
+                </tr>
+            </thead>
+            <tbody>
+            <% for (var i=0; i < rows.length; i++) { 
+                        var oneItem = rows[i]; 
+            %>
+            <tr onclick="window.location.href='/roots/notificationRead/<%= oneItem.Bid %>'" style="cursor: pointer;">
+                    <td><%= oneItem.Bid %></td>
+                    <td><%= oneItem.Rname %></td>
+                    <td><%= oneItem.Title %></td>
+                    <td><span class="date" data-date="<%= oneItem.Updated %>"></span></td>
+                    <td><%= oneItem.Hit %></td>
+                </tr>
+            <% } %>
+            </tbody>
+        </table>
+        <!-- 페이지네이션 -->
+        <div class="pagination">
+            <% if (currentPage > 1) { %>
+                <a href="?page=<%= currentPage - 1 %>&sort=<%= sort %>&order=<%= order %>" class="btn btn-info">이전</a>
+            <% } %>
+
+            <% for (var i = 1; i <= totalPages; i++) { %>
+                <a href="?page=<%= i %>&sort=<%= sort %>&order=<%= order %>" class="btn btn-outline-info <%= i === currentPage ? 'active' : '' %>"><%= i %></a>
+            <% } %>
+
+            <% if (currentPage < totalPages) { %>
+                <a href="?page=<%= currentPage + 1 %>&sort=<%= sort %>&order=<%= order %>" class="btn btn-info">다음</a>
+            <% } %>
+        </div>
+        <script>
+            function formatDate(dateString) {
+                const date = new Date(dateString);
+                const now = new Date();
+                const diffInSeconds = Math.floor((now - date) / 1000); // 초 단위 차이
+    
+                if (diffInSeconds < 60) {
+                    return `${diffInSeconds}초 전`;
+                } else if (diffInSeconds < 3600) { // 1시간 미만
+                    const minutes = Math.floor(diffInSeconds / 60);
+                    return `${minutes}분 전`;
+                } else if (diffInSeconds < 86400) { // 24시간 미만
+                    const hours = Math.floor(diffInSeconds / 3600);
+                    return `${hours}시간 전`;
+                } else if (diffInSeconds < 31536000) { // 1년 미만
+                    return `${date.getMonth() + 1}월 ${date.getDate()}일`;
+                } else { // 1년 이상
+                    return `${date.getFullYear()}년 ${date.getMonth() + 1}월 ${date.getDate()}일`;
+                }
+            }
+            // 페이지 로드 후 날짜 포맷팅
+            document.addEventListener("DOMContentLoaded", function() {
+                const dateElements = document.querySelectorAll('.date');
+                dateElements.forEach(el => {
+                    const dateValue = el.getAttribute('data-date');
+                    el.textContent = formatDate(dateValue);
+                });
+            });
+        </script>
+    </body>
+</html>

@@ -1,0 +1,57 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <link rel='stylesheet' href='/stylesheets/style.css' />
+    <script src="/javascripts/jquery-3.7.1.min.js"></script>
+
+    <!-- Bootstrap CSS -->
+    <link rel='stylesheet' href='/vendors/bootstrap/css/bootstrap.min.css' />
+    <link rel='stylesheet' href='/vendors/bootstrap/css/bootstrap-grid.min.css' />
+    <link rel='stylesheet' href='/vendors/bootstrap/css/bootstrap-reboot.min.css' />
+
+    <title>
+        <%= title %>
+    </title>
+
+    <style>
+        h2 {
+            margin-bottom: 20px;
+        }
+    </style>
+</head>
+
+<body>
+    <a href="/" id="home">로고</a>
+
+    <h2 class="d-flex justify-content-center">
+        <%= title %>
+    </h2>
+
+    <div class="d-flex justify-content-center">
+        <div class="card me-2" style="width: 15rem;">
+            <img src="/images/product/tomato.jpg" class="card-img-top" alt="...">
+            <div class="card-body">
+                <p class="title">토마토 팔아요</p>
+                <p class="title">1,000원</p>
+            </div>
+        </div>
+        <div class="card me-2" style="width: 15rem;">
+            <img src="/images/product/phone.jpg" class="card-img-top" alt="...">
+            <div class="card-body">
+                <p class="title">중고폰 팔아요</p>
+                <p class="title">50,000원</p>
+            </div>
+        </div>
+        <div class="card" style="width: 15rem;">
+            <img src="/images/product/slipper.jpg" class="card-img-top" alt="...">
+            <div class="card-body">
+                <p class="title">슬리퍼 팔아요</p>
+                <p class="title">3,000원</p>
+            </div>
+        </div>
+    </div>
+
+</body>
+
+</html>

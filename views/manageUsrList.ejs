@@ -1,0 +1,217 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <link rel='stylesheet' href='/stylesheets/style.css' />
+        <script src="/javascripts/jquery-3.7.1.min.js"></script>
+
+        <!-- Bootstrap CSS -->
+        <link rel='stylesheet' href='/vendors/bootstrap/css/bootstrap.min.css' />
+        <link rel='stylesheet' href='/vendors/bootstrap/css/bootstrap-grid.min.css' />
+        <link rel='stylesheet' href='/vendors/bootstrap/css/bootstrap-reboot.min.css' />
+
+        <title>
+            <%= title %>
+        </title>
+
+        <style>
+            .adver_carousel {
+                width: 1000px;
+                height: 300px;
+                overflow: hidden;
+                margin-top: 30px;
+            }
+
+            .adver_carousel .carousel-inner {
+                height: 100%;
+                object-fit: cover;
+            }
+
+            .search-box {
+                display: flex;
+                margin-left: 10px;
+            }
+
+            .search-box input {
+                width: 400px;
+            }
+
+            .search-btn {
+                margin-left: 10px;
+                margin-right: 10px;
+            }
+
+            .posts {
+                margin-top: 20px;
+                margin-bottom: 20px;
+            }
+
+            /* 테이블 스타일 추가 */
+            .table1 {
+                width: 100%;
+                border-collapse: collapse;
+                box-shadow: 0 0 10px rgba(0, 0, 0, 0.15);
+                border-radius: 10px;
+                overflow: hidden;
+                border: 1px solid black;
+            }
+
+            .table1 th, .table1 td {
+                padding: 10px;
+                text-align: center;
+            }
+
+            .table1 thead {
+                background-color: #f4f6f7;
+                border-bottom: 3px solid #036;
+            }
+
+            .button-container {
+                display: flex;
+                justify-content: flex-end; /* 오른쪽 정렬 */
+                margin-bottom: 20px; /* 아래쪽 여백 추가 */
+            }
+            /* 페이지네이션 스타일 */
+            .pagination {
+                display: flex;
+                justify-content: center;
+                margin-top: 20px;
+            }
+            .pagination a {
+                margin: 0 5px;
+                padding: 5px 10px;
+                text-decoration: none;
+                border: 1px solid #ddd;
+                border-radius: 5px;
+            }
+            .pagination .active {
+                background-color: #75c7eb;
+                color: white;
+            }
+            .pagination a:hover {
+                background-color: #ddd;
+            }
+        </style>
+    </head>
+    <body>
+        <a href="/" id="home" class="me-auto p-2">
+            <img src="/images/design/weblogo.jpg" alt="로고" style="height: 50px;">
+          </a>
+        <h2 class="d-flex justify-content-center">
+            <%= title %>
+        </h2>
+        <br>
+        <table class="table1" border="1">
+            <thead>
+                <tr>
+                    <th>
+                        <a href="?page=<%= currentPage %>&sort=<%= sort === 'ASC' ? 'DESC' : 'ASC' %>&order=Uno">No <%= sort === 'ASC' ? '↑' : '↓' %></a>
+                    </th>
+                    <th>이름</th>
+                    <th>
+                        <a href="?page=<%= currentPage %>&sort=<%= sort === 'ASC' ? 'DESC' : 'ASC' %>&order=Sex">성별 <%= sort === 'ASC' ? '↑' : '↓' %></a>
+                    </th>
+                    <th>아이디</th>
+                    <th>닉네임</th>
+                    <th>
+                        <a href="?page=<%= currentPage %>&sort=<%= sort === 'ASC' ? 'DESC' : 'ASC' %>&order=Money">잔고 <%= sort === 'ASC' ? '↑' : '↓' %></a>
+                    </th>
+                    <th>
+                        <a href="?page=<%= currentPage %>&sort=<%= sort === 'ASC' ? 'DESC' : 'ASC' %>&order=Trust">신뢰도 <%= sort === 'ASC' ? '↑' : '↓' %></a>
+                    </th>
+                    <th>
+                        <a href="?page=<%= currentPage %>&sort=<%= sort === 'ASC' ? 'DESC' : 'ASC' %>&order=Bcnt">게시글 수 <%= sort === 'ASC' ? '↑' : '↓' %></a>
+                    </th>
+                    <th>
+                        <a href="?page=<%= currentPage %>&sort=<%= sort === 'ASC' ? 'DESC' : 'ASC' %>&order=Bdate">생일 <%= sort === 'ASC' ? '↑' : '↓' %></a>
+                    </th>
+                    <th>가입날짜</th>
+                    <th>이메일</th>
+                </tr>
+            </thead>
+            <tbody>
+<% 
+                    for (var i=0; i < rows.length; i++) { 
+                        var oneItem = rows[i]; 
+%>
+                    <tr onclick="window.location.href='/roots/manageUsrInfo/<%= oneItem.Uno %>'" style="cursor: pointer;">
+                        <td><%= oneItem.Uno %></td>
+                        <td><%= oneItem.Name %></td>
+                        <td class="gender" data-gender="<%= oneItem.Sex %>"></td>
+                        <td><%= oneItem.Pid %></td>
+                        <td><%= oneItem.Nickname %></td>
+                        <td><%= oneItem.Money %></td>
+                        <td><%= oneItem.Trust %></td>
+                        <td><%= oneItem.Bcnt %></td>
+                        <td><span class="date birthday" data-date="<%= oneItem.Bdate %>"></span></td>
+                        <td><span class="date" data-date="<%= oneItem.Login %>"></span></td>
+                        <td><%= oneItem.Email %></td>
+                    </tr>
+<% 
+                } 
+%>
+            </tbody>
+        </table>
+        <!-- 페이지네이션 -->
+        <div class="pagination">
+            <% if (currentPage > 1) { %>
+                <a href="?page=<%= currentPage - 1 %>&sort=<%= sort %>&order=<%= order %>" class="btn btn-info">이전</a>
+            <% } %>
+
+            <% for (var i = 1; i <= totalPages; i++) { %>
+                <a href="?page=<%= i %>&sort=<%= sort %>&order=<%= order %>" class="btn btn-outline-info <%= i === currentPage ? 'active' : '' %>"><%= i %></a>
+            <% } %>
+
+            <% if (currentPage < totalPages) { %>
+                <a href="?page=<%= currentPage + 1 %>&sort=<%= sort %>&order=<%= order %>" class="btn btn-info">다음</a>
+            <% } %>
+        </div>
+        <script>
+            function formatDate(dateString, isBirthday = false) {
+                const date = new Date(dateString);
+                
+                const year = date.getFullYear();
+                const month = String(date.getMonth() + 1).padStart(2, '0'); // 월은 0부터 시작하므로 1을 더함
+                const day = String(date.getDate()).padStart(2, '0');
+                
+                if (isBirthday) {
+                    // 생일인 경우, 시간 없이 날짜만 반환
+                    return `${year}-${month}-${day}`;
+                }
+
+                // 일반 날짜의 경우 시, 분, 초 포함
+                const hours = String(date.getHours()).padStart(2, '0');
+                const minutes = String(date.getMinutes()).padStart(2, '0');
+                const seconds = String(date.getSeconds()).padStart(2, '0');
+                
+                return `${year}-${month}-${day} ${hours}:${minutes}:${seconds}`;
+            }
+            // 성별 포맷팅 함수
+            function formatGender(gender) {
+                if (gender === 'Male') {
+                    return '남';
+                } else if (gender === 'Female') {
+                    return '여';
+                } else {
+                    return gender; // 'Male'과 'Female' 이외의 값은 그대로 반환
+                }
+            }
+            // 페이지 로드 후 날짜 포맷팅
+            document.addEventListener("DOMContentLoaded", function() {
+                const dateElements = document.querySelectorAll('.date');
+                dateElements.forEach(el => {
+                    const dateValue = el.getAttribute('data-date');
+                    // 'birthday' 클래스가 있으면 생일로 처리
+                    const isBirthday = el.classList.contains('birthday');
+                    el.textContent = formatDate(dateValue, isBirthday);
+                });
+
+                // 성별 포맷팅
+                const genderElements = document.querySelectorAll('.gender');
+                genderElements.forEach(el => {
+                    const genderValue = el.getAttribute('data-gender');
+                    el.textContent = formatGender(genderValue);
+                });
+            });
+        </script>
+    </body>
+</html>
