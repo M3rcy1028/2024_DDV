@@ -14,6 +14,7 @@ var rootid = "";
 var usrLogin = false;
 var usrid = "";
 
+
 //시작 화면
 router.get('/', function (req, res, next) {
   res.render('index', { title: '중고장터', rootLogin, usrLogin });
@@ -147,6 +148,10 @@ router.get('/myPage', function (req, res, next) {
 //메세지 화면
 router.get('/message', function (req, res, next) {
   res.render('message', { title: '메세지', rootLogin, usrLogin });
+})
+
+router.get('/test', function (req, res, next) {
+  res.render('test', { title: '테스트' });
 })
 
 module.exports = router;

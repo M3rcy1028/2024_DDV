@@ -44,6 +44,77 @@
             font-size: 150px;
         }
     </style>
+    <script src="/socket.io/socket.io.js"></script>
+    <script>
+        const socket = io({
+            auth: {
+                cnum: 1,
+                serverOffset: 0
+            }
+        });
+
+        const userID = "M3rcy"
+
+        function sendMessage() {
+            var input = document.getElementById('input');
+            if (input.value) {
+                socket.emit('chat_message', {
+                    message: input.value,
+                    cnum: 1,
+                    sender: "user1", // 쿠키에서 보내는 사람
+                });
+                input.value = '';
+            }
+        }
+
+        function load_chat_log(btn) {
+            console.log("load chatroom", btn.id)
+            socket.emit('load_chatlog', (btn.id))
+        }
+
+        socket.on('chat_message', (chat) => {
+            const item = document.createElement('li');
+            item.textContent = `${chat.Sender}:${chat.Message}`;
+            messages.appendChild(item);
+            window.scrollTo(0, document.body.scrollHeight);
+        });
+
+        socket.on('load_chatlog', (chats) => {
+            messages.innerHTML = "";
+            chats.forEach((chat) => {
+                const item = document.createElement('li');
+                item.textContent = `${chat.Sender}:${chat.Message}`;
+                messages.appendChild(item);
+                window.scrollTo(0, document.body.scrollHeight);
+            })
+        })
+
+        socket.on('load_chatrooms', (chatrooms) => {
+            const div = document.getElementById('chat-list')
+            const chatList = [];
+
+            console.log(chatrooms)
+
+            chatrooms.forEach(chatroom => {
+                if (chatroom.Sid === userID) {
+                    var id = chatroom.Rid;
+                }
+                else {
+                    var id = chatroom.Sid;
+                }
+
+                chatList.push(`<button onclick='load_chat_log(this)' id='${chatroom.Cno}' class="chat-select list-group-item list-group-item-action">
+                    <div class="d-flex w-100 justify-content-between">
+                        <h5 class="mb-2">${id}</h5>
+                        <small class="text-body-secondary">3시간 전</small>
+                    </div>
+                    <p class="mb-1">티니핑 팔렸나요?</p>
+                </button>`)
+            });
+            div.innerHTML = chatList.join('')
+
+        })
+    </script>
 </head>
 
 <body>
@@ -55,34 +126,18 @@
 
     <div class="d-flex justify-content-center align-items-center">
         <div class="list-box me-3">
-            <div class="list-group">
-                <a href="#" class="chat-select list-group-item list-group-item-action">
-                    <div class="d-flex w-100 justify-content-between">
-                        <h5 class="mb-2">감자도리</h5>
-                        <small class="text-body-secondary">3시간 전</small>
-                    </div>
-                    <p class="mb-1">티니핑 팔렸나요?</p>
-                </a>
-                <a href="#" class="chat-select list-group-item list-group-item-action">
-                    <div class="d-flex w-100 justify-content-between">
-                        <h5 class="mb-2">산체스</h5>
-                        <small class="text-body-secondary">1일 전</small>
-                    </div>
-                    <p class="mb-1">물건 잘 받았어요~</p>
-                </a>
-                <a href="#" class="chat-select list-group-item list-group-item-action">
-                    <div class="d-flex w-100 justify-content-between">
-                        <h5 class="mb-2">유비빔</h5>
-                        <small class="text-body-secondary">6일 전</small>
-                    </div>
-                    <p class="mb-1">비빔 비빔 비비빔</p>
-                </a>
+            <div id="chat-list" class="list-group">
+
             </div>
         </div>
 
         <div class="chat-box d-flex flex-column justify-content-center align-items-center">
-            <i class="bi bi-chat-dots icon"></i>
-            <span>채팅을 선택하세요.</span>
+            <!-- <i class="bi bi-chat-dots icon"></i>
+            <span>채팅을 선택하세요.</span> -->
+            <ul id="messages"></ul>
+            <div id="form">
+                <input id="input" autocomplete="off" /><button onclick="sendMessage()">전송</button>
+            </div>
         </div>
     </div>
 </body>
