@@ -1,4 +1,4 @@
-var deleteModel = require('../models/sellDeleteModel');
+var deleteModel = require('../../models/SellModel/sellDeleteModel');
 var express = require('express');
 
 exports.deleteData = (req, res) => {

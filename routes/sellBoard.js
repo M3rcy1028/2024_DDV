@@ -1,11 +1,11 @@
 var express = require('express');
 var router = express.Router();
 
-var listController = require('../controllers/sellListController.js');
-var readController = require('../controllers/sellReadController.js');
-var writeController = require('../controllers/sellWriteController.js');
-var updateController = require('../controllers/sellUpdateController.js');
-var deleteController = require('../controllers/sellDeleteController.js');
+var listController = require('../controllers/SellController/sellListController.js');
+var readController = require('../controllers/SellController/sellReadController.js');
+var writeController = require('../controllers/SellController/sellWriteController.js');
+var updateController = require('../controllers/SellController/sellUpdateController.js');
+var deleteController = require('../controllers/SellController/sellDeleteController.js');
 
 const multer = require('multer');
 const path = require("path");

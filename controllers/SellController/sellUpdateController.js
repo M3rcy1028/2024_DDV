@@ -1,4 +1,4 @@
-var updateModel = require('../models/sellUpdateModel');
+var updateModel = require('../../models/SellModel/sellUpdateModel');
 var express = require('express');
 var url = require('url');
 
@@ -15,7 +15,7 @@ exports.updateForm = (req, res, next) => {
 
         console.log('update에서 1개 글 조회 결과 확인 : ', row);
 
-        res.render('sellUpdate', { title: '상품 수정', row: row[0] });
+        res.render('SellFunction/sellUpdate', { title: '상품 수정', row: row[0] });
     })
 }
 

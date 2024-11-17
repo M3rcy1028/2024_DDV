@@ -1,8 +1,8 @@
-var writeModel = require('../models/sellWriteModel');
+var writeModel = require('../../models/SellModel/sellWriteModel');
 var express = require('express');
 
 exports.writeForm = (req, res) => {
-    res.render('sellWrite', { title: "상품 등록" });
+    res.render('SellFunction/sellWrite', { title: "상품 등록" });
 }
 
 exports.writeData = (req, res) => {

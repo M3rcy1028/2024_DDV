@@ -1,4 +1,4 @@
-var readModel = require('../models/sellReadModel');
+var readModel = require('../../models/SellModel/sellReadModel');
 var express = require('express');
 
 module.exports = {
@@ -24,7 +24,7 @@ module.exports = {
             console.log(newContent);
             row[0].Content = newContent;
 
-            res.render('sellRead', { title: "글 조회", row: row[0] });
+            res.render('SellFunction/sellRead', { title: "글 조회", row: row[0] });
         });
     }
 }

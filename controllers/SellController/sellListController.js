@@ -1,4 +1,4 @@
-var listModel = require('../models/sellListModel');
+var listModel = require('../../models/SellModel/sellListModel');
 var express = require('express');
 
 exports.getList = (req, res, next) => {
@@ -7,7 +7,7 @@ exports.getList = (req, res, next) => {
 
     listModel.getList(page, itemNums, (rows) => {
         console.log('rows: ' + JSON.stringify(rows));
-        res.render('sellList', { title: "전체 보기", rows: rows });
+        res.render('SellFunction/sellList', { title: "전체 보기", rows: rows });
     })
 }
 
@@ -25,7 +25,7 @@ exports.getCategoryList = (req, res, next) => {
 
     listModel.getCategoryList(page, itemNums, categoryName, (rows) => {
         console.log('rows: ' + JSON.stringify(rows));
-        res.render('sellListCategory', { title: "카테고리별 보기", rows: rows, categoryName: categoryName });
+        res.render('SellFunction/sellListCategory', { title: "카테고리별 보기", rows: rows, categoryName: categoryName });
     })
 }
 
