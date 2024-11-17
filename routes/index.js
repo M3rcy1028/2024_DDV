@@ -2,11 +2,11 @@ var express = require('express');
 var router = express.Router();
 var mysql = require('mysql');
 var connection = mysql.createConnection({
-    connectionLimit: 5,
-    host: 'localhost',
-    user: 'root',
-    password: '1234',
-    database: 'tutorial'
+  connectionLimit: 5,
+  host: 'localhost',
+  user: 'root',
+  password: '1234',
+  database: 'tutorial'
 });
 
 var rootLogin = false;
@@ -14,10 +14,15 @@ var rootid = "";
 var usrLogin = false;
 var usrid = "";
 
-
 //시작 화면
 router.get('/', function (req, res, next) {
-  res.render('index', { title: '중고장터', rootLogin, usrLogin });
+  var sql = 'SELECT Bno, Img, Title, Price, Trade FROM board ORDER BY Bno DESC LIMIT 8 OFFSET 0'; //최신 게시글 8개
+
+  connection.query(sql, (err, rows) => {
+    if (err) throw err;
+    console.log(rows);
+    res.render('index', { title: '중고장터', rows: rows });
+  });
 });
 
 //회원가입 화면
@@ -42,7 +47,7 @@ router.post('/joinForm', function (req, res, next) { // 회원가입 정보 받�
   ];
 
   var sql1 = "INSERT INTO PERSON(Pid, Lname, Fname, Bdate, Sex, Email) VALUES(?,?,?,?,?,?);";
-  connection.query(sql1, Pdatas, function(err, rows) {
+  connection.query(sql1, Pdatas, function (err, rows) {
     if (err) {
       console.error("err: " + err);
       return res.status(500).send("데이터베이스 오류 발생");
@@ -50,7 +55,7 @@ router.post('/joinForm', function (req, res, next) { // 회원가입 정보 받�
     console.log("rows: " + JSON.stringify(rows));
   });
   var sql2 = "INSERT INTO USR(Uid, Pwd, Nickname) VALUES(?,?,?);";
-  connection.query(sql2, Udatas, function(err, rows) {
+  connection.query(sql2, Udatas, function (err, rows) {
     if (err) {
       console.error("err: " + err);
       return res.status(500).send("데이터베이스 오류 발생");
@@ -70,17 +75,16 @@ router.post('/login', function (req, res, next) { // 유저 로그인 입력
     req.body.id,
     req.body.passwd,
   ];
-  
+
   var sql = "SELECT * FROM USR WHERE Uid=? AND Pwd=?;";
-  connection.query(sql, Udatas, function(err, results, fields) {
+  connection.query(sql, Udatas, function (err, results, fields) {
     if (err) throw err;
     if (results.length > 0) { // db 반환값이 존재할 때
       usrLogin = true;
       usrid = req.body.id;
       res.redirect('/'); // 회원가입 후 리다이렉트
     }
-    else
-    {
+    else {
       console.error("err: " + err);
       return res.status(500).send("등록되지 않은 유저입니다.");
     }
@@ -97,9 +101,9 @@ router.post('/rootLogin', function (req, res, next) { // 관리자 로그인 입
     req.body.id,
     req.body.passwd,
   ];
-  
+
   var sql = "SELECT * FROM ROOT WHERE Rid=? AND Rpwd=?;";
-  connection.query(sql, Rdatas, function(err, results, fields) {
+  connection.query(sql, Rdatas, function (err, results, fields) {
     if (err) throw err;
     if (results.length > 0) { // db 반환값이 존재할 때
       rootLogin = true;
@@ -109,8 +113,7 @@ router.post('/rootLogin', function (req, res, next) { // 관리자 로그인 입
       console.log("관리자 아이디 : " + rootid);
       res.redirect('/'); // 회원가입 후 리다이렉트
     }
-    else
-    {
+    else {
       console.error("err: " + err);
       return res.status(500).send("등록되지 않은 관리자입니다.");
     }
