@@ -1,6 +1,7 @@
 var express = require('express');
 var router = express.Router();
 
+
 //시작 화면
 router.get('/', function (req, res, next) {
   res.render('index', { title: '중고장터' });
@@ -29,6 +30,10 @@ router.get('/myPage', function (req, res, next) {
 //메세지 화면
 router.get('/message', function (req, res, next) {
   res.render('message', { title: '메세지' });
+})
+
+router.get('/test', function (req, res, next) {
+  res.render('test', { title: '테스트' });
 })
 
 module.exports = router;
