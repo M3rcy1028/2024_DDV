@@ -53,17 +53,31 @@
 <body>
     <div class="header d-flex justify-content-end">
         <a href="/notification" class="p-2">공지사항</a>
-        <a href="/joinForm" class="p-2">회원가입</a>
-        <a href="/login" class="p-2">로그인</a>
+        <% if (!rootLogin && !usrLogin) { %> <!--로그인 안 됨-->
+            <a href="/joinForm" class="p-2">회원가입</a>
+            <a href="/login" class="p-2">로그인</a>
+        <% } %>
+        <% if (rootLogin || usrLogin) { %> <!--로그인 됨-->
+            <a href="/logout" class="p-2">로그아웃</a>
+        <% } %>
     </div>
 
     <div class="d-flex mb-3">
         <a href="/" id="home" class="me-auto p-2">로고</a>
+        <% if (usrLogin) { %> <!--유저 로그인 됨-->
         <div class="header d-flex justify-content-end">
             <a href="/sellBoard/sellWrite" class="p-2">판매하기</a>
             <a href="/myPage" class="p-2">마이페이지</a>
             <a href="/message" class="p-2">메세지</a>
         </div>
+        <% } %>
+        <% if (rootLogin) { %> <!--관리자 로그인 됨-->
+        <nav class="header d-flex justify-content-end">
+            <a href="/roots/manageUsrList" class="p-2">회원관리</a>
+            <a href="/roots/myPage" class="p-2">게시판관리</a>
+            <a href="/roots/message" class="p-2">사이트분석</a>
+        </nav>
+        <% } %>
     </div>
 
     <hr> <!-- 구분선 -->
@@ -110,7 +124,7 @@
             </span>
         </div>
         <div class="d-flex flex-column board-right">
-            <div class="d-flex flex-column board-content">
+            <div class="d-flex flex-column board-content mb-3">
                 <h2 class="mb-3" name="title" id="title">
                     <b>
                         <%= row.Title %>
@@ -139,16 +153,20 @@
                     <button type="button" class="btn btn-outline-dark"><i class="bi bi-heart me-2"></i>찜하기</button>
                 </div>
                 <!-- 글 작성자에게만 보이는 버튼-->
+                <% if (usrLogin && UpdateEnable) { %>
                 <div class="d-flex">
+                    <!-- 수정 버튼 -->
                     <form class="me-2" action="/sellBoard/sellUpdate" method="get">
                         <input type="hidden" name="idx" value="<%=row.Bno%>" />
                         <button type="submit" class="btn btn-dark" id="updateBtn">수정</button>
                     </form>
+                    <!-- 삭제 버튼 -->
                     <form action="/sellBoard/sellDelete" method="post" onsubmit="return onDeleteSubmit()">
                         <input type="hidden" name="idx" value="<%=row.Bno%>" />
                         <button type="submit" class="btn btn-dark" id="deleteBtn">삭제</button>
                     </form>
                 </div>
+                <% } %>
             </div>
         </div>
     </div>

@@ -3,28 +3,32 @@ var router = express.Router();
 var url = require('url');
 var path = require('path');
 const multer = require('multer');
-var mysql = require('mysql');
-var connection = mysql.createConnection({
-    connectionLimit: 5,
-    host: 'localhost',
-    user: 'root',
-    password: '1234',
-    database: 'tutorial'
+var mysql = require('mysql2');
+
+require('dotenv').config();
+
+const connection = mysql.createPool({
+  host: process.env.DB_HOST,
+  user: process.env.DB_USER,
+  password: process.env.DB_PASSWORD,
+  database: process.env.DB_NAME,
+  waitForConnections: true,
+  connectionLimit: 10,
 });
 
 var UpdateEnable = false;
 
 //공지사항 리스트 화면
 router.get('/notificationList', function (req, res, next) {
-  var { rootLogin } = require('./index'); 
+  var { rootLogin } = require('./index');
   console.log("rootLogin:", rootLogin);
   // 페이지 번호를 쿼리에서 가져오기 (기본값은 1)
   const page = parseInt(req.query.page) || 1;
   const limit = 10; // 한 페이지당 10개
   const offset = (page - 1) * limit; // OFFSET 계산
   // 정렬 방향 설정 (기본값은 내림차순)
-  const sort = req.query.sort || 'DESC'; 
-  const order = req.query.order || 'Bid'; 
+  const sort = req.query.sort || 'DESC';
+  const order = req.query.order || 'Bid';
   // 전체 공지사항을 계산하는 쿼리 (페이지네이션을 위한 totalUserCount)
   var sql1 = "SELECT COUNT(*) AS total FROM ROOTBOARD;";
   // 게시글 데이터 가져오기
@@ -32,7 +36,7 @@ router.get('/notificationList', function (req, res, next) {
               FROM ROOTBOARD, ROOT WHERE Rid=Rnum 
               ORDER BY ${order} ${sort}
               LIMIT ? OFFSET ?;`;
-  connection.query(sql1, (err, countResult)=>{
+  connection.query(sql1, (err, countResult) => {
     if (err) {
       console.error("err: " + err);
       return res.status(500).send("데이터베이스 오류");
@@ -54,8 +58,8 @@ router.get('/notificationList', function (req, res, next) {
         rootLogin,
         currentPage: page,
         totalPages: totalPages,
-        sort: sort, 
-        order: order 
+        sort: sort,
+        order: order
       });
     });
   });
@@ -66,7 +70,7 @@ router.get('/notificationRead/:Bid', function (req, res, next) {
   // 조회수 증가
   var idx = req.params.Bid;
   var sql1 = "UPDATE ROOTBOARD SET Hit=Hit+1 WHERE Bid=?";
-  connection.query(sql1, [idx], (err, rows, fields)=>{
+  connection.query(sql1, [idx], (err, rows, fields) => {
     if (err) {
       console.error("err: " + err);
       return res.status(500).send("데이터베이스 오류");
@@ -77,35 +81,33 @@ router.get('/notificationRead/:Bid', function (req, res, next) {
     }
   });
   // 게시물 수정 권한
-  var { rootid } = require('./index'); 
+  var { rootid } = require('./index');
   var { rootLogin } = require('./index');
   var sql3 = "SELECT * FROM ROOT, ROOTBOARD WHERE Rid=Rnum AND Rid=? AND Bid=?;";
-  connection.query(sql3, [rootid, idx], (err, results, fields)=>{
+  connection.query(sql3, [rootid, idx], (err, results, fields) => {
     if (err) {
       console.error("err: " + err);
       return res.status(500).send("데이터베이스 오류");
     }
     // 자신이 작성한 게시글만 수정가능
-    if (results.length > 0)
-    {
+    if (results.length > 0) {
       UpdateEnable = true;
     }
-    else
-    {
+    else {
       UpdateEnable = false;
     }
   });
   console.error("UpdateEnable: " + UpdateEnable);
   // 게시물 정보 가져오기
   var sql2 = "SELECT Bid, Rname, Title, Content, Updated, Hit FROM ROOTBOARD, ROOT WHERE Rid=Rnum AND Bid=?";
-  connection.query(sql2, [idx], (err, rows, fields)=>{
+  connection.query(sql2, [idx], (err, rows, fields) => {
     if (err) {
       console.error("err: " + err);
       return res.status(500).send("데이터베이스 오류");
     }
-    console.log('rows: '+JSON.stringify(rows));
+    console.log('rows: ' + JSON.stringify(rows));
     // 정보보내기
-    res.render('notificationRead', { title: rows[0].Title, row: rows[0], UpdateEnable, rootLogin});
+    res.render('notificationRead', { title: rows[0].Title, row: rows[0], UpdateEnable, rootLogin });
   });
 })
 
@@ -118,31 +120,31 @@ router.post('/notificationDelete', function (req, res, next) { // 삭제수행
   ]
   // 해당 게시물 삭제 쿼리
   var sql1 = "DELETE FROM A USING ROOTBOARD A JOIN ROOT B ON Rnum=Rid WHERE Rid=? AND Rpwd=? AND Bid=?";
-  connection.query(sql1, datas, function(err, results) {
+  connection.query(sql1, datas, function (err, results) {
     if (err) {
       console.error("err: " + err);
       return res.status(500).send("데이터베이스 오류 발생");
     }
     if (results.affectedRows == 0) {
       res.send("<script>alert('비밀번호가 틀렸습니다.');history.back();</script>");
-    } 
+    }
     else { // 삭제 성공 -> Bid 재정렬
       var sql2 = "ALTER TABLE ROOTBOARD AUTO_INCREMENT=1;";
-      connection.query(sql2, function(err, results) {
+      connection.query(sql2, function (err, results) {
         if (err) {
           console.error("err: " + err);
           return res.status(500).send("데이터베이스 오류");
         }
       });
       var sql3 = "SET @COUNT = 0;";
-      connection.query(sql3, function(err, results) {
+      connection.query(sql3, function (err, results) {
         if (err) {
           console.error("err: " + err);
           return res.status(500).send("데이터베이스 오류");
         }
       });
       var sql4 = "UPDATE ROOTBOARD SET Bid = @COUNT:=@COUNT+1;";
-      connection.query(sql4, function(err, results) {
+      connection.query(sql4, function (err, results) {
         if (err) {
           console.error("err: " + err);
           return res.status(500).send("데이터베이스 오류");
@@ -156,13 +158,13 @@ router.post('/notificationDelete', function (req, res, next) { // 삭제수행
 
 // 공지사항 글쓰기 화면
 router.get('/notificationWrite', function (req, res, next) {
-  var { rootid } = require('./index'); 
+  var { rootid } = require('./index');
   console.log("관리자 아이디 : " + rootid);
   res.render('notificationWrite', { title: '공지사항 작성하기', rootid });
 })
 
 router.post('/notificationWrite', function (req, res, next) { // 공지사항 글쓰기
-  var { rootid } = require('./index'); 
+  var { rootid } = require('./index');
   console.log("관리자 아이디 : " + rootid);
   console.log(req.body);
   var datas = [
@@ -170,16 +172,16 @@ router.post('/notificationWrite', function (req, res, next) { // 공지사항 �
     req.body.title,
     req.body.content
   ];
-  
+
   var sql = "INSERT INTO ROOTBOARD(Rnum, Title, Content) VALUES(?,?,?);";
-  connection.query(sql, datas, function(err, rows) {
+  connection.query(sql, datas, function (err, rows) {
     if (err) {
       console.error("err: " + err);
       return res.status(500).send("데이터베이스 오류 발생");
     }
     console.log("rows: " + JSON.stringify(rows));
   });
-  res.redirect('/roots/notificationList'); 
+  res.redirect('/roots/notificationList');
 });
 
 // 공지사항 글수정 화면
@@ -190,7 +192,7 @@ router.get('/notificationUpdate', function (req, res, next) {
   console.log("게시판 아이디 : " + idx);
   // 게시물 정보 가져오기
   var sql = "SELECT * FROM ROOTBOARD WHERE Rnum=? AND Bid=?";
-  connection.query(sql, [rootid, idx], (err, rows, fields)=>{
+  connection.query(sql, [rootid, idx], (err, rows, fields) => {
     if (err) {
       console.error("err: " + err);
       return res.status(500).send("데이터베이스 오류");
@@ -199,14 +201,14 @@ router.get('/notificationUpdate', function (req, res, next) {
       console.error("해당 게시물을 찾을 수 없습니다.");
       return res.status(404).send("해당 게시물을 찾을 수 없습니다.");
     }
-    console.log('rows: '+JSON.stringify(rows));
+    console.log('rows: ' + JSON.stringify(rows));
     // 정보보내기
     res.render('notificationUpdate', { title: '공지사항 수정하기', row: rows[0] });
   });
 })
 
 router.post('/notificationUpdate', function (req, res, next) { // 공지사항 글수정
-  var { rootid } = require('./index'); 
+  var { rootid } = require('./index');
   console.log("관리자 아이디 : " + rootid);
   console.log(req.body);
   var title = String(req.body.title);
@@ -219,34 +221,33 @@ router.post('/notificationUpdate', function (req, res, next) { // 공지사항 �
     req.body.Bid,
     passwd
   ];
-  
+
   var sql = "UPDATE ROOTBOARD, ROOT SET Title=?, Content=? WHERE Rnum=Rid AND Rid=? AND Bid=? AND Rpwd=?";
-  connection.query(sql, datas, function(err, results) {
+  connection.query(sql, datas, function (err, results) {
     if (err) {
       console.error("err: " + err);
       return res.status(500).send("데이터베이스 오류 발생");
     }
-    if (results.affectedRows == 0){
+    if (results.affectedRows == 0) {
       res.send("<script>alert('패스워드가 일치하지 않거나, 잘못된 요청으로 인해 변경되지 않았습니다.');history.back();</script>");
     }
-    else
-    { // 수정 성공
-      res.redirect('/roots/notificationRead/'+req.body.Bid); 
+    else { // 수정 성공
+      res.redirect('/roots/notificationRead/' + req.body.Bid);
     }
   });
 });
 
 // 회원 리스트 가져오기
 router.get('/manageUsrList', function (req, res, next) {
-  var { rootLogin } = require('./index'); 
+  var { rootLogin } = require('./index');
   console.log("rootLogin:", rootLogin);
   // 페이지 번호를 쿼리에서 가져오기 (기본값은 1)
   const page = parseInt(req.query.page) || 1;
   const limit = 10; // 한 페이지당 10명
   const offset = (page - 1) * limit; // OFFSET 계산
   // 정렬 방향 설정 (기본값은 내림차순)
-  const sort = req.query.sort || 'DESC'; 
-  const order = req.query.order || 'Uno'; 
+  const sort = req.query.sort || 'DESC';
+  const order = req.query.order || 'Uno';
   // 전체 유저 수를 계산하는 쿼리 (페이지네이션을 위한 totalUserCount)
   var sql1 = "SELECT COUNT(*) AS total FROM PERSON, USR WHERE Pid=Uid";
   // 회원 데이터 가져오기
@@ -255,7 +256,7 @@ router.get('/manageUsrList', function (req, res, next) {
             FROM PERSON, USR WHERE Pid=Uid 
             ORDER BY ${order} ${sort}
             LIMIT ? OFFSET ?;`;
-  connection.query(sql1, (err, countResult)=>{
+  connection.query(sql1, (err, countResult) => {
     if (err) {
       console.error("err: " + err);
       return res.status(500).send("데이터베이스 오류");
@@ -277,8 +278,8 @@ router.get('/manageUsrList', function (req, res, next) {
         rootLogin,
         currentPage: page,
         totalPages: totalPages,
-        sort: sort, 
-        order: order 
+        sort: sort,
+        order: order
       });
     });
   });
@@ -286,10 +287,10 @@ router.get('/manageUsrList', function (req, res, next) {
 
 // 특정 회원 관리 화면 
 router.get('/manageUsrInfo/:Uno', function (req, res, next) {
-  console.log('회원 번호 : '+req.params.Uno);
+  console.log('회원 번호 : ' + req.params.Uno);
   // 회원 정보 가져오기
   var sql = `SELECT * FROM PERSON, USR WHERE Pid=Uid AND Uno=?;`;
-  connection.query(sql, [req.params.Uno], (err, rows, fields)=>{
+  connection.query(sql, [req.params.Uno], (err, rows, fields) => {
     if (err) {
       console.error("err: " + err);
       return res.status(500).send("데이터베이스 오류");
@@ -298,7 +299,7 @@ router.get('/manageUsrInfo/:Uno', function (req, res, next) {
       console.error("해당 게시물을 찾을 수 없습니다.");
       return res.status(404).send("해당 회원을 찾을 수 없습니다.");
     }
-    console.log('rows: '+JSON.stringify(rows));
+    console.log('rows: ' + JSON.stringify(rows));
     // 정보보내기
     res.render('manageUsrInfo', { title: '회원 정보 관리', row: rows[0] });
   });
@@ -306,29 +307,29 @@ router.get('/manageUsrInfo/:Uno', function (req, res, next) {
 
 var storage = multer.diskStorage({  //파일 저장 방식 설정
   destination: function (req, file, cb) {
-      cb(null, "public/images/profile/");
+    cb(null, "public/images/profile/");
   },
   filename: function (req, file, cb) {
-      const ext = path.extname(file.originalname);
-      cb(null, path.basename(file.originalname, ext) + "-" + Date.now() + ext);
+    const ext = path.extname(file.originalname);
+    cb(null, path.basename(file.originalname, ext) + "-" + Date.now() + ext);
   },
 });
 
-var upload = multer({ 
+var upload = multer({
   storage: storage,
   limits: { fileSize: 10 * 1024 * 1024 }  // 파일 크기 제한 (10MB)
 });
 
 router.post('/manageUsrUpdate', function (req, res, next) { // 회원 정보 수정
   // 파일 업로드 미들웨어
-  upload.single("image")(req, res, function(err) {
+  upload.single("image")(req, res, function (err) {
     if (err) {
       console.error("파일 업로드 중 오류 발생: " + err);
       return res.status(500).send("파일 업로드 오류 발생");
     }
     // 업로드된 파일 정보 출력
-    console.log("req.file:"+ req.file);
-    console.log("profile:"+ req.body.ProfileImg);
+    console.log("req.file:" + req.file);
+    console.log("profile:" + req.body.ProfileImg);
     // 파일 경로 결정
     var image = req.body.ProfileImg || '/images/profile/basic_profile.jpg';
     if (req.file) {
@@ -358,7 +359,7 @@ router.post('/manageUsrUpdate', function (req, res, next) { // 회원 정보 수
                 Sex = ?, Bdate = ?, Email = ?, Money = ?, Trust = ?, State = ?, ProfileImg = ?
                 WHERE Pid=Uid AND Uno = ?`;
     // 쿼리 실행
-    connection.query(sql1, datas, function(err, results) {
+    connection.query(sql1, datas, function (err, results) {
       if (err) {
         console.error("쿼리 실행 오류: " + err);
         return res.status(500).send("데이터베이스 오류 발생");
@@ -374,11 +375,11 @@ router.post('/manageUsrDelete', function (req, res, next) { // 회원 삭제수�
     req.body.Uno
   ]
   var sql1 = "DELETE FROM PERSON USING PERSON JOIN USR ON Pid=Uid WHERE Uno=?";
-  connection.query(sql1, datas, function(err, results) {
+  connection.query(sql1, datas, function (err, results) {
     if (err) {
       console.error("err: " + err);
       return res.status(500).send("데이터베이스 오류 발생");
-    } 
+    }
     res.redirect('/roots/manageUsrList');
   });
 });

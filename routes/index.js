@@ -1,12 +1,16 @@
 var express = require('express');
 var router = express.Router();
-var mysql = require('mysql');
-var connection = mysql.createConnection({
-  connectionLimit: 5,
-  host: 'localhost',
-  user: 'root',
-  password: '1234',
-  database: 'tutorial'
+var mysql = require('mysql2');
+
+require('dotenv').config();
+
+const connection = mysql.createPool({
+  host: process.env.DB_HOST,
+  user: process.env.DB_USER,
+  password: process.env.DB_PASSWORD,
+  database: process.env.DB_NAME,
+  waitForConnections: true,
+  connectionLimit: 10,
 });
 
 var rootLogin = false;
@@ -21,7 +25,7 @@ router.get('/', function (req, res, next) {
   connection.query(sql, (err, rows) => {
     if (err) throw err;
     console.log(rows);
-    res.render('index', { title: '중고장터', rows: rows });
+    res.render('index', { title: '중고장터', rows: rows, rootLogin, usrLogin });
   });
 });
 
@@ -82,6 +86,9 @@ router.post('/login', function (req, res, next) { // 유저 로그인 입력
     if (results.length > 0) { // db 반환값이 존재할 때
       usrLogin = true;
       usrid = req.body.id;
+      module.exports.usrid = usrid;
+      module.exports.usrLogin = usrLogin;
+      console.log("이용자 아이디 : " + usrid);
       res.redirect('/'); // 회원가입 후 리다이렉트
     }
     else {
