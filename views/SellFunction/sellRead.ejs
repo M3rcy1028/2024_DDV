@@ -5,6 +5,9 @@
     <link rel='stylesheet' href='/stylesheets/style.css' />
     <script src="/javascripts/jquery-3.7.1.min.js"></script>
 
+    <!-- 상단바 css -->
+    <link rel='stylesheet' href='/stylesheets/nav.css'/>
+
     <!-- Bootstrap CSS -->
     <link rel='stylesheet' href='/vendors/bootstrap/css/bootstrap.min.css' />
     <link rel='stylesheet' href='/vendors/bootstrap/css/bootstrap-grid.min.css' />
@@ -18,24 +21,12 @@
     </title>
 
     <style>
-        .link {
-            text-decoration: none;
-            color: black;
-        }
-
-        .dropdown-menu .dropdown-item:active {
-            background-color: #4D5154;
-            color: white;
-        }
-
         .breadcrumb a {
             text-decoration: none;
             color: black;
         }
-    </style>
-
-    <!-- board 관련 css -->
-    <style>
+        
+        /* board 관련 css */
         .board-left {
             width: 300px;
         }
@@ -51,56 +42,8 @@
 </head>
 
 <body>
-    <div class="header d-flex justify-content-end">
-        <a href="/notification" class="p-2">공지사항</a>
-        <% if (!rootLogin && !usrLogin) { %> <!--로그인 안 됨-->
-            <a href="/joinForm" class="p-2">회원가입</a>
-            <a href="/login" class="p-2">로그인</a>
-        <% } %>
-        <% if (rootLogin || usrLogin) { %> <!--로그인 됨-->
-            <a href="/logout" class="p-2">로그아웃</a>
-        <% } %>
-    </div>
-
-    <div class="d-flex mb-3">
-        <a href="/" id="home" class="me-auto p-2">로고</a>
-        <% if (usrLogin) { %> <!--유저 로그인 됨-->
-        <div class="header d-flex justify-content-end">
-            <a href="/sellBoard/sellWrite" class="p-2">판매하기</a>
-            <a href="/myPage" class="p-2">마이페이지</a>
-            <a href="/message" class="p-2">메세지</a>
-        </div>
-        <% } %>
-        <% if (rootLogin) { %> <!--관리자 로그인 됨-->
-        <nav class="header d-flex justify-content-end">
-            <a href="/roots/manageUsrList" class="p-2">회원관리</a>
-            <a href="/roots/myPage" class="p-2">게시판관리</a>
-            <a href="/roots/message" class="p-2">사이트분석</a>
-        </nav>
-        <% } %>
-    </div>
-
-    <hr> <!-- 구분선 -->
-
-    <div class="menu-bar d-flex">
-        <div class="dropdown me-2">
-            <a class="btn btn-dark dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown"
-                aria-expanded="false">
-                카테고리
-            </a>
-
-            <ul class="dropdown-menu">
-                <% for(var category in categories){ %>
-                    <li><a class="dropdown-item" href="/sellBoard/sellList/category/<%=categories[category]%>">
-                            <%= category %>
-                        </a></li>
-                    <% }%>
-            </ul>
-        </div>
-        <a href="/sellBoard/sellList" , class="link p-2">전체 보기</a>
-    </div>
-
-    <hr> <!-- 구분선 -->
+    <!-- 상단 바 -->
+    <%- include('../nav.ejs') %>
 
     <div class="mb-5">
         <nav style="--bs-breadcrumb-divider: '>';" aria-label="breadcrumb">
