@@ -20,8 +20,8 @@
 
     <!-- 검색 창 -->
     <div class="search-box d-flex align-items-center">
-        <form action="" method="get" class="d-flex w-100 justify-content-between">
-            <input class="search-txt" type="text" placeholder="상품명 입력" />
+        <form action="/sellBoard/search" method="post" class="d-flex w-100 justify-content-between">
+            <input class="search-txt" name="searchword" id="searchword" type="text" placeholder="상품명 입력" />
             <button class="search-btn" type="submit">
                 <i class="bi bi-search"></i>
             </button>

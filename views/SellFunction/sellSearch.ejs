@@ -26,6 +26,7 @@
             color: black;
         }
 
+        /* 왼쪽 카테고리 선택 바*/
         .leftnav {
             width: 200px;
         }
@@ -58,10 +59,7 @@
         <nav style="--bs-breadcrumb-divider: '>';" aria-label="breadcrumb">
             <ol class="breadcrumb">
                 <li class="breadcrumb-item"><a href="/">홈</a></li>
-                <li class="breadcrumb-item"><a href="/sellBoard/sellList">전체보기</a></li>
-                <li class="breadcrumb-item active" aria-current="page"><b>
-                        <%=categoryName%>
-                    </b></li>
+                <li class="breadcrumb-item active" aria-current="page"><b>전체보기</b></li>
             </ol>
         </nav>
     </div>
@@ -81,12 +79,16 @@
 
         <!-- 게시글 나열 -->
         <div class="container text-center">
+            <h5 class="mb-4">
+                <%= title %>
+            </h5>
+            
             <% for (var line=0; line<4; line++){ var oneItem=rows[i]; %>
                 <div class="row row-cols-4">
                     <% for (var i=0; i<4; i++) { var num=line*4 + i; if(num>= rows.length){
                         break;}
                         var oneItem=rows[num]; %>
-                        <div class="col">
+                        <div class="d-flex flex-column col">
                             <a href="/sellBoard/sellRead/<%=oneItem.Bno%>">
                                 <img src="<%= oneItem.Img %>" style="width: 240px; height: 280px; object-fit: cover;"
                                     class="border rounded mb-3" alt="판매 상품 이미지">
@@ -106,6 +108,7 @@
                         <% } %>
                 </div>
                 <% } %>
+            </div>
         </div>
 
         <!-- Bootstrap JS -->
