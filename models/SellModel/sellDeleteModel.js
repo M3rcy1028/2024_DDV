@@ -4,7 +4,7 @@ var connection = mysql.createConnection({
     host: 'localhost',
     user: 'root',
     password: '1234',
-    database: 'tutorial'
+    database: 'ddv'
 });
 
 exports.deleteRow = (datas, callback) => {

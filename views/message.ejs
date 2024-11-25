@@ -46,12 +46,8 @@
     </style>
     <script src="/socket.io/socket.io.js"></script>
     <script>
-        const socket = io({
-            auth: {
-                cnum: 1,
-                serverOffset: 0
-            }
-        });
+        const socket = io();
+        var cnum;
 
         const userID = "M3rcy"
 
@@ -60,7 +56,7 @@
             if (input.value) {
                 socket.emit('chat_message', {
                     message: input.value,
-                    cnum: 1,
+                    cnum: cnum,
                     sender: "user1", // 쿠키에서 보내는 사람
                 });
                 input.value = '';
@@ -70,6 +66,7 @@
         function load_chat_log(btn) {
             console.log("load chatroom", btn.id)
             socket.emit('load_chatlog', (btn.id))
+            cnum = btn.id;
         }
 
         socket.on('chat_message', (chat) => {
