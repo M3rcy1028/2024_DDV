@@ -12,7 +12,7 @@
 
     <!-- Bootstrap Icon -->
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
-
+    <link href="https://maxcdn.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css" rel="stylesheet" />
     <title>
         <%= title %>
     </title>
@@ -22,37 +22,235 @@
             margin-bottom: 20px;
         }
 
-        .list-box {
-            width: 350px;
-            height: 500px;
-            border-radius: 5px;
-            box-shadow: 0.5px 0.5px 2px 1px #eee;
+        body {
+            background-color: #f4f7f6;
+            margin-top: 20px;
+            height: 100%;
         }
 
-        .chat-select {
-            width: 350px;
+        .card {
+            background: #fff;
+            transition: .5s;
+            border: 0;
+            margin-bottom: 30px;
+            border-radius: .55rem;
+            position: relative;
+            width: 100%;
+            box-shadow: 0 1px 2px 0 rgb(0 0 0 / 10%);
         }
 
-        .chat-box {
-            width: 700px;
-            height: 500px;
-            border-radius: 5px;
-            box-shadow: 0.5px 0.5px 2px 1px #eee;
+        .chat-app .people-list {
+            width: 280px;
+            position: absolute;
+            left: 0;
+            top: 0;
+            padding: 20px;
+            z-index: 7
         }
 
-        .chat-box .icon {
-            font-size: 150px;
+        .chat-app .chat {
+            margin-left: 280px;
+            border-left: 1px solid #eaeaea
+        }
+
+        .people-list {
+            -moz-transition: .5s;
+            -o-transition: .5s;
+            -webkit-transition: .5s;
+            transition: .5s;
+            height: 520px;
+            overflow-y: auto;
+        }
+
+        .people-list .chat-list li {
+            padding: 10px 15px;
+            list-style: none;
+            border-radius: 3px
+        }
+
+        .people-list .chat-list li:hover {
+            background: #efefef;
+            cursor: pointer
+        }
+
+        .people-list .chat-list li.active {
+            background: #efefef
+        }
+
+        .people-list .chat-list li .name {
+            font-size: 15px
+        }
+
+        .people-list .chat-list img {
+            width: 45px;
+            border-radius: 50%
+        }
+
+        .people-list img {
+            float: left;
+            border-radius: 50%
+        }
+
+        .people-list .about {
+            float: left;
+            padding-left: 8px
+        }
+
+        .people-list .status {
+            color: #999;
+            font-size: 13px
+        }
+
+        .chat .chat-header {
+            padding: 15px 20px;
+            border-bottom: 2px solid #f4f7f6
+        }
+
+        .chat .chat-header img {
+            float: left;
+            border-radius: 40px;
+            width: 40px
+        }
+
+        .chat .chat-header .chat-about {
+            float: left;
+            padding-left: 10px
+        }
+
+        .chat .chat-history {
+            padding: 20px;
+            border-bottom: 2px solid #fff;
+            height: 520px;
+            overflow-y: auto;
+            -ms-overflow-style: none;
+        }
+
+        .chat .chat-history::-webkit-scrollbar {
+            display: none;
+        }
+
+        .chat .chat-history ul {
+            padding: 0
+        }
+
+        .chat .chat-history ul li {
+            list-style: none;
+            margin-bottom: 30px
+        }
+
+        .chat .chat-history ul li:last-child {
+            margin-bottom: 0px
+        }
+
+        .chat .chat-history .message-data {
+            margin-bottom: 15px
+        }
+
+        .chat .chat-history .message-data img {
+            border-radius: 40px;
+            width: 40px
+        }
+
+        .chat .chat-history .message-data-time {
+            color: #434651;
+            padding-left: 6px
+        }
+
+        .chat .chat-history .message {
+            color: #444;
+            padding: 18px 20px;
+            line-height: 26px;
+            font-size: 16px;
+            border-radius: 7px;
+            display: inline-block;
+            position: relative
+        }
+
+        /* .chat .chat-history .message:after {
+            bottom: 100%;
+            left: 7%;
+            border: solid transparent;
+            content: " ";
+            height: 0;
+            width: 0;
+            position: absolute;
+            pointer-events: none;
+            border-bottom-color: #fff;
+            border-width: 10px;
+            margin-left: -10px
+        } */
+
+        .chat .chat-history .other-message {
+            background: #efefef
+        }
+
+        /* .chat .chat-history .my-message:after {
+            bottom: 100%;
+            left: 30px;
+            border: solid transparent;
+            content: " ";
+            height: 0;
+            width: 0;
+            position: absolute;
+            pointer-events: none;
+            border-bottom-color: #efefef;
+            border-width: 10px;
+            margin-left: -10px
+        } */
+
+        .chat .chat-history .my-message {
+            background: #e8f1f3;
+            text-align: right
+        }
+
+        /* .chat .chat-history .other-message:after {
+            border-bottom-color: #e8f1f3;
+            left: 93%
+        } */
+
+        .chat .chat-message {
+            flex: 1 0 auto;
+            padding: 20px
+        }
+
+        .online,
+        .offline,
+        .me {
+            margin-right: 2px;
+            font-size: 8px;
+            vertical-align: middle
+        }
+
+        .online {
+            color: #86c541
+        }
+
+        .offline {
+            color: #e47297
+        }
+
+        .me {
+            color: #1d8ecd
+        }
+
+        .float-right {
+            float: right
+        }
+
+        .clearfix:after {
+            visibility: hidden;
+            display: block;
+            font-size: 0;
+            content: " ";
+            clear: both;
+            height: 0
         }
     </style>
+
     <script src="/socket.io/socket.io.js"></script>
     <script>
-        const socket = io({
-            auth: {
-                cnum: 1,
-                serverOffset: 0
-            }
-        });
-
+        const socket = io();
+        var cnum;
         const userID = "M3rcy"
 
         function sendMessage() {
@@ -60,7 +258,7 @@
             if (input.value) {
                 socket.emit('chat_message', {
                     message: input.value,
-                    cnum: 1,
+                    cnum: cnum,
                     sender: "user1", // 쿠키에서 보내는 사람
                 });
                 input.value = '';
@@ -70,23 +268,47 @@
         function load_chat_log(btn) {
             console.log("load chatroom", btn.id)
             socket.emit('load_chatlog', (btn.id))
+            cnum = btn.id;
         }
 
         socket.on('chat_message', (chat) => {
             const item = document.createElement('li');
-            item.textContent = `${chat.Sender}:${chat.Message}`;
+            item.classList.add('clearfix');
+
+            const div = document.createElement('div');
+            if (chat.Sender === userID) {
+                div.className = 'message my-message float-right';
+            }
+            else {
+                div.className = 'message other-message';
+            }
+            div.innerHTML = chat.Message
+            item.appendChild(div);
             messages.appendChild(item);
-            window.scrollTo(0, document.body.scrollHeight);
+
+            const scroll = document.querySelector('.chat-history');
+            scroll.scrollTop = scroll.scrollHeight;
         });
 
         socket.on('load_chatlog', (chats) => {
             messages.innerHTML = "";
+            const chatList = [];
             chats.forEach((chat) => {
-                const item = document.createElement('li');
-                item.textContent = `${chat.Sender}:${chat.Message}`;
-                messages.appendChild(item);
-                window.scrollTo(0, document.body.scrollHeight);
+                console.log(chat.Message)
+                if (chat.Sender === userID) {
+                    chatList.push(`<li class="clearfix">
+                                    <div class="message my-message float-right">${chat.Message}</div>
+                                </li>`)
+                }
+                else {
+                    chatList.push(`<li class="clearfix">
+                                    <div class="message other-message">${chat.Message}</div>
+                                </li>`)
+                }
             })
+            messages.innerHTML = chatList.join('');
+            const scroll = document.querySelector('.chat-history');
+            scroll.scrollTop = scroll.scrollHeight;
         })
 
         socket.on('load_chatrooms', (chatrooms) => {
@@ -104,12 +326,16 @@
                 }
 
                 chatList.push(`<button onclick='load_chat_log(this)' id='${chatroom.Cno}' class="chat-select list-group-item list-group-item-action">
-                    <div class="d-flex w-100 justify-content-between">
-                        <h5 class="mb-2">${id}</h5>
-                        <small class="text-body-secondary">3시간 전</small>
-                    </div>
-                    <p class="mb-1">티니핑 팔렸나요?</p>
+                    <li class="clearfix">
+                                <img src="https://bootdey.com/img/Content/avatar/avatar3.png" alt="avatar">
+                                <div class="about">
+                                    <div class="name">${id}</div>
+                                    <div class="status"> <i class="fa fa-circle online"></i> online </div>
+                                </div>
+                            </li>
                 </button>`)
+
+
             });
             div.innerHTML = chatList.join('')
 
@@ -124,22 +350,66 @@
         <%= title %>
     </h2>
 
-    <div class="d-flex justify-content-center align-items-center">
-        <div class="list-box me-3">
-            <div id="chat-list" class="list-group">
+    <div class="container">
+        <div class="row clearfix">
+            <div class="col-lg-12">
+                <div class="card chat-app">
+                    <div id="plist" class="people-list">
+                        <div class="input-group">
+                            <div class="input-group-prepend">
+                                <span class="input-group-text"><i class="fa fa-search"></i></span>
+                            </div>
+                            <input type="text" class="form-control" placeholder="Search...">
+                        </div>
+                        <ul id="chat-list" class="list-unstyled chat-list mt-2 mb-0">
 
-            </div>
-        </div>
+                        </ul>
+                    </div>
+                    <div class="chat">
+                        <div class="chat-header clearfix">
+                            <div class="row">
+                                <div class="col-lg-6">
+                                    <a href="javascript:void(0);" data-toggle="modal" data-target="#view_info">
+                                        <img src="https://bootdey.com/img/Content/avatar/avatar2.png" alt="avatar">
+                                    </a>
+                                    <div class="chat-about">
+                                        <h6 class="m-b-0">Aiden Chavez</h6>
+                                        <small>Last seen: 2 hours ago</small>
+                                    </div>
+                                </div>
+                                <div class="col-lg-6 hidden-sm text-right">
+                                    <a href="javascript:void(0);" class="btn btn-outline-secondary"><i
+                                            class="fa fa-camera"></i></a>
+                                    <a href="javascript:void(0);" class="btn btn-outline-primary"><i
+                                            class="fa fa-image"></i></a>
+                                    <a href="javascript:void(0);" class="btn btn-outline-info"><i
+                                            class="fa fa-cogs"></i></a>
+                                    <a href="javascript:void(0);" class="btn btn-outline-warning"><i
+                                            class="fa fa-question"></i></a>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="chat-history">
+                            <ul id="messages" class="m-b-0">
 
-        <div class="chat-box d-flex flex-column justify-content-center align-items-center">
-            <!-- <i class="bi bi-chat-dots icon"></i>
-            <span>채팅을 선택하세요.</span> -->
-            <ul id="messages"></ul>
-            <div id="form">
-                <input id="input" autocomplete="off" /><button onclick="sendMessage()">전송</button>
+                            </ul>
+                        </div>
+                        <div class="chat-message clearfix">
+                            <div class="input-group mb-0">
+                                <div class="input-group-prepend" style="flex:auto">
+                                    <span class="input-group-text" style="flex:auto"><input id="input"
+                                            class="form-controll" autocomplete="off" style="flex:auto" /><button
+                                            onclick="sendMessage()"><i class="fa fa-send"></i></button></span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
             </div>
         </div>
     </div>
+
+
 </body>
 
 </html>
