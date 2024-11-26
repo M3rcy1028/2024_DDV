@@ -52,7 +52,7 @@ router.get('/notificationList', function (req, res, next) {
       console.log('rows: ' + JSON.stringify(rows));
 
       // 렌더링할 데이터와 페이지네이션 정보를 클라이언트에 전달
-      res.render('notificationList', {
+      res.render('RootFunction/notificationList', {
         title: '공지사항',
         rows: rows,
         rootLogin,
@@ -107,7 +107,7 @@ router.get('/notificationRead/:Bid', function (req, res, next) {
     }
     console.log('rows: ' + JSON.stringify(rows));
     // 정보보내기
-    res.render('notificationRead', { title: rows[0].Title, row: rows[0], UpdateEnable, rootLogin });
+    res.render('RootFunction/notificationRead', { title: rows[0].Title, row: rows[0], UpdateEnable, rootLogin });
   });
 })
 
@@ -118,6 +118,7 @@ router.post('/notificationDelete', function (req, res, next) { // 삭제수행
     req.body.passwd,
     req.body.Bid
   ]
+  console.log('bid : ' + datas)
   // 해당 게시물 삭제 쿼리
   var sql1 = "DELETE FROM A USING ROOTBOARD A JOIN ROOT B ON Rnum=Rid WHERE Rid=? AND Rpwd=? AND Bid=?";
   connection.query(sql1, datas, function (err, results) {
@@ -160,7 +161,7 @@ router.post('/notificationDelete', function (req, res, next) { // 삭제수행
 router.get('/notificationWrite', function (req, res, next) {
   var { rootid } = require('./index');
   console.log("관리자 아이디 : " + rootid);
-  res.render('notificationWrite', { title: '공지사항 작성하기', rootid });
+  res.render('RootFunction/notificationWrite', { title: '공지사항 작성하기', rootid });
 })
 
 router.post('/notificationWrite', function (req, res, next) { // 공지사항 글쓰기
@@ -203,7 +204,7 @@ router.get('/notificationUpdate', function (req, res, next) {
     }
     console.log('rows: ' + JSON.stringify(rows));
     // 정보보내기
-    res.render('notificationUpdate', { title: '공지사항 수정하기', row: rows[0] });
+    res.render('RootFunction/notificationUpdate', { title: '공지사항 수정하기', row: rows[0] });
   });
 })
 
@@ -272,7 +273,7 @@ router.get('/manageUsrList', function (req, res, next) {
       console.log('rows: ' + JSON.stringify(rows));
 
       // 렌더링할 데이터와 페이지네이션 정보를 클라이언트에 전달
-      res.render('manageUsrList', {
+      res.render('RootFunction/manageUsrList', {
         title: '회원관리',
         rows: rows,
         rootLogin,
@@ -301,7 +302,7 @@ router.get('/manageUsrInfo/:Uno', function (req, res, next) {
     }
     console.log('rows: ' + JSON.stringify(rows));
     // 정보보내기
-    res.render('manageUsrInfo', { title: '회원 정보 관리', row: rows[0] });
+    res.render('RootFunction/manageUsrInfo', { title: '회원 정보 관리', row: rows[0] });
   });
 });
 

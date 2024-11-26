@@ -31,7 +31,7 @@ router.get('/', function (req, res, next) {
 
 //회원가입 화면
 router.get('/joinForm', function (req, res, next) {
-  res.render('joinForm', { title: '회원가입', rootLogin, usrLogin });
+  res.render('LoginFunction/joinForm', { title: '회원가입', rootLogin, usrLogin });
 })
 
 router.post('/joinForm', function (req, res, next) { // 회원가입 정보 받기
@@ -71,7 +71,7 @@ router.post('/joinForm', function (req, res, next) { // 회원가입 정보 받�
 
 // 유저 로그인 화면
 router.get('/login', function (req, res, next) {
-  res.render('login', { title: '로그인', rootLogin, usrLogin });
+  res.render('LoginFunction/login', { title: '로그인', rootLogin, usrLogin });
 })
 
 router.post('/login', function (req, res, next) { // 유저 로그인 입력
@@ -100,7 +100,7 @@ router.post('/login', function (req, res, next) { // 유저 로그인 입력
 
 // 관리자 로그인 화면
 router.get('/rootLogin', function (req, res, next) {
-  res.render('rootLogin', { title: '관리자 로그인', rootLogin, usrLogin });
+  res.render('LoginFunction/rootLogin', { title: '관리자 로그인', rootLogin, usrLogin });
 })
 
 router.post('/rootLogin', function (req, res, next) { // 관리자 로그인 입력
@@ -142,12 +142,12 @@ router.get('/logout', function (req, res, next) {
 
 //아이디 찾기 화면
 router.get('/findId', function (req, res, next) {
-  res.render('findId', { title: '아이디 찾기' });
+  res.render('LoginFunction/findId', { title: '아이디 찾기' });
 })
 
 //비밀번호 찾기 화면
 router.get('/findPasswd', function (req, res, next) {
-  res.render('findPasswd', { title: '비밀번호 찾기' });
+  res.render('LoginFunction/findPasswd', { title: '비밀번호 찾기' });
 })
 
 //마이페이지 화면
@@ -158,10 +158,6 @@ router.get('/myPage', function (req, res, next) {
 //메세지 화면
 router.get('/message', function (req, res, next) {
   res.render('message', { title: '메세지', rootLogin, usrLogin });
-})
-
-router.get('/test', function (req, res, next) {
-  res.render('test', { title: '테스트' });
 })
 
 module.exports = router;
