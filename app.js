@@ -23,11 +23,25 @@ app.use(express.urlencoded({ extended: false }));
 app.use(cookieParser());
 app.use(express.static(path.join(__dirname, 'public')));
 
+//카테고리별 번호 매핑
+const categories = {
+  "농식품": 100,
+  "전자기기": 200,
+  "생활용품": 300
+};
+
+//모든 router에서 사용 가능
+app.use(function (req, res, next) {
+  res.locals.categories = categories;
+  next();
+});
+
 app.use('/', indexRouter);
 app.use('/users', usersRouter);
 app.use('/roots', rootsRouter); // root 추가
 app.use('/vendors', vendorRouter);
 app.use('/sellBoard', sellBoardRouter);
+
 
 // catch 404 and forward to error handler
 app.use(function (req, res, next) {
