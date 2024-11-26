@@ -383,4 +383,53 @@ router.post('/manageUsrDelete', function (req, res, next) { // 회원 삭제수�
   });
 });
 
+
+// 게시판 리스트 가져오기
+router.get('/manageBoardList', function (req, res, next) {
+  var { rootLogin } = require('./index'); 
+  console.log("rootLogin:", rootLogin);
+  // 페이지 번호를 쿼리에서 가져오기 (기본값은 1)
+  const page = parseInt(req.query.page) || 1;
+  const limit = 10; // 한 페이지당 10명
+  const offset = (page - 1) * limit; // OFFSET 계산
+  // 정렬 방향 설정 (기본값은 내림차순)
+  const sort = req.query.sort || 'DESC'; 
+  const order = req.query.order || 'Bno'; 
+  // 전체 유저 수를 계산하는 쿼리 (페이지네이션을 위한 totalUserCount)
+  var sql1 = "SELECT COUNT(*) AS total FROM BOARD";
+  // 회원 데이터 가져오기
+  var sql2 = `SELECT Bno, Bid, Buyer, Title, Trade, Updated, 
+            Hit, Pdate, Category, Price, TradePlace
+            FROM BOARD 
+            ORDER BY ${order} ${sort}
+            LIMIT ? OFFSET ?;`;
+  connection.query(sql1, (err, countResult)=>{
+    if (err) {
+      console.error("err: " + err);
+      return res.status(500).send("데이터베이스 오류");
+    }
+    const totalUsers = countResult[0].total;
+    const totalPages = Math.ceil(totalUsers / limit); // 전체 페이지 수 계산
+    // 회원 데이터 가져오기
+    connection.query(sql2, [limit, offset], (err, rows) => {
+      if (err) {
+        console.error("err: " + err);
+        return res.status(500).send("데이터베이스 오류");
+      }
+      console.log('rows: ' + JSON.stringify(rows));
+
+      // 렌더링할 데이터와 페이지네이션 정보를 클라이언트에 전달
+      res.render('RootFunction/manageBoardList', {
+        title: '게시판 관리',
+        rows: rows,
+        rootLogin,
+        currentPage: page,
+        totalPages: totalPages,
+        sort: sort, 
+        order: order 
+      });
+    });
+  });
+});
+
 module.exports = router;
