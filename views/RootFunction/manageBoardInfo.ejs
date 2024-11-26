@@ -107,26 +107,26 @@
     <br>
     <br>
     <h1><%= title %></h1>
-    <h2>회원번호 <<%= row.Uno %>></h2>
+    <h2>게시판번호 <<%= row.Bno %>></h2>
     
     <div style="display: flex; gap: 10px;">
     <!-- 뒤로 가기 및 삭제하기 버튼 -->
     <form action="/roots/manageBoardDelete" method="post">
         <input type="hidden" name="Uno" value="<%= row.Uno %>" />
         <div class="btn-container">
-            <button class="btn btn-outline-dark" type="button" onclick="location.href='/roots/manageUsrList' ">뒤로가기</button>
-            <button class="btn btn-outline-danger" type="submit">회원 삭제하기</button>
+            <button class="btn btn-outline-dark" type="button" onclick="location.href='/roots/manageBoardList' ">뒤로가기</button>
+            <button class="btn btn-outline-danger" type="submit">게시판 삭제하기</button>
         </div>
     </form>
-    <!-- 수정하기 및 유저 정보 테이블 -->
+    <!-- 수정하기 및 게시판 정보 테이블 -->
     <form action="/roots/manageBoardUpdate" method="post" enctype="multipart/form-data">
         <input type="hidden" name="Bno" value="<%= row.Bno %>" />
         <input type="hidden" name="Img" value="<%= row.Img %>" />
         <div class="btn-container">
-            <button class="btn btn-outline-warning" type="submit">회원 수정하기</button>
+            <button class="btn btn-outline-warning" type="submit">게시판 수정하기</button>
         </div>
         <br>
-        <!-- 유저 정보 테이블 -->
+        <!-- 게시판 정보 테이블 -->
         <div class="read-box">
             <table class="type09">
                 <!-- colnumn header -->
@@ -148,45 +148,40 @@
                     <td><input type="text" name="buyer" id="buyer" value="<%= row.Buyer || '' %>" required/></td>
                 </tr>
                 <tr>
-                    <th scope="row">아이디 / 비밀번호</th>
-                    <td><input type="text" name="pid" id="pid" value="<%= row.Pid || '' %>" required/></td>
-                    <td><input type="text" name="passwd" id="passwd" value="<%= decryptResult || '' %>" required/></td>
-                </tr>
-                <tr>
-                    <th scope="row">제목</th>
-                    <td colspan="2"><input type="text" style="width: 90%;" name="title" id="title" value="<%= row.Title || '' %>" required/></span></td>
+                    <th scope="row">제목 / 조회수</th>
+                    <td><input type="text" name="title" id="title" value="<%= row.Title || '' %>" required/></td>
+                    <td><input type="number" name="hit" id="hit" value="<%= row.Hit || '' %>" required/></td>
                 </tr>
                 <tr>
                     <th scope="row">내용</th>
-                    <td colspan="2"><input type="text" style="width: 90%;" name="content" id="content" value="<%= row.Content || '' %>" required/></span></td>
+                    <td colspan="2"><input type="content" style="width: 90%;" name="content" id="content" value="<%= row.Content || '' %>" required/></span></td>
                 </tr>
                 <tr>
-                    <th scope="row">닉네임 / 성별</th>
-                    <td><input type="text" name="nickname" id="nickname" value="<%= row.Nickname || '' %>" required/></td>
-                    <td><select name="sex" id="sex" style="width: 80%;" required>
-                        <option value="Male" <%= row.Sex === 'Male' ? 'selected' : '' %>>Male</option>
-                        <option value="Female" <%= row.Sex === 'Female' ? 'selected' : '' %>>Female</option>
+                    <th scope="row">게시날짜 / 구매날짜</th>
+                    <td><input type="date" style="width: 80%;" name="updated" id="updated" 
+                        value="<%= row.Updated ? new Date(row.Updated).toLocaleDateString('en-CA') : '' %>" 
+                        required/></td>
+                        <td><input type="date" style="width: 90%;" name="pdate" id="pdate" 
+                            value="<%= row.Pdate ? new Date(row.Pdate).toLocaleDateString('en-CA') : '' %>" 
+                            required/></td>
+                </tr>
+                <tr>
+                    <th scope="row">카테고리 / 거래상태</th>
+                    <td><select name="category" id="category" style="width: 80%;" required>
+                        <option value="농식품" <%= row.Category === '농식품' ? 'selected' : '' %>>농식품</option>
+                        <option value="전자기기" <%= row.Category === '전자기기' ? 'selected' : '' %>>전자기기</option>
+                        <option value="생활용품" <%= row.Category === '생활용품' ? 'selected' : '' %>>생활용품</option>
+                    </select></td>
+                    <td><select name="trade" id="trade" style="width: 90%;" required>
+                        <option value="거래가능" <%= row.Trade === '거래가능' ? 'selected' : '' %>>거래가능</option>
+                        <option value="거래중" <%= row.Trade === '거래중' ? 'selected' : '' %>>거래중</option>
+                        <option value="거래완료" <%= row.Trade === '거래완료' ? 'selected' : '' %>>거래완료</option>
                     </select></td>
                 </tr>
                 <tr>
-                    <th scope="row">생일 / 이메일</th>
-                    <td><input type="date" style="width: 80%;" name="bdate" id="bdate" 
-                        value="<%= row.Bdate ? new Date(row.Bdate).toLocaleDateString('en-CA') : '' %>" 
-                        required/></td>
-                    <td><input type="email" style="width: 80%;" name="email" id="email" value="<%= row.Email || '' %>" required/></td>
-                </tr>
-                <tr>
-                    <th scope="row">포인트 / 신뢰도</th>
-                    <td><input type="number" name="money" id="money" value="<%= row.Money || '' %>" required/></td>
-                    <td><input type="number" name="trust" id="trust" value="<%= row.Trust || '' %>" required/></td>
-                </tr>
-                <tr>
-                    <th scope="row">소개문구</th>
-                    <td colspan="2"><input type="text" style="width: 90%;" name="state" id="state" value="<%= row.State || '' %>" required/></span></td>
-                </tr>
-                <tr>
-                    <th scope="row">가입일</th>
-                    <td colspan="2"><span class="date" data-date="<%= row.Login %>"></span></td>
+                    <th scope="row">상품가격 / 거래장소</th>
+                    <td><input type="number" name="price" id="price" value="<%= row.Price || '' %>" required/></td>
+                    <td colspan="2"><input type="text" style="width: 90%;" name="tradeplace" id="tradeplace" value="<%= row.TradePlace || '' %>" required/></span></td>
                 </tr>
             </table>
         </div>

@@ -1,4 +1,5 @@
 var express = require('express');
+var crypto = require('crypto'); // npm install -d crypto
 var router = express.Router();
 var mysql = require('mysql2');
 
@@ -18,6 +19,10 @@ var rootid = "";
 var usrLogin = false;
 var usrid = "";
 
+const algorithm = 'aes-192-cbc'
+const key = Buffer.from("123456789012345678901234", "utf8"); // 24바이트 키 (AES-192)
+const iv = Buffer.from("1234567890123456", "utf8"); // 16바이트 IV
+
 //시작 화면
 router.get('/', function (req, res, next) {
   var sql = 'SELECT Bno, Img, Title, Price, Trade FROM board ORDER BY Bno DESC LIMIT 8 OFFSET 0'; //최신 게시글 8개
@@ -35,6 +40,9 @@ router.get('/joinForm', function (req, res, next) {
 })
 
 router.post('/joinForm', function (req, res, next) { // 회원가입 정보 받기
+  var encrypt = crypto.createCipheriv(algorithm, key, iv);
+  var encryptResult = encrypt.update(req.body.passwd, 'utf8', 'hex') + encrypt.final('hex');
+
   var Pdatas = [
     req.body.id,
     req.body.Lname,
@@ -46,7 +54,7 @@ router.post('/joinForm', function (req, res, next) { // 회원가입 정보 받�
 
   var Udatas = [
     req.body.id,
-    req.body.passwd,
+    encryptResult,
     req.body.nickname,
   ];
 
@@ -75,9 +83,12 @@ router.get('/login', function (req, res, next) {
 })
 
 router.post('/login', function (req, res, next) { // 유저 로그인 입력
+  var encrypt = crypto.createCipheriv(algorithm, key, iv);
+  var encryptResult = encrypt.update(req.body.passwd, 'utf8', 'hex') + encrypt.final('hex');
+  
   var Udatas = [
     req.body.id,
-    req.body.passwd,
+    encryptResult,
   ];
 
   var sql = "SELECT * FROM USR WHERE Uid=? AND Pwd=?;";

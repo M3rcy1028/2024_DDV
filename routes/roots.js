@@ -1,7 +1,10 @@
 var express = require('express');
+var crypto = require('crypto'); // 암호화 및 복호화 수행
 var router = express.Router();
+const fs = require('fs');       // 파일 경로 얻기
 var url = require('url');
 var path = require('path');
+const sharp = require('sharp'); // 이미지 크기 조정
 const multer = require('multer');
 var mysql = require('mysql2');
 
@@ -17,6 +20,9 @@ const connection = mysql.createPool({
 });
 
 var UpdateEnable = false;
+const algorithm = 'aes-192-cbc'
+const key = Buffer.from("123456789012345678901234", "utf8"); // 24바이트 키 (AES-192)
+const iv = Buffer.from("1234567890123456", "utf8"); // 16바이트 IV
 
 //공지사항 리스트 화면
 router.get('/notificationList', function (req, res, next) {
@@ -118,9 +124,10 @@ router.post('/notificationDelete', function (req, res, next) { // 삭제수행
     req.body.passwd,
     req.body.Bid
   ]
-  console.log('bid : ' + datas)
+  console.log('datas : ' + datas)
   // 해당 게시물 삭제 쿼리
   var sql1 = "DELETE FROM A USING ROOTBOARD A JOIN ROOT B ON Rnum=Rid WHERE Rid=? AND Rpwd=? AND Bid=?";
+  console.log('sql1 : ' + sql1)
   connection.query(sql1, datas, function (err, results) {
     if (err) {
       console.error("err: " + err);
@@ -131,27 +138,30 @@ router.post('/notificationDelete', function (req, res, next) { // 삭제수행
     }
     else { // 삭제 성공 -> Bid 재정렬
       var sql2 = "ALTER TABLE ROOTBOARD AUTO_INCREMENT=1;";
+      console.log('sql2 : ' + sql2)
       connection.query(sql2, function (err, results) {
         if (err) {
           console.error("err: " + err);
           return res.status(500).send("데이터베이스 오류");
         }
+        var sql3 = "SET @COUNT = 0;";
+        console.log('sql3 : ' + sql3)
+        connection.query(sql3, function (err, results) {
+          if (err) {
+            console.error("err: " + err);
+            return res.status(500).send("데이터베이스 오류");
+          }
+          var sql4 = "UPDATE ROOTBOARD SET Bid = @COUNT:=@COUNT+1;";
+          console.log('sql4 : ' + sql4)
+          connection.query(sql4, function (err) {
+            if (err) {
+              console.error("err: " + err);
+              return res.status(500).send("데이터베이스 오류");
+            }
+            res.redirect('/roots/notificationList');
+          });
+        });
       });
-      var sql3 = "SET @COUNT = 0;";
-      connection.query(sql3, function (err, results) {
-        if (err) {
-          console.error("err: " + err);
-          return res.status(500).send("데이터베이스 오류");
-        }
-      });
-      var sql4 = "UPDATE ROOTBOARD SET Bid = @COUNT:=@COUNT+1;";
-      connection.query(sql4, function (err, results) {
-        if (err) {
-          console.error("err: " + err);
-          return res.status(500).send("데이터베이스 오류");
-        }
-      });
-      res.redirect('/roots/notificationList');
     }
   });
 });
@@ -291,6 +301,7 @@ router.get('/manageUsrInfo/:Uno', function (req, res, next) {
   console.log('회원 번호 : ' + req.params.Uno);
   // 회원 정보 가져오기
   var sql = `SELECT * FROM PERSON, USR WHERE Pid=Uid AND Uno=?;`;
+
   connection.query(sql, [req.params.Uno], (err, rows, fields) => {
     if (err) {
       console.error("err: " + err);
@@ -301,8 +312,17 @@ router.get('/manageUsrInfo/:Uno', function (req, res, next) {
       return res.status(404).send("해당 회원을 찾을 수 없습니다.");
     }
     console.log('rows: ' + JSON.stringify(rows));
+    // 프로필 이미지 경로 확인, 이미지가 존재하지 않으면 기본 프로필로 변경
+    const profileImgPath = path.join(__dirname, '../public', rows[0].ProfileImg);
+    if (!fs.existsSync(profileImgPath)) {
+      console.log('Profile image not found. Using default image.');
+      rows[0].ProfileImg = '/images/profile/basic_profile.jpg';
+    } 
+    // 암호 복호화
+    var decrypt = crypto.createDecipheriv(algorithm, key, iv);
+    var decryptResult = decrypt.update(rows[0].Pwd, 'hex', 'utf8') + decrypt.final('utf8');
     // 정보보내기
-    res.render('RootFunction/manageUsrInfo', { title: '회원 정보 관리', row: rows[0] });
+    res.render('RootFunction/manageUsrInfo', { title: '회원 정보 관리', row: rows[0], decryptResult });
   });
 });
 
@@ -312,7 +332,8 @@ var storage = multer.diskStorage({  //파일 저장 방식 설정
   },
   filename: function (req, file, cb) {
     const ext = path.extname(file.originalname);
-    cb(null, path.basename(file.originalname, ext) + "-" + Date.now() + ext);
+    // cb(null, path.basename(file.originalname, ext) + "-" + Date.now() + ext);
+    cb(null, path.basename(file.originalname, ext) + ext);
   },
 });
 
@@ -339,11 +360,13 @@ router.post('/manageUsrUpdate', function (req, res, next) { // 회원 정보 수
     console.log('저장될 이미지', image);
     console.log('업로드된 이미지', req.body.ProfileImg);
     // 받아온 데이터를 쿼리할 데이터 배열로 구성
+    var encrypt = crypto.createCipheriv(algorithm, key, iv);
+    var encryptResult = encrypt.update(req.body.passwd, 'utf8', 'hex') + encrypt.final('hex');
     var datas = [
       req.body.lname, // 성
       req.body.fname, // 이름
       req.body.pid, // 아이디
-      req.body.passwd, // 비밀번호
+      encryptResult,
       req.body.nickname, // 닉네임
       req.body.sex, // 성별
       req.body.bdate, // 생일
@@ -384,7 +407,6 @@ router.post('/manageUsrDelete', function (req, res, next) { // 회원 삭제수�
     res.redirect('/roots/manageUsrList');
   });
 });
-
 
 // 게시판 리스트 가져오기
 router.get('/manageBoardList', function (req, res, next) {
@@ -434,4 +456,93 @@ router.get('/manageBoardList', function (req, res, next) {
   });
 });
 
+// 특정 게시판 관리 화면 
+router.get('/manageBoardInfo/:Bno', function (req, res, next) {
+  console.log('회원 번호 : ' + req.params.Bno);
+  // 게시판 정보 가져오기
+  var sql = `SELECT * FROM BOARD WHERE Bno=?;`;
+  connection.query(sql, [req.params.Bno], (err, rows, fields) => {
+    if (err) {
+      console.error("err: " + err);
+      return res.status(500).send("데이터베이스 오류");
+    }
+    if (rows.length === 0) { // 조회 결과가 없을 경우
+      console.error("해당 게시물을 찾을 수 없습니다.");
+      return res.status(404).send("해당 회원을 찾을 수 없습니다.");
+    }
+    // 프로필 이미지 경로 확인, 이미지가 존재하지 않으면 기본 프로필로 변경
+    const productImg = path.join(__dirname, '../public', rows[0].Img);
+    if (!fs.existsSync(productImg)) {
+      console.log('Product image not found. Using default image.');
+      rows[0].Img = '/images/product/img_err.jpg';
+    }
+    console.log('rows: ' + JSON.stringify(rows));
+    // 정보보내기
+    res.render('RootFunction/manageBoardInfo', { title: '게시판 관리', row: rows[0] });
+  });
+});
+
+router.post('/manageBoardUpdate', function (req, res, next) { // 게시판 정보 수정
+  // 파일 업로드 미들웨어
+  upload.single("image")(req, res, function (err) {
+    if (err) {
+      console.error("파일 업로드 중 오류 발생: " + err);
+      return res.status(500).send("파일 업로드 오류 발생");
+    }
+    // 업로드된 파일 정보 출력
+    console.log("req.file:" + req.file);
+    console.log("product image:" + req.body.Img);
+    // 파일 경로 결정
+    var image = req.body.Img || '/images/product/img_err.jpg';
+    if (req.file) {
+      image = `/images/product/${req.file.filename}`;  // 새로 업로드된 파일 경로
+    }
+    console.log('저장될 이미지', image);
+    console.log('업로드된 이미지', req.body.Img);
+    // 받아온 데이터를 쿼리할 데이터 배열로 구성
+    var datas = [
+      req.body.bid,     // 판매자
+      req.body.buyer,   // 구매자
+      req.body.title,   // 제목
+      req.body.content, // 내용
+      req.body.trade,   // 거래상태
+      req.body.updated, // 게시날짜
+      req.body.hit,     // 조회수
+      req.body.pdate,   // 상품 구매 날짜
+      req.body.category, // 상품 카테고리
+      req.body.price,   // 상품 가격
+      req.body.tradeplace, // 거래 장소
+      image,            // 상품 이미지 경로
+      req.body.Bno      // 게시판 번호
+    ];
+    console.log(datas);
+    // SQL 쿼리 작성
+    var sql1 = `UPDATE BOARD SET Bid = ?, Buyer = ?, Content = ?, Title = ?, Trade = ?, Updated = ?,
+                Hit = ?, Pdate = ?, Category = ?, Price = ?, TradePlace = ?, Img = ?
+                WHERE Bno = ?`;
+    // 쿼리 실행
+    connection.query(sql1, datas, function (err, results) {
+      if (err) {
+        console.error("쿼리 실행 오류: " + err);
+        return res.status(500).send("데이터베이스 오류 발생");
+      } else {
+        res.redirect('/roots/manageBoardInfo/' + req.body.Bno);
+      }
+    });
+  });
+});
+
+router.post('/manageBoardDelete', function (req, res, next) { // 게시판 삭제수행
+  var datas = [
+    req.body.Bno
+  ]
+  var sql1 = "DELETE FROM BOARD WHERE Bno=?";
+  connection.query(sql1, datas, function (err, results) {
+    if (err) {
+      console.error("err: " + err);
+      return res.status(500).send("데이터베이스 오류 발생");
+    }
+    res.redirect('/roots/manageBoardList');
+  });
+});
 module.exports = router;
