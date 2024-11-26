@@ -209,6 +209,7 @@
         } */
 
         .chat .chat-message {
+            flex: 1 0 auto;
             padding: 20px
         }
 
@@ -395,11 +396,10 @@
                         </div>
                         <div class="chat-message clearfix">
                             <div class="input-group mb-0">
-                                <div class="input-group-prepend">
-                                    <span class="input-group-text"><i class="fa fa-send"></i></span>
-                                </div>
-                                <div id="form">
-                                    <input id="input" autocomplete="off" /><button onclick="sendMessage()">전송</button>
+                                <div class="input-group-prepend" style="flex:auto">
+                                    <span class="input-group-text" style="flex:auto"><input id="input"
+                                            class="form-controll" autocomplete="off" style="flex:auto" /><button
+                                            onclick="sendMessage()"><i class="fa fa-send"></i></button></span>
                                 </div>
                             </div>
                         </div>
