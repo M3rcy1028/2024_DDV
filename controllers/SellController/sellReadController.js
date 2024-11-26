@@ -3,6 +3,11 @@ var express = require('express');
 
 module.exports = {
     readData: function (req, res, next) {
+        var { rootLogin, usrLogin } = require('../../routes/index.js'); //사용자, 관리자 로그인 여부
+        var { usrid } = require('../../routes/index.js'); //사용자 아이디
+
+        var UpdateEnable = false; //글 수정 가능 여부
+
         var Bno = req.params.Bno;
         readModel.getData(Bno, (row) => {
             console.log('1개 글 조회 결과 확인 : ', row);
@@ -24,7 +29,17 @@ module.exports = {
             console.log(newContent);
             row[0].Content = newContent;
 
-            res.render('SellFunction/sellRead', { title: "글 조회", row: row[0] });
+            //글을 조회 중인 사용자와 글 작성자가 동일한 경우
+            if(Bid === usrid){
+                UpdateEnable = true;
+            }
+            else{
+                UpdateEnable = false;
+            }
+
+            console.log("UpdateEnable : ", UpdateEnable);
+
+            res.render('SellFunction/sellRead', { title: "글 조회", rootLogin, usrLogin, UpdateEnable, row: row[0] });
         });
     }
 }

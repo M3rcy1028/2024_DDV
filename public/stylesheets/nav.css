@@ -1,0 +1,40 @@
+/* 링크 관련 */
+.link {
+    text-decoration: none;
+    color: black;
+}
+
+/* 카테고리 */
+.dropdown-menu .dropdown-item:active {
+    background-color: #4D5154;
+    color: white;
+}
+
+/* 검색 창 CSS */
+.search-box{
+    height: 40px;
+    width: 300px;
+    background: white;
+    border-radius: 40px;
+    padding: 10px;
+    border: 1px solid black;
+}
+
+.search-txt{
+    border: none;
+    background: none;
+    outline: none;
+    color: black;
+    font-size: 16px;
+    width: 240px;
+}
+
+.search-btn{
+    color: black;
+    width: 40px;
+    height: 100%;
+    border-radius: 50%;
+    background: white;
+    border: none;
+    font-size: 16px;
+}
