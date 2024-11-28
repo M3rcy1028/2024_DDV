@@ -2,11 +2,12 @@ var writeModel = require('../../models/SellModel/sellWriteModel');
 var express = require('express');
 
 exports.writeForm = (req, res) => {
-    res.render('SellFunction/sellWrite', { title: "상품 등록" });
+    var { rootLogin, usrLogin } = require('../../routes/index.js'); //사용자, 관리자 로그인 여부
+    res.render('SellFunction/sellWrite', { title: "상품 등록" , rootLogin, usrLogin});
 }
 
 exports.writeData = (req, res) => {
-    var id = "lovely"; //임의의 아이디
+    var { usrid } = require('../../routes/index.js'); //사용자 아이디
     var title = req.body.title;
     var hit = 0;
     var content = req.body.content;
@@ -25,7 +26,7 @@ exports.writeData = (req, res) => {
         image = '/images/product/' + req.file.filename; //이미지 경로
     }
 
-    var datas = [id, title, hit, content, image, pdate, category, price, tradePlace, trade, modified];
+    var datas = [usrid, title, hit, content, image, pdate, category, price, tradePlace, trade, modified];
     writeModel.insertData(datas, () => {
         res.redirect('/sellBoard/sellList');
     });

@@ -6,6 +6,7 @@ var readController = require('../controllers/SellController/sellReadController.j
 var writeController = require('../controllers/SellController/sellWriteController.js');
 var updateController = require('../controllers/SellController/sellUpdateController.js');
 var deleteController = require('../controllers/SellController/sellDeleteController.js');
+var searchController = require('../controllers/SellController/sellSearchController.js');
 
 const multer = require('multer');
 const path = require("path");
@@ -50,5 +51,8 @@ router.post('/sellUpdate', upload.single("image"), (req, res) => { updateControl
 
 //글 삭제 (POST)
 router.post('/sellDelete', deleteController.deleteData);
+
+//글 검색 (POST)
+router.post('/search', searchController.searchData);
 
 module.exports = router;

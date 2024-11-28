@@ -1,7 +1,11 @@
 var express = require('express');
+var crypto = require('crypto'); // npm install -d crypto
 var router = express.Router();
-var mysql = require('mysql');
-var connection = mysql.createPool({
+var mysql = require('mysql2');
+
+require('dotenv').config();
+
+const connection = mysql.createPool({
   host: process.env.DB_HOST,
   user: process.env.DB_USER,
   password: process.env.DB_PASSWORD,
@@ -14,6 +18,10 @@ var rootLogin = false;
 var rootid = "";
 var usrLogin = false;
 var usrid = "";
+
+const algorithm = 'aes-192-cbc'
+const key = Buffer.from("123456789012345678901234", "utf8"); // 24바이트 키 (AES-192)
+const iv = Buffer.from("1234567890123456", "utf8"); // 16바이트 IV
 
 //시작 화면
 router.get('/', function (req, res, next) {
@@ -28,10 +36,13 @@ router.get('/', function (req, res, next) {
 
 //회원가입 화면
 router.get('/joinForm', function (req, res, next) {
-  res.render('joinForm', { title: '회원가입', rootLogin, usrLogin });
+  res.render('LoginFunction/joinForm', { title: '회원가입', rootLogin, usrLogin });
 })
 
 router.post('/joinForm', function (req, res, next) { // 회원가입 정보 받기
+  var encrypt = crypto.createCipheriv(algorithm, key, iv);
+  var encryptResult = encrypt.update(req.body.passwd, 'utf8', 'hex') + encrypt.final('hex');
+
   var Pdatas = [
     req.body.id,
     req.body.Lname,
@@ -43,7 +54,7 @@ router.post('/joinForm', function (req, res, next) { // 회원가입 정보 받�
 
   var Udatas = [
     req.body.id,
-    req.body.passwd,
+    encryptResult,
     req.body.nickname,
   ];
 
@@ -68,13 +79,16 @@ router.post('/joinForm', function (req, res, next) { // 회원가입 정보 받�
 
 // 유저 로그인 화면
 router.get('/login', function (req, res, next) {
-  res.render('login', { title: '로그인', rootLogin, usrLogin });
+  res.render('LoginFunction/login', { title: '로그인', rootLogin, usrLogin });
 })
 
 router.post('/login', function (req, res, next) { // 유저 로그인 입력
+  var encrypt = crypto.createCipheriv(algorithm, key, iv);
+  var encryptResult = encrypt.update(req.body.passwd, 'utf8', 'hex') + encrypt.final('hex');
+
   var Udatas = [
     req.body.id,
-    req.body.passwd,
+    encryptResult,
   ];
 
   var sql = "SELECT * FROM USR WHERE Uid=? AND Pwd=?;";
@@ -83,6 +97,9 @@ router.post('/login', function (req, res, next) { // 유저 로그인 입력
     if (results.length > 0) { // db 반환값이 존재할 때
       usrLogin = true;
       usrid = req.body.id;
+      module.exports.usrid = usrid;
+      module.exports.usrLogin = usrLogin;
+      console.log("이용자 아이디 : " + usrid);
       res.redirect('/'); // 회원가입 후 리다이렉트
     }
     else {
@@ -94,7 +111,7 @@ router.post('/login', function (req, res, next) { // 유저 로그인 입력
 
 // 관리자 로그인 화면
 router.get('/rootLogin', function (req, res, next) {
-  res.render('rootLogin', { title: '관리자 로그인', rootLogin, usrLogin });
+  res.render('LoginFunction/rootLogin', { title: '관리자 로그인', rootLogin, usrLogin });
 })
 
 router.post('/rootLogin', function (req, res, next) { // 관리자 로그인 입력
@@ -136,12 +153,12 @@ router.get('/logout', function (req, res, next) {
 
 //아이디 찾기 화면
 router.get('/findId', function (req, res, next) {
-  res.render('findId', { title: '아이디 찾기' });
+  res.render('LoginFunction/findId', { title: '아이디 찾기' });
 })
 
 //비밀번호 찾기 화면
 router.get('/findPasswd', function (req, res, next) {
-  res.render('findPasswd', { title: '비밀번호 찾기' });
+  res.render('LoginFunction/findPasswd', { title: '비밀번호 찾기' });
 })
 
 //마이페이지 화면
