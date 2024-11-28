@@ -152,7 +152,35 @@ router.get('/findPasswd', function (req, res, next) {
 
 //마이페이지 화면
 router.get('/myPage', function (req, res, next) {
-  res.render('myPage', { title: '마이페이지', rootLogin, usrLogin });
+  //마이페이지에 필요한 사용자 정보
+  var usrSql = "SELECT ProfileImg, Nickname, Money, Trust FROM USR WHERE uid=?";
+ 
+  //찜한 목록 (최신순 6개)
+  var likeSql = "SELECT Bno, Img, Title, Price FROM WISHLIST AS W, BOARD AS B WHERE uid=? and W.Bnum = B.Bno ORDER BY Wno DESC LIMIT 6 OFFSET 0"; 
+
+  //구매 내역
+  var buySql = "SELECT Bno, Img, Title, Price FROM BOARD WHERE Buyer=? ORDER BY Bno DESC LIMIT 6 OFFSET 0";
+
+  //판매 내역 (최신순 6개)
+  var sellSql = "SELECT Bno, Img, Title, Price FROM BOARD WHERE Bid=? ORDER BY Bno DESC LIMIT 6 OFFSET 0";
+
+  //사용자가 찜해둔 목록
+  connection.query(usrSql, usrid, (err, usrInfo, fileds) => {
+    if (err) throw err;
+    //console.log("마이페이지 정보 : ", usrInfo);
+    connection.query(likeSql, usrid, (err, likeInfo, fields) => {
+      if (err) throw err;
+      console.log("찜 정보 : ", likeInfo);
+      connection.query(buySql, usrid, (err, buyInfo, fields) => {
+        if (err) throw err;
+        connection.query(sellSql, usrid, (err, sellInfo, fields) => {
+          if (err) throw err;
+          //console.log("판매 정보 : ", sellInfo);
+          res.render('myPage', { title: '마이페이지', rootLogin, usrLogin, usrInfo : usrInfo[0], likeInfo, buyInfo, sellInfo});
+        })
+      });
+    });
+  });
 })
 
 //찜 버튼 눌렀을 때
@@ -165,16 +193,16 @@ router.post('/addWish', function (req, res, next){
     var insertSql = "INSERT INTO WISHLIST(Uid, Bnum) VALUES(?, ?);"; //wishlist table에 삽입
     connection.query(insertSql, datas, function (err, rows) {
       if (err) console.error("err : " + err);
+      res.redirect('/sellBoard/sellRead/' + String(Bno)); //기존에 보고 있던 게시글로 redirect
     })
   }
   else{ //찜을 한 경우
     var deleteSql = "DELETE FROM WISHLIST WHERE Uid=? and Bnum=?"; //wishlist table에서 삭제
     connection.query(deleteSql, datas, function (err, rows) {
       if (err) console.error("err : " + err);
+      res.redirect('/sellBoard/sellRead/' + String(Bno)); //기존에 보고 있던 게시글로 redirect
     })
   }
-
-  res.redirect('/sellBoard/sellRead/' + String(Bno)); //기존에 보고 있던 게시글로 redirect
 })
 
 //메세지 화면

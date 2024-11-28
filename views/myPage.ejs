@@ -76,54 +76,149 @@
         }
     </style>
     -->
+    <style>
+        .profile-image {
+            width: 150px;
+            height: 150px;
+            border-radius: 50%;
+            object-fit: cover;
+        }
+
+        .nav-link{
+            color : black;
+        }
+
+        #title a {
+            text-decoration: none;
+            color: black;
+        }
+
+        .row{
+            margin-top: 20px;
+        }
+    </style>
 </head>
 
 <body>
     <!-- 상단 바 -->
     <%- include('nav.ejs') %>
     
-    <!--
-    <div class="wrapper d-flex">
+    <!-- 사용자 정보 -->
+    <div class="usr-info d-flex">
+        <div class="left-info mb-4 me-4">
+            <img src="<%=usrInfo.ProfileImg%>" class="profile-image">
+        </div>
+        <div class="right-info d-flex flex-column">
+            <h4><%=usrInfo.Nickname%>의 상점</h4>
+            <span>포인트 : <%=usrInfo.Money%></span>
+            <span>신뢰도 : <%=usrInfo.Trust%></span>
+        </div>
+    </div>
+
+    <div>
         <nav>
-            <h1>마이페이지</h1>
-            <ul class="menu">
-                <li><a>내 정보 확인</a></li>
-                <li><a>정보 변경하기</a></li>
-                <li><a>판매/구매 내역</a></li>
-                <li><a>찜 목록</a></li>
-                <li><a>포인트</a></li>
-                <li><a>신뢰도</a></li>
-            </ul>
+            <div class="nav nav-tabs" id="nav-tab" role="tablist">
+                <button class="nav-link active" id="nav-like-tab" data-bs-toggle="tab" data-bs-target="#nav-like" type="button" role="tab" aria-controls="nav-home" aria-selected="true">
+                    찜 목록
+                </button>
+                <button class="nav-link" id="nav-buy-tab" data-bs-toggle="tab" data-bs-target="#nav-buy" type="button" role="tab" aria-controls="nav-profile" aria-selected="false">
+                    구매 내역
+                </button>
+                <button class="nav-link" id="nav-sell-tab" data-bs-toggle="tab" data-bs-target="#nav-sell" type="button" role="tab" aria-controls="nav-contact" aria-selected="false">
+                    판매 내역
+                </button>
+            </div>
         </nav>
-        <div class="d-flex flex-column">
-            <div class="profile-box mb-4">
-                <div class="d-flex">
-                    <div class="flex-shrink-0">
-                        <img src="/images/profile/basic_profile.jpg" width="200px">
-                    </div>
-                    <div class="profile-content d-flex flex-column flex-grow-1 ms-5">
-                        <h5 class="mb-5">김데데시의 상점</h5>
-                        <span class="mb-3">소개글 : 쿨거 환영</span>
-                        <span class="mb-3">보유포인트 : 500 포인트</span>
-                        <span>신뢰도 : 좋음</span>
-                    </div>
+        <div class="tab-content" id="nav-tabContent">
+            <div class="tab-pane fade show active" id="nav-like" role="tabpanel" aria-labelledby="nav-home-tab" tabindex="0">
+                <div class="row row-cols-6">
+                    <% if (likeInfo.length === 0) { %>
+                        <!-- 일정한 높이 설정을 위한 빈 컬럼 표시 -->
+                        <div class="col text-center ms-3 hidden" style="height: 210px;">
+                        </div>
+                    <% } else {%>
+                        <% for (var i=0; i<6; i++){
+                            if(i >= likeInfo.length){
+                                break;
+                            }
+                            var likeItem=likeInfo[i];
+                        %>
+                            <div class="d-flex flex-column col border text-center ms-3">
+                                <a href="/sellBoard/sellRead/<%=likeItem.Bno%>">
+                                    <img src="<%= likeItem.Img %>" style="width: 180px; height: 210px; object-fit: cover;"
+                                        alt="찜 목록 이미지">
+                                </a>
+                                <b name="title" id="title">
+                                    <a href="/sellBoard/sellRead/<%=likeItem.Bno%>">
+                                        <%= likeItem.Title %>
+                                    </a>
+                                </b>
+                                <p name="price" id="price"><%= likeItem.Price %> 원</p>
+                            </div>
+                        <% } %>
+                    <% } %>
                 </div>
             </div>
-
-            <div class="purchase-box">
-                <ul class="nav nav-tabs">
-                    <li class="nav-item">
-                        <a class="nav-link active" aria-current="page" href="#">최근 판매 내역</a>
-                        <img src="/images/product/tomato.jpg" width="150px">
-                    </li>
-                    <li class="nav-item">
-                        <a class="nav-link" href="#">최근 구매 내역</a>
-                    </li>
-                </ul>
+            <div class="tab-pane fade" id="nav-buy" role="tabpanel" aria-labelledby="nav-profile-tab" tabindex="0">
+                <div class="row row-cols-6">
+                    <% if (buyInfo.length === 0) { %>
+                        <!-- 일정한 높이 설정을 위한 빈 컬럼 표시 -->
+                        <div class="col text-center ms-3 hidden" style="height: 210px;">
+                        </div>
+                    <% } else {%>
+                        <% for (var i=0; i<6; i++){
+                            if(i >= buyInfo.length){
+                                break;
+                            }
+                            var buyItem=buyInfo[i];
+                        %>
+                            <div class="d-flex flex-column col border text-center ms-3">
+                                <a href="/sellBoard/sellRead/<%=buyItem.Bno%>">
+                                    <img src="<%= buyItem.Img %>" style="width: 180px; height: 210px; object-fit: cover;"
+                                        alt="구매 목록 이미지">
+                                </a>
+                                <b name="title" id="title">
+                                    <a href="/sellBoard/sellRead/<%=buyItem.Bno%>">
+                                        <%= buyItem.Title %>
+                                    </a>
+                                </b>
+                                <p name="price" id="price"><%= buyItem.Price %> 원</p>
+                            </div>
+                        <% } %>
+                    <% } %>
+                </div>
+            </div>
+            <div class="tab-pane fade" id="nav-sell" role="tabpanel" aria-labelledby="nav-contact-tab" tabindex="0">
+                <div class="row row-cols-6">
+                    <% if (sellInfo.length === 0) { %>
+                        <!-- 일정한 높이 설정을 위한 빈 컬럼 표시 -->
+                        <div class="col text-center ms-3 hidden" style="height: 210px;">
+                        </div>
+                    <% } else {%>
+                        <% for (var i=0; i<6; i++){
+                            if(i >= sellInfo.length){
+                                break;
+                            }
+                            var sellItem=sellInfo[i];
+                        %>
+                            <div class="d-flex flex-column col border text-center ms-3">
+                                <a href="/sellBoard/sellRead/<%=sellItem.Bno%>">
+                                    <img src="<%= sellItem.Img %>" style="width: 180px; height: 210px; object-fit: cover;"
+                                        alt="판매 목록 이미지">
+                                </a>
+                                <b name="title" id="title">
+                                    <a href="/sellBoard/sellRead/<%=sellItem.Bno%>">
+                                        <%= sellItem.Title %>
+                                    </a>
+                                </b>
+                                <p name="price" id="price"><%= sellItem.Price %> 원</p>
+                            </div>
+                        <% } %>
+                    <% } %>
+                </div>
             </div>
         </div>
     </div>
-    -->
 
     <!-- Bootstrap JS -->
     <script src="/vendors/bootstrap/js/bootstrap.bundle.min.js"></script>

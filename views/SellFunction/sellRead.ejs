@@ -174,11 +174,11 @@
         }
 
         function onAddWishlist(){
-            if (!(usrLogin || rootLogin)){ //로그인하지 않은 경우
+            if (!usrLogin){ //로그인하지 않은 경우
                 //로그인 후 이용 가능 알림창
                 Swal.fire({
                     icon: "error",
-                    title: "Oops...",
+                    title: "로그인 필요",
                     text: "로그인 후 이용 가능합니다",
                     footer: '<a href="/login" style="text-decoration: none;">로그인 하시겠습니까?</a>'
                 });
