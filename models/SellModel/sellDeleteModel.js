@@ -1,10 +1,11 @@
 var mysql = require('mysql');
-var connection = mysql.createConnection({
-    connectionLimit: 5,
-    host: 'localhost',
-    user: 'root',
-    password: '1234',
-    database: 'ddv'
+var connection = mysql.createPool({
+    host: process.env.DB_HOST,
+    user: process.env.DB_USER,
+    password: process.env.DB_PASSWORD,
+    database: process.env.DB_NAME,
+    waitForConnections: true,
+    connectionLimit: 10,
 });
 
 exports.deleteRow = (datas, callback) => {

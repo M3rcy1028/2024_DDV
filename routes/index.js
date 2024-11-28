@@ -1,12 +1,13 @@
 var express = require('express');
 var router = express.Router();
 var mysql = require('mysql');
-var connection = mysql.createConnection({
-  connectionLimit: 5,
-  host: 'localhost',
-  user: 'root',
-  password: '1234',
-  database: 'ddv'
+var connection = mysql.createPool({
+  host: process.env.DB_HOST,
+  user: process.env.DB_USER,
+  password: process.env.DB_PASSWORD,
+  database: process.env.DB_NAME,
+  waitForConnections: true,
+  connectionLimit: 10,
 });
 
 var rootLogin = false;
@@ -151,10 +152,6 @@ router.get('/myPage', function (req, res, next) {
 //메세지 화면
 router.get('/message', function (req, res, next) {
   res.render('message', { title: '메세지', rootLogin, usrLogin });
-})
-
-router.get('/test', function (req, res, next) {
-  res.render('test', { title: '테스트' });
 })
 
 module.exports = router;
