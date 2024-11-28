@@ -3,16 +3,17 @@ var express = require('express');
 
 module.exports = {
     readData: function (req, res, next) {
-        var { rootLogin, usrLogin } = require('../../routes/index.js'); //사용자, 관리자 로그인 여부
+        var { usrLogin, rootLogin } = require('../../routes/index.js'); //사용자, 관리자 로그인 여부
         var { usrid } = require('../../routes/index.js'); //사용자 아이디
 
-        console.log("로그인 여부 : rootLogin - ", rootLogin, ", usrLogin - ", usrLogin);
+        console.log("로그인 usrLogin : ", usrLogin, ", usrId : ", usrid);
 
         var UpdateEnable = false; //글 수정 가능 여부
 
         var Bno = req.params.Bno;
-        readModel.getData(Bno, (row) => {
+        readModel.getData(Bno, usrid, (row, likeCount) => {
             console.log('1개 글 조회 결과 확인 : ', row);
+            console.log('찜 여부 : ', likeCount);
 
             var Bid = row[0].Bid, newBid;
             newBid = Bid.slice(0, 4) + '*'.repeat(Bid.length - 4); //아이디는 4번째자리까지만 표기
@@ -41,7 +42,7 @@ module.exports = {
 
             console.log("UpdateEnable : ", UpdateEnable);
 
-            res.render('SellFunction/sellRead', { title: "글 조회", rootLogin, usrLogin, UpdateEnable, row: row[0] });
+            res.render('SellFunction/sellRead', { title: "글 조회", rootLogin, usrLogin, UpdateEnable, row: row[0], likeCount });
         });
     }
 }

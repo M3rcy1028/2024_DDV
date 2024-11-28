@@ -158,17 +158,23 @@ router.get('/myPage', function (req, res, next) {
 //찜 버튼 눌렀을 때
 router.post('/addWish', function (req, res, next){
   var Bno = req.body.idx;
+  var likeCount = req.body.like;
   var datas = [usrid, Bno]; //사용자 아이디, 게시판 번호
 
-  console.log(datas); //data 출력
+  if (likeCount == 0){ //찜을 하지 않은 경우
+    var insertSql = "INSERT INTO WISHLIST(Uid, Bnum) VALUES(?, ?);"; //wishlist table에 삽입
+    connection.query(insertSql, datas, function (err, rows) {
+      if (err) console.error("err : " + err);
+    })
+  }
+  else{ //찜을 한 경우
+    var deleteSql = "DELETE FROM WISHLIST WHERE Uid=? and Bnum=?"; //wishlist table에서 삭제
+    connection.query(deleteSql, datas, function (err, rows) {
+      if (err) console.error("err : " + err);
+    })
+  }
 
-  var sql = "INSERT INTO WISHLIST(Uid, Bnum) VALUES(?, ?);"; //wishlist table에 삽입
-
-  connection.query(sql, datas, function (err, rows) {
-    if (err) console.error("err : " + err);
-  })
-
-  res.redirect('/');
+  res.redirect('/sellBoard/sellRead/' + String(Bno)); //기존에 보고 있던 게시글로 redirect
 })
 
 //메세지 화면
