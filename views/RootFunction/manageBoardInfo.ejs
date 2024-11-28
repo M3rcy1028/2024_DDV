@@ -45,58 +45,6 @@
             display: flex;
             gap: 10px; /* 버튼 간격 */
         }
-        .profile-image {
-            width: 150px;
-            height: 150px;
-            border-radius: 50%;
-            object-fit: cover;
-            box-shadow: 0 0 5px rgba(0, 0, 0, 0.3);
-        }
-        /* 테이블 디자인 */
-        table.type09, table.type09 th, table.type09 td {
-            text-align: center;
-        }
-        table.type09 {
-            border-collapse: collapse;
-            text-align: left;
-            line-height: 1.5;
-        }
-        table.type09 thead th {
-            padding: 10px;
-            font-weight: bold;
-            vertical-align: top;
-            vertical-align: middle;
-            color: #369;
-            border-bottom: 3px solid #036;
-        }
-        table.type09 tbody th {
-            width: 200px;
-            padding: 10px;
-            font-weight: bold;
-            vertical-align: top;
-            vertical-align: middle;
-            border-bottom: 1px solid #ccc;
-            background: #f3f6f7;
-        }
-        table.type09 td {
-            width: 350px;
-            padding: 10px;
-            vertical-align: top;
-            vertical-align: middle;
-            border-bottom: 1px solid #ccc;
-        }
-        table.type09 td input[type="text"] {
-            width: 80%;
-            box-sizing: border-box; /* 패딩과 테두리를 포함하여 열의 전체 너비 사용 */
-        }
-        table.type09 td input[type="number"] {
-            width: 80%;
-            box-sizing: border-box; 
-        }
-        table.type09 td input[type="file"] {
-            width: 80%;
-            box-sizing: border-box; 
-        }
     </style>
 </head>
 
@@ -112,7 +60,7 @@
     <div style="display: flex; gap: 10px;">
     <!-- 뒤로 가기 및 삭제하기 버튼 -->
     <form action="/roots/manageBoardDelete" method="post">
-        <input type="hidden" name="Uno" value="<%= row.Uno %>" />
+        <input type="hidden" name="Bno" value="<%= row.Bno %>" />
         <div class="btn-container">
             <button class="btn btn-outline-dark" type="button" onclick="location.href='/roots/manageBoardList' ">뒤로가기</button>
             <button class="btn btn-outline-danger" type="submit">게시판 삭제하기</button>

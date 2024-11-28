@@ -5,6 +5,7 @@ const fs = require('fs');       // 파일 경로 얻기
 var url = require('url');
 var path = require('path');
 const sharp = require('sharp'); // 이미지 크기 조정
+const Chart = require('chart'); //차트 추가
 const multer = require('multer');
 var mysql = require('mysql2');
 
@@ -517,7 +518,7 @@ router.post('/manageBoardUpdate', function (req, res, next) { // 게시판 정�
     ];
     console.log(datas);
     // SQL 쿼리 작성
-    var sql1 = `UPDATE BOARD SET Bid = ?, Buyer = ?, Content = ?, Title = ?, Trade = ?, Updated = ?,
+    var sql1 = `UPDATE BOARD SET Bid = ?, Buyer = ?, Title = ?, Content = ?, Trade = ?, Updated = ?,
                 Hit = ?, Pdate = ?, Category = ?, Price = ?, TradePlace = ?, Img = ?
                 WHERE Bno = ?`;
     // 쿼리 실행
@@ -536,13 +537,143 @@ router.post('/manageBoardDelete', function (req, res, next) { // 게시판 삭�
   var datas = [
     req.body.Bno
   ]
+  console.log(datas)
   var sql1 = "DELETE FROM BOARD WHERE Bno=?";
   connection.query(sql1, datas, function (err, results) {
     if (err) {
       console.error("err: " + err);
       return res.status(500).send("데이터베이스 오류 발생");
     }
-    res.redirect('/roots/manageBoardList');
+    else { // 삭제 성공 -> Bno 재정렬
+      var sql2 = "ALTER TABLE BOARD AUTO_INCREMENT=1;";
+      console.log('sql2 : ' + sql2)
+      connection.query(sql2, function (err, results) {
+        if (err) {
+          console.error("err: " + err);
+          return res.status(500).send("데이터베이스 오류");
+        }
+        var sql3 = "SET @COUNT = 0;";
+        console.log('sql3 : ' + sql3)
+        connection.query(sql3, function (err, results) {
+          if (err) {
+            console.error("err: " + err);
+            return res.status(500).send("데이터베이스 오류");
+          }
+          var sql4 = "UPDATE BOARD SET Bno = @COUNT:=@COUNT+1;";
+          console.log('sql4 : ' + sql4)
+          connection.query(sql4, function (err) {
+            if (err) {
+              console.error("err: " + err);
+              return res.status(500).send("데이터베이스 오류");
+            }
+            res.redirect('/roots/manageBoardList');
+          });
+        });
+      });
+    }
   });
 });
+
+//사이트 분석 화면 npm install chart
+router.get('/manageAnalytics', function (req, res, next) {
+  // 성별 집계
+  var sql1 = `SELECT COUNT(*) AS COUNT
+              FROM PERSON
+              GROUP BY Sex;`;
+  // 신뢰도 집계
+  var sql2 = `SELECT Uid, Trust
+              FROM USR
+              ORDER BY Trust DESC LIMIT 5;`;
+  // 돈 집계
+  var sql3 = `SELECT Uid, Money
+              FROM USR
+              ORDER BY Money DESC LIMIT 5;`;
+  // 연령대 집계
+  var sql4 = `SELECT
+              COUNT(CASE WHEN TIMESTAMPDIFF(YEAR, Bdate, CURDATE()) BETWEEN 0 AND 9 THEN 1 END) AS count0,
+              COUNT(CASE WHEN TIMESTAMPDIFF(YEAR, Bdate, CURDATE()) BETWEEN 10 AND 19 THEN 1 END) AS count1,
+              COUNT(CASE WHEN TIMESTAMPDIFF(YEAR, Bdate, CURDATE()) BETWEEN 20 AND 29 THEN 1 END) AS count2,
+              COUNT(CASE WHEN TIMESTAMPDIFF(YEAR, Bdate, CURDATE()) BETWEEN 30 AND 39 THEN 1 END) AS count3,
+              COUNT(CASE WHEN TIMESTAMPDIFF(YEAR, Bdate, CURDATE()) BETWEEN 40 AND 49 THEN 1 END) AS count4,
+              COUNT(CASE WHEN TIMESTAMPDIFF(YEAR, Bdate, CURDATE()) >= 50 THEN 1 END) AS count5 
+              FROM PERSON;`;
+  // 쿼리 실행
+  connection.query(sql1, function (err, gender) {
+    if (err) {
+      console.error("쿼리 실행 오류: " + err);
+      return res.status(500).send("데이터베이스 오류 발생");
+    }
+    let genderData = {
+      maleCount: gender[0].COUNT,
+      femaleCount: gender[1].COUNT
+    };
+    connection.query(sql2, function (err, usrtrust) {
+      if (err) {
+        console.error("쿼리 실행 오류: " + err);
+        return res.status(500).send("데이터베이스 오류 발생");
+      }
+      let trustData = {
+        // trust
+        top1: usrtrust[0].Trust,
+        top2: usrtrust[1].Trust,
+        top3: usrtrust[2].Trust,
+        top4: usrtrust[3].Trust,
+        top5: usrtrust[4].Trust,
+        // user id
+        ntop1: usrtrust[0].Uid,
+        ntop2: usrtrust[1].Uid,
+        ntop3: usrtrust[2].Uid,
+        ntop4: usrtrust[3].Uid,
+        ntop5: usrtrust[4].Uid,
+      };
+      connection.query(sql3, function (err, usrmoney) {
+        if (err) {
+          console.error("쿼리 실행 오류: " + err);
+          return res.status(500).send("데이터베이스 오류 발생");
+        } 
+        let moneyData = {
+          // trust
+          top1: usrmoney[0].Money,
+          top2: usrmoney[1].Money,
+          top3: usrmoney[2].Money,
+          top4: usrmoney[3].Money,
+          top5: usrmoney[4].Money,
+          // user id
+          ntop1: usrmoney[0].Uid,
+          ntop2: usrmoney[1].Uid,
+          ntop3: usrmoney[2].Uid,
+          ntop4: usrmoney[3].Uid,
+          ntop5: usrmoney[4].Uid,
+        };
+        connection.query(sql4, function (err, usrage) {
+          if (err) {
+            console.error("쿼리 실행 오류: " + err);
+            return res.status(500).send("데이터베이스 오류 발생");
+          }
+          let maxcount = Math.max(usrage[0].count0, usrage[0].count1, usrage[0].count2,
+                      usrage[0].count3, usrage[0].count4, usrage[0].count5);
+          let ageData = {
+            age0: usrage[0].count0,
+            age1: usrage[0].count1,
+            age2: usrage[0].count2,
+            age3: usrage[0].count3,
+            age4: usrage[0].count4,
+            age5: usrage[0].count5,
+            maxcount: maxcount
+          };
+          // 데이터 보내기
+          console.log(genderData);
+          console.log(trustData);
+          console.log(moneyData);
+          console.log(ageData);
+          res.render('RootFunction/manageAnalytics',{ 
+          title: '사이트 분석', 
+          genderData:genderData, trustData:trustData, moneyData:moneyData, ageData:ageData });
+        });
+      });
+    });
+  });
+})
+
+
 module.exports = router;
