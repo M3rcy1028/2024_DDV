@@ -6,6 +6,8 @@ module.exports = {
         var { rootLogin, usrLogin } = require('../../routes/index.js'); //사용자, 관리자 로그인 여부
         var { usrid } = require('../../routes/index.js'); //사용자 아이디
 
+        console.log("로그인 여부 : rootLogin - ", rootLogin, ", usrLogin - ", usrLogin);
+
         var UpdateEnable = false; //글 수정 가능 여부
 
         var Bno = req.params.Bno;

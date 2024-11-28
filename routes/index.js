@@ -155,6 +155,22 @@ router.get('/myPage', function (req, res, next) {
   res.render('myPage', { title: '마이페이지', rootLogin, usrLogin });
 })
 
+//찜 버튼 눌렀을 때
+router.post('/addWish', function (req, res, next){
+  var Bno = req.body.idx;
+  var datas = [usrid, Bno]; //사용자 아이디, 게시판 번호
+
+  console.log(datas); //data 출력
+
+  var sql = "INSERT INTO WISHLIST(Uid, Bnum) VALUES(?, ?);"; //wishlist table에 삽입
+
+  connection.query(sql, datas, function (err, rows) {
+    if (err) console.error("err : " + err);
+  })
+
+  res.redirect('/');
+})
+
 //메세지 화면
 router.get('/message', function (req, res, next) {
   res.render('message', { title: '메세지', rootLogin, usrLogin });
