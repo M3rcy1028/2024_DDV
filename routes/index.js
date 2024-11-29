@@ -25,7 +25,10 @@ const iv = Buffer.from("1234567890123456", "utf8"); // 16바이트 IV
 
 //시작 화면
 router.get('/', function (req, res, next) {
-  var sql = 'SELECT Bno, Img, Title, Price, Trade FROM board ORDER BY Bno DESC LIMIT 8 OFFSET 0'; //최신 게시글 8개
+  var sql = `SELECT Bno, Img, Title, Price, Trade 
+             FROM board 
+             ORDER BY Bno DESC 
+             LIMIT 8 OFFSET 0`; //최신 게시글 8개
 
   connection.query(sql, (err, rows) => {
     if (err) throw err;
@@ -38,6 +41,24 @@ router.get('/', function (req, res, next) {
 router.get('/joinForm', function (req, res, next) {
   res.render('LoginFunction/joinForm', { title: '회원가입', rootLogin, usrLogin });
 })
+
+router.get('/checkId', function (req, res) { // 아이디 중복 확인
+  const {id} = req.query;
+  console.log("Check duplicated id : " + id);
+  if (!id) {
+    return;
+  }
+  const sql1 = `SELECT COUNT(*) AS pid_check
+                FROM PERSON WHERE Pid=?`;
+  connection.query(sql1, id, function (err, results) {
+    if (err) {
+      console.error("err : " + err);
+      return res.status(500).send("데이터베이스 오류 발생");
+    }
+    const isDuplicate = results[0].pid_check > 0;
+    res.json({duplicate: isDuplicate});
+  });
+});
 
 router.post('/joinForm', function (req, res, next) { // 회원가입 정보 받기
   var encrypt = crypto.createCipheriv(algorithm, key, iv);

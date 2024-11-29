@@ -64,17 +64,17 @@
         <h2 class="d-flex justify-content-center">
             <%= title %>
         </h2>
-        <br> <br>
+        <br> <br> <br> <br>
         <!-- 표 나타내기 -->
         <div class="chart-container" style="display: flex; justify-content: space-between;">
             <div style="width:30%" class="chart-box">
                 <canvas id="genderChart" width="400" height="400"></canvas>
             </div>
-            <div style="width:30%; margin-top: 100px;" class="chart-box">
-                <canvas id="trustChart" width="400" height="300"></canvas>
+            <div style="width:30%" class="chart-box">
+                <canvas id="trustChart" width="400" height="400"></canvas>
             </div>
-            <div style="width:30%; margin-top: 100px;" class="chart-box">
-                <canvas id="moneyChart" width="400" height="300"></canvas>
+            <div style="width:30%" class="chart-box">
+                <canvas id="moneyChart" width="400" height="400"></canvas>
             </div>
         </div>
         <br> <br> <br> <br> <br>
@@ -91,10 +91,10 @@
         const genderChart = new Chart(ctx, {
             type: 'pie',
             data: {
-                labels: ["Male", "Female"],
+                labels: ["남성", "여성"],
                 datasets: [{
                     label: "Gender Distribution",
-                    backgroundColor: ["#00adff", "#ffb8c6"],
+                    backgroundColor: ["#00adff", "#f591c7"],
                     data: [<%= genderData.maleCount %>, <%= genderData.femaleCount %>]
                 }]
             },
@@ -102,7 +102,7 @@
                 title: {
                     display: true,
                     text: 'Gender Distribution',
-                    fontSize: 20
+                    fontSize: 25
                 }
             }
         });
@@ -116,24 +116,28 @@
                     "<%= trustData.ntop2 %>", 
                     "<%= trustData.ntop3 %>", 
                     "<%= trustData.ntop4 %>", 
-                    "<%= trustData.ntop5 %>"
+                    "<%= trustData.ntop5 %>",
+                    "<%= trustData.ntop6 %>", 
+                    "<%= trustData.ntop7 %>"
                 ],
                 datasets: [{
-                    label: "Trust Top5",
-                    backgroundColor: ["#3e95cd", "#8e5ea2","#3cba9f","#e8c3b9","#c45850"],
+                    label: "Trust Top7",
+                    backgroundColor: ["#3e95cd", "#8e5ea2","#3cba9f","#e8c3b9","#c45850", "#5f9ea0", "#e9967a"],
                     data: [
                         <%= trustData.top1 %>, 
                         <%= trustData.top2 %>, 
                         <%= trustData.top3 %>, 
                         <%= trustData.top4 %>, 
-                        <%= trustData.top5 %>]
+                        <%= trustData.top5 %>,
+                        <%= trustData.top6 %>,
+                        <%= trustData.top7 %>]
                 }]
             },
             options: {
                 legend: { display: false },
                 title: {
                     display: true,
-                    text: 'Trust Top5',
+                    text: 'Trust Top7',
                     fontSize: 20
                 },
                 scales: { xAxes: [{ ticks: { min: 0, } }] }
@@ -149,24 +153,28 @@
                     "<%= moneyData.ntop2 %>", 
                     "<%= trustData.ntop3 %>", 
                     "<%= moneyData.ntop4 %>", 
-                    "<%= moneyData.ntop5 %>"
+                    "<%= moneyData.ntop5 %>",
+                    "<%= moneyData.ntop6 %>", 
+                    "<%= moneyData.ntop7 %>"
                 ],
                 datasets: [{
-                    label: "Money Top5",
-                    backgroundColor: ["#3e95cd", "#8e5ea2","#3cba9f","#e8c3b9","#c45850"],
+                    label: "Money Top7",
+                    backgroundColor: ["#b22222", "#228b22","#4b0082","#d3d3d3","#20b2aa", "#c71585", "#ffe4e1"],
                     data: [
                         <%= moneyData.top1 %>, 
                         <%= moneyData.top2 %>, 
                         <%= moneyData.top3 %>, 
                         <%= moneyData.top4 %>, 
-                        <%= moneyData.top5 %>]
+                        <%= moneyData.top5 %>,
+                        <%= moneyData.top6 %>,
+                        <%= moneyData.top7 %>]
                 }]
             },
             options: {
                 legend: { display: false },
                 title: {
                     display: true,
-                    text: 'Money Top5',
+                    text: 'Money Top7',
                     fontSize: 20
                 },
                 scales: { yAxes: [{ ticks: { min: 0, } }] }

@@ -61,49 +61,86 @@
     <form action="/joinForm" method="post" onsubmit="return onWriteSubmit()" class="d-flex align-items-center flex-column">
         <div>
             <span>성</span>
-            <input type="text" name="Lname" id="Lname" maxlength="50">
+            <input type="text" name="Lname" id="Lname" maxlength="50" required>
         </div>
         <div>
             <span>이름</span>
-            <input type="text" name="Fname" id="Fname" maxlength="50">
+            <input type="text" name="Fname" id="Fname" maxlength="50" required>
         </div>
         <div>
             <span>아이디</span> <!--최대 20글자-->
-            <input type="text" name="id" id="id" maxlength="20">
-            <button class="btn btn-dark" id="id_check">중복확인</button>
+            <input type="text" name="id" id="id" maxlength="20" required>
+            <button class="btn btn-dark" id="id_check" onclick="location.href='/checkId'">중복확인</button>
+            <span id="id_status"></span>
         </div>
         <div>
             <span>비밀번호</span> <!--최대 20글자-->
-            <input type="password" name="passwd" id="passwd" maxlength="20">
+            <input type="password" name="passwd" id="passwd" maxlength="20" required>
         </div>
         <div>
             <span>비밀번호 확인</span>
-            <input type="password" name="passwd_check" id="passwd_check">
+            <input type="password" name="passwd_check" id="passwd_check" required>
         </div>
         <div>
             <span>닉네임</span> <!--최대 20글자-->
-            <input type="text" name="nickname" id="nickname" maxlength="20">
+            <input type="text" name="nickname" id="nickname" maxlength="20" required>
         </div>
         <div>
             <span>생일</span>
-            <input type="date" name="Bdate" id="Bdate">
+            <input type="date" name="Bdate" id="Bdate" required>
         </div>
         <div>
             <span>성별</span>
-            <select name="sex" id="sex">
+            <select name="sex" id="sex" required>
                 <option value="Male">남자</option>
                 <option value="Female">여자</option>
             </select>
         </div>
         <div>
             <span>이메일</span>
-            <input type="email" name="email" id="email">
+            <input type="email" name="email" id="email" required>
         </div>
         <button type="submit" class="btn btn-dark">회원가입</button>
     </form>
 
     <script>
+        let FormValid = false;
+        function checkIdAvailability() {
+            const id = $('#id').val().trim();
+
+            if (!id) {
+                $('#id_status').text('아이디를 입력해주세요.').css('color', 'orange');
+                $('#id').focus();
+                FormValid = false; // 유효하지 않은 상태 유지
+                return;
+            }
+
+            $.ajax({
+                url: '/checkId',
+                method: 'GET',
+                data: { id },
+                success: function (response) {
+                    if (response.duplicate) {
+                        $('#id_status').text('이미 사용 중인 아이디입니다.').css('color', 'red');
+                        FormValid = false; // 중복된 아이디는 유효하지 않음
+                    } else {
+                        $('#id_status').text('사용 가능한 아이디입니다.').css('color', 'green');
+                        FormValid = true; // 사용 가능한 아이디일 때만 유효
+                    }
+                },
+                error: function () {
+                    alert('아이디 중복 확인 중 오류가 발생했습니다.');
+                    FormValid = false; // 에러 발생 시 유효하지 않음
+                }
+            });
+        }
         function onWriteSubmit(){
+            // 아이디 중복 확인 결과 검증
+            if (!FormValid) {
+                alert("아이디 중복 확인을 완료해주세요.");
+                event.preventDefault(); // 폼 제출 방지
+                return false;
+            }
             if ($("#pid").val().trim() == ""){
                 var message = "아이디를 입력해 주세요.";
                 $("#pid").val("");
@@ -132,10 +169,23 @@
                 alert(message);
                 return false;
             }
+            if ($("#passwd_check").val().trim() == ""){
+                var message = "비밀번호를 확인해주세요.";
+                $("#passwd_check").val("");
+                $("#passwd_check").focus();
+                alert(message);
+                return false;
+            }
             if ($("#nickname").val().trim() == ""){
                 var message = "닉네임을 입력하세요.";
                 $("#nickname").val("");
                 $("#nickname").focus();
+                alert(message);
+                return false;
+            }
+            if ($("#Bdate").val().trim() == '') {
+                var message = "생일을 입력하세요.";
+                $("#Bdate").focus();
                 alert(message);
                 return false;
             }
@@ -146,7 +196,20 @@
                 alert(message);
                 return false;
             }
+            return true;
         }
+        $(document).ready(function () {
+            // 아이디 중복 확인 버튼 클릭 시
+            $('#id_check').click(function (e) {
+                e.preventDefault(); // 기본 동작 방지 (페이지 이동 방지)
+                checkIdAvailability(); // 중복 확인 함수 호출
+            });
+
+            // 폼 제출 시
+            $('form').on('submit', function (e) {
+                return onWriteSubmit(e); // onWriteSubmit 함수 호출
+            });
+        });
     </script>
 
 </body>

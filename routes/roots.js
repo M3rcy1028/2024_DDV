@@ -583,11 +583,11 @@ router.get('/manageAnalytics', function (req, res, next) {
   // 신뢰도 집계
   var sql2 = `SELECT Uid, Trust
               FROM USR
-              ORDER BY Trust DESC LIMIT 5;`;
+              ORDER BY Trust DESC LIMIT 7;`;
   // 돈 집계
   var sql3 = `SELECT Uid, Money
               FROM USR
-              ORDER BY Money DESC LIMIT 5;`;
+              ORDER BY Money DESC LIMIT 7;`;
   // 연령대 집계
   var sql4 = `SELECT
               COUNT(CASE WHEN TIMESTAMPDIFF(YEAR, Bdate, CURDATE()) BETWEEN 0 AND 9 THEN 1 END) AS count0,
@@ -619,12 +619,16 @@ router.get('/manageAnalytics', function (req, res, next) {
         top3: usrtrust[2].Trust,
         top4: usrtrust[3].Trust,
         top5: usrtrust[4].Trust,
+        top6: usrtrust[5].Trust,
+        top7: usrtrust[6].Trust,
         // user id
         ntop1: usrtrust[0].Uid,
         ntop2: usrtrust[1].Uid,
         ntop3: usrtrust[2].Uid,
         ntop4: usrtrust[3].Uid,
         ntop5: usrtrust[4].Uid,
+        ntop6: usrtrust[5].Uid,
+        ntop7: usrtrust[6].Uid
       };
       connection.query(sql3, function (err, usrmoney) {
         if (err) {
@@ -638,12 +642,16 @@ router.get('/manageAnalytics', function (req, res, next) {
           top3: usrmoney[2].Money,
           top4: usrmoney[3].Money,
           top5: usrmoney[4].Money,
+          top6: usrmoney[5].Money,
+          top7: usrmoney[6].Money,
           // user id
           ntop1: usrmoney[0].Uid,
           ntop2: usrmoney[1].Uid,
           ntop3: usrmoney[2].Uid,
           ntop4: usrmoney[3].Uid,
           ntop5: usrmoney[4].Uid,
+          ntop6: usrmoney[5].Uid,
+          ntop7: usrmoney[6].Uid,
         };
         connection.query(sql4, function (err, usrage) {
           if (err) {
