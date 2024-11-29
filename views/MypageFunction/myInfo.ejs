@@ -1,0 +1,149 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <link rel='stylesheet' href='/stylesheets/style.css' />
+    <script src="/javascripts/jquery-3.7.1.min.js"></script>
+
+    <!-- 알림창 UI -->
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+
+    <!-- 상단바 css -->
+    <link rel='stylesheet' href='/stylesheets/nav.css'/>
+
+    <!-- Bootstrap CSS -->
+    <link rel='stylesheet' href='/vendors/bootstrap/css/bootstrap.min.css' />
+    <link rel='stylesheet' href='/vendors/bootstrap/css/bootstrap-grid.min.css' />
+    <link rel='stylesheet' href='/vendors/bootstrap/css/bootstrap-reboot.min.css' />
+    
+    <!-- Bootstrap Icon -->
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
+    
+    <title>
+        <%= title %>
+    </title>
+
+    <style>
+        h2 {
+            margin-bottom: 20px;
+        }
+
+        form div {
+            margin-bottom: 10px;
+        }
+
+        form span {
+            display: block;
+            margin-bottom: 5px;
+        }
+
+        form input {
+            width: 300px;
+            padding: 6px;
+            box-sizing: border-box;
+        }
+
+        form select {
+            width: 300px;
+            padding: 6px;
+            box-sizing: border-box;
+        }
+
+        form button {
+            width: 300px;
+        }
+
+        #id {
+            width: 300px;
+        }
+    </style>
+
+</head>
+
+<body>
+    <!-- 상단 바 -->
+    <%- include('../nav.ejs') %>
+
+    <!-- 제목 -->
+    <h2>
+        <%= title %>
+    </h2>
+
+    <form action="/myPage/myInfo" method="post" onsubmit = "return onUpdateSubmit(event)">
+        <div>
+            <span>성</span>
+            <input type="text" name="Lname" id="Lname" value="<%=usrInfo.Lname%>" maxlength="50">
+        </div>
+        <div>
+            <span>이름</span>
+            <input type="text" name="Fname" id="Fname" value="<%=usrInfo.Fname%>" maxlength="50">
+        </div>
+        <div>
+            <span>아이디</span> <!--최대 20글자-->
+            <input type="text" name="id" id="id" value="<%=usrInfo.Uid%>" maxlength="20" disabled readonly>
+        </div>
+        <div>
+            <span>비밀번호</span> <!--최대 20글자-->
+            <input type="password" name="passwd" id="passwd" value="<%=usrInfo.Pwd%>" maxlength="20" disabled readonly>
+        </div>
+        <div>
+            <span>닉네임</span> <!--최대 20글자-->
+            <input type="text" name="nickname" id="nickname" value="<%=usrInfo.Nickname%>" maxlength="20">
+        </div>
+        <div>
+            <span>생일</span>
+            <input type="date" name="Bdate" id="Bdate" value="<%=usrInfo.Bdate%>">
+        </div>
+        <div>
+            <span>성별</span>
+            <select name="sex" id="sex">
+                <option value="Male" <%=usrInfo.Sex==='Male' ? 'selected' : '' %>>남자</option>
+                <option value="Female" <%=usrInfo.Sex==='Female' ? 'selected' : '' %>>여자</option>
+            </select>
+        </div>
+        <div>
+            <span>이메일</span>
+            <input type="email" name="email" id="email" value="<%=usrInfo.EMail%>">
+        </div>
+        <button type="submit" class="btn btn-dark">수정하기</button>
+    </form>
+
+    <!-- Bootstrap JS -->
+    <script src="/vendors/bootstrap/js/bootstrap.bundle.min.js"></script>
+    
+    <script>
+        async function onUpdateSubmit(event){
+            event.preventDefault(); //form 제출 막기
+
+            const { value: password } = await Swal.fire({
+                title: "비밀번호를 입력하세요",
+                input: "password",
+                inputPlaceholder: "비밀번호 입력",
+                inputAttributes: {
+                maxlength: "20",
+                autocapitalize: "off",
+                autocorrect: "off"
+                }
+            });
+            if (password === "<%=usrInfo.Pwd%>") { //비밀번호가 일치할 경우
+                await Swal.fire({
+                    icon: "success",
+                    title: "변경 성공",
+                    text: "정보 변경에 성공했습니다",
+                })
+                event.target.submit(); //form 제출
+            }
+            else{
+                await Swal.fire({
+                    icon: "error",
+                    title: "변경 실패",
+                    text: "정보 변경에 실패했습니다",
+                })
+                location.reload();
+            }
+            return false;
+        }
+    </script>
+</body>
+
+</html>

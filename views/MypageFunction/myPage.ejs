@@ -77,6 +77,10 @@
     </style>
     -->
     <style>
+        h2 {
+            margin-bottom: 20px;
+        }
+
         .profile-image {
             width: 150px;
             height: 150px;
@@ -101,20 +105,26 @@
 
 <body>
     <!-- 상단 바 -->
-    <%- include('nav.ejs') %>
+    <%- include('../nav.ejs') %>
+
+    <!-- 제목 -->
+    <h2>
+        <%= title %>
+    </h2>
     
     <!-- 사용자 정보 -->
-    <div class="usr-info d-flex">
-        <div class="left-info mb-4 me-4">
+    <div class="usr-info d-flex mb-4">
+        <div class="left-info me-4">
             <img src="<%=usrInfo.ProfileImg%>" class="profile-image">
         </div>
         <div class="right-info d-flex flex-column">
             <h4><%=usrInfo.Nickname%>의 상점</h4>
+            <span>상태메세지 : <%=usrInfo.State%></span>
             <span>포인트 : <%=usrInfo.Money%></span>
             <span>신뢰도 : <%=usrInfo.Trust%></span>
+            <button onclick="location.href='/myPage/myInfo'">회원정보 수정</button>
         </div>
     </div>
-
     <div>
         <nav>
             <div class="nav nav-tabs" id="nav-tab" role="tablist">

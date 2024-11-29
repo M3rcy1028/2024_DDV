@@ -153,7 +153,7 @@ router.get('/findPasswd', function (req, res, next) {
 //마이페이지 화면
 router.get('/myPage', function (req, res, next) {
   //마이페이지에 필요한 사용자 정보
-  var usrSql = "SELECT ProfileImg, Nickname, Money, Trust FROM USR WHERE uid=?";
+  var usrSql = "SELECT ProfileImg, Nickname, Money, Trust, State FROM USR WHERE uid=?";
  
   //찜한 목록 (최신순 6개)
   var likeSql = "SELECT Bno, Img, Title, Price FROM WISHLIST AS W, BOARD AS B WHERE uid=? and W.Bnum = B.Bno ORDER BY Wno DESC LIMIT 6 OFFSET 0"; 
@@ -176,10 +176,50 @@ router.get('/myPage', function (req, res, next) {
         connection.query(sellSql, usrid, (err, sellInfo, fields) => {
           if (err) throw err;
           //console.log("판매 정보 : ", sellInfo);
-          res.render('myPage', { title: '마이페이지', rootLogin, usrLogin, usrInfo : usrInfo[0], likeInfo, buyInfo, sellInfo});
+          res.render('MypageFunction/myPage', { title: '마이페이지', rootLogin, usrLogin, usrInfo : usrInfo[0], likeInfo, buyInfo, sellInfo});
         })
       });
     });
+  });
+})
+
+//마이페이지 - 정보 수정 (GET 요청)
+router.get('/myPage/myInfo', function (req, res, next){
+  var selectSql = "SELECT Lname, Fname, Uid, Pwd, Nickname, Bdate, Sex, EMail FROM PERSON AS P, USR AS U WHERE U.uid = ? and U.uid = P.pid";
+
+  connection.query(selectSql, usrid, (err, usrInfo, fileds) => {
+    if (err) throw err;
+    
+    const Bdate = new Date(usrInfo[0].Bdate);
+    const year = Bdate.getFullYear();
+    const month = String(Bdate.getMonth() + 1).padStart(2, '0');
+    const date = String(Bdate.getDate()).padStart(2, '0');
+    const newBdate = year + '-' + month + '-' + date; //년도.월.날짜 형태로 표기
+    usrInfo[0].Bdate = newBdate;
+
+    console.log("회원 정보 : ", usrInfo);
+    res.render('MypageFunction/myInfo', {title : '내 정보 수정', rootLogin, usrLogin, usrInfo : usrInfo[0]});
+  });
+})
+
+//마이페이지 - 정보 수정 (POST 요청)
+router.post('/myPage/myInfo', function (req, res, next){
+  //수정할 정보 가져오기
+  var Lname = req.body.Lname;
+  var Fname = req.body.Fname;
+  var Nickname = req.body.nickname;
+  var Bdate = req.body.Bdate;
+  var Sex = req.body.sex;
+  var Email = req.body.email;
+
+  //수정할 정보
+  var datas = [Lname, Fname, Nickname, Bdate, Sex, Email, usrid];
+
+  var updateSql = "UPDATE PERSON AS P, USR AS U SET P.Lname = ?, P.Fname = ?, U.Nickname = ?, P.Bdate = ?, P.Sex = ?, P.EMail = ? WHERE U.uid = ? and U.uid = P.pid";
+
+  connection.query(updateSql, datas, (err, usrInfo, fileds) => {
+    if (err) throw err;
+    res.redirect('/myPage/myInfo');
   });
 })
 
