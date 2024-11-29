@@ -7,6 +7,7 @@ var writeController = require('../controllers/SellController/sellWriteController
 var updateController = require('../controllers/SellController/sellUpdateController.js');
 var deleteController = require('../controllers/SellController/sellDeleteController.js');
 var searchController = require('../controllers/SellController/sellSearchController.js');
+var newchatController = require('../controllers/SellController/newchatController.js');
 
 const multer = require('multer');
 const path = require("path");
@@ -54,5 +55,8 @@ router.post('/sellDelete', deleteController.deleteData);
 
 //글 검색 (POST)
 router.post('/search', searchController.searchData);
+
+//채팅방 생성
+router.post('/newchat', newchatController.createChat);
 
 module.exports = router;

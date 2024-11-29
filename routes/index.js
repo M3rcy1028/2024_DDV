@@ -168,7 +168,7 @@ router.get('/myPage', function (req, res, next) {
 
 //메세지 화면
 router.get('/message', function (req, res, next) {
-  res.render('message', { title: '메세지', rootLogin, usrLogin });
+  res.render('message', { title: '메세지', rootLogin, usrLogin, usrid });
 })
 
 module.exports = router;

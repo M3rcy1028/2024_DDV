@@ -15,6 +15,7 @@ module.exports = {
             var Bid = row[0].Bid, newBid;
             newBid = Bid.slice(0, 4) + '*'.repeat(Bid.length - 4); //아이디는 4번째자리까지만 표기
             row[0].Bid = newBid;
+            row[0].realBid = Bid;
 
             const Update = new Date(row[0].Updated);
             const year = Update.getFullYear();
@@ -30,16 +31,16 @@ module.exports = {
             row[0].Content = newContent;
 
             //글을 조회 중인 사용자와 글 작성자가 동일한 경우
-            if(Bid === usrid){
+            if (Bid === usrid) {
                 UpdateEnable = true;
             }
-            else{
+            else {
                 UpdateEnable = false;
             }
 
             console.log("UpdateEnable : ", UpdateEnable);
 
-            res.render('SellFunction/sellRead', { title: "글 조회", rootLogin, usrLogin, UpdateEnable, row: row[0] });
+            res.render('SellFunction/sellRead', { title: "글 조회", rootLogin, usrLogin, UpdateEnable, row: row[0], usrid });
         });
     }
 }
