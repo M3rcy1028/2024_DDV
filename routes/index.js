@@ -177,10 +177,58 @@ router.get('/findId', function (req, res, next) {
   res.render('LoginFunction/findId', { title: '아이디 찾기' });
 })
 
+router.get('/getid', function (req, res) { // 아이디 찾기
+  const {lname, fname, email} = req.query;
+  console.log("Check: " + lname + " " + fname + " " + email);
+  if (!lname || !fname || !email) {
+    return;
+  }
+  const sql1 = `SELECT Pid
+            FROM PERSON WHERE Lname=? AND Fname=? AND Email=?`;
+  connection.query(sql1, [lname, fname, email], function (err, results) {
+    if (err) {
+      console.error("err : " + err);
+      return res.status(500).send("데이터베이스 오류 발생");
+    }
+    const Pid = results.length > 0 ? results[0].Pid : null;
+    console.log("Find id : " + Pid)
+    res.json({Pid: Pid});
+  });
+});
+
 //비밀번호 찾기 화면
 router.get('/findPasswd', function (req, res, next) {
   res.render('LoginFunction/findPasswd', { title: '비밀번호 찾기' });
 })
+
+router.get('/getpwd', function (req, res) { // 비밀번호 찾기
+  const {id, email} = req.query;
+  console.log("Check: " + id + " " + email);
+  if (!id || !email) {
+    return;
+  }
+  const sql1 = `SELECT Pwd FROM USR, PERSON 
+                WHERE Pid=Uid AND Uid=? AND Email=?`;
+  const sql2 = `UPDATE USR SET Pwd = ? WHERE Uid=?`;
+  connection.query(sql1, [id, email], function (err, results) {
+    if (err) {
+      console.error("err : " + err);
+      return res.status(500).send("데이터베이스 오류 발생");
+    }
+    const Pwd = crypto.randomBytes(5).toString('hex');
+    console.log("New pwd : " + Pwd);
+    // 암호화
+    var encrypt = crypto.createCipheriv(algorithm, key, iv);
+    var encryptResult = encrypt.update(Pwd, 'utf8', 'hex') + encrypt.final('hex');
+    connection.query(sql2, [encryptResult, id, email], function (err, results2) {
+      if (err) {
+        console.error("err : " + err);
+        return res.status(500).send("데이터베이스 오류 발생");
+      }
+      res.json({Pwd: Pwd});
+    })
+  });
+});
 
 //마이페이지 화면
 router.get('/myPage', function (req, res, next) {
