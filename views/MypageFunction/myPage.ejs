@@ -19,63 +19,7 @@
     <title>
         <%= title %>
     </title>
-
-    <!--
-    <style>
-        h2 {
-            margin-bottom: 20px;
-        }
-
-        .wrapper {
-            height: 800px;
-        }
-
-        nav {
-            width: 200px;
-            border-right: 1px solid;
-            position: sticky;
-            height: 100%;
-        }
-
-        nav h1 {
-            font-size: 20px;
-            padding-left: 30px;
-            padding-top: 40px;
-            padding-bottom: 40px;
-        }
-
-        .menu li {
-            list-style: none;
-            padding-bottom: 20px;
-        }
-
-        .menu li a {
-            height: 30px;
-            display: block;
-            font-size: 14px;
-        }
-
-        .profile-box {
-            margin-left: 50px;
-            width: 800px;
-            padding: 20px;
-            border-radius: 5px;
-            box-shadow: 0.5px 0.5px 2px 1px #eee;
-        }
-
-        .purchase-box {
-            margin-left: 50px;
-            width: 800px;
-            padding: 20px;
-            border-radius: 5px;
-            box-shadow: 0.5px 0.5px 2px 1px #eee;
-        }
-
-        .nav-item a {
-            color: black;
-        }
-    </style>
-    -->
+    
     <style>
         h2 {
             margin-bottom: 20px;
@@ -100,6 +44,20 @@
         .row{
             margin-top: 20px;
         }
+
+        .usr-info{
+            padding-left: 20px;
+            padding-right : 20px;
+            padding-top : 30px;
+            padding-bottom: 30px;
+        }
+
+        .sub-info span{
+            padding-left: 40px;
+            padding-right : 40px;
+            padding-top : 20px;
+            padding-bottom: 20px;
+        }
     </style>
 </head>
 
@@ -113,16 +71,21 @@
     </h2>
     
     <!-- 사용자 정보 -->
-    <div class="usr-info d-flex mb-4">
+    <div class="usr-info d-flex align-items-center mb-4 border">
         <div class="left-info me-4">
             <img src="<%=usrInfo.ProfileImg%>" class="profile-image">
         </div>
         <div class="right-info d-flex flex-column">
-            <h4><%=usrInfo.Nickname%>의 상점</h4>
-            <span>상태메세지 : <%=usrInfo.State%></span>
-            <span>포인트 : <%=usrInfo.Money%></span>
-            <span>신뢰도 : <%=usrInfo.Trust%></span>
-            <button onclick="location.href='/myPage/myInfo'">회원정보 수정</button>
+            <h4 class="mb-2"><%=usrInfo.Nickname%>의 상점</h4>
+            <span class="mb-4"><%=usrInfo.State%></span>
+            <div class="sub-info d-flex mb-2 border">
+                <span class="text-center">포인트<br><%=usrInfo.Money%></span>
+                <span class="text-center">신뢰도<br><%=usrInfo.Trust%></span>
+            </div>
+            <div>
+                <button type="button" class="btn btn-secondary btn-sm">포인트 충전</button>
+                <button type="button" class="btn btn-secondary btn-sm" onclick="location.href='/myPage/myInfo'">회원정보 수정</button>
+            </div>
         </div>
     </div>
     <div>
@@ -141,91 +104,93 @@
         </nav>
         <div class="tab-content" id="nav-tabContent">
             <div class="tab-pane fade show active" id="nav-like" role="tabpanel" aria-labelledby="nav-home-tab" tabindex="0">
-                <div class="row row-cols-6">
-                    <% if (likeInfo.length === 0) { %>
-                        <!-- 일정한 높이 설정을 위한 빈 컬럼 표시 -->
-                        <div class="col text-center ms-3 hidden" style="height: 210px;">
-                        </div>
-                    <% } else {%>
-                        <% for (var i=0; i<6; i++){
-                            if(i >= likeInfo.length){
-                                break;
-                            }
-                            var likeItem=likeInfo[i];
-                        %>
-                            <div class="d-flex flex-column col border text-center ms-3">
-                                <a href="/sellBoard/sellRead/<%=likeItem.Bno%>">
-                                    <img src="<%= likeItem.Img %>" style="width: 180px; height: 210px; object-fit: cover;"
-                                        alt="찜 목록 이미지">
-                                </a>
-                                <b name="title" id="title">
-                                    <a href="/sellBoard/sellRead/<%=likeItem.Bno%>">
-                                        <%= likeItem.Title %>
-                                    </a>
-                                </b>
-                                <p name="price" id="price"><%= likeItem.Price %> 원</p>
-                            </div>
-                        <% } %>
-                    <% } %>
+            <% if (likeInfo.length === 0) { %>
+            <!-- 일정한 높이 설정을 위한 빈 컬럼 표시 -->
+                <div class="d-flex justify-content-center align-items-center" style="height: 210px;">
+                    찜 내역이 없습니다
                 </div>
+            <% } else {%>
+                <div class="row row-cols-6">
+                <% for (var i=0; i<6; i++){
+                    if(i >= likeInfo.length){
+                        break;
+                    }
+                    var likeItem=likeInfo[i];
+                %>
+                    <div class="d-flex flex-column col border text-center ms-3">
+                        <a href="/sellBoard/sellRead/<%=likeItem.Bno%>">
+                            <img src="<%= likeItem.Img %>" style="width: 180px; height: 210px; object-fit: cover;"
+                                alt="찜 목록 이미지">
+                        </a>
+                        <b name="title" id="title">
+                            <a href="/sellBoard/sellRead/<%=likeItem.Bno%>">
+                                <%= likeItem.Title %>
+                            </a>
+                        </b>
+                        <p name="price" id="price"><%= likeItem.Price %> 원</p>
+                    </div>
+                </div>
+                <% } %>
+            <% } %>
             </div>
             <div class="tab-pane fade" id="nav-buy" role="tabpanel" aria-labelledby="nav-profile-tab" tabindex="0">
-                <div class="row row-cols-6">
-                    <% if (buyInfo.length === 0) { %>
-                        <!-- 일정한 높이 설정을 위한 빈 컬럼 표시 -->
-                        <div class="col text-center ms-3 hidden" style="height: 210px;">
-                        </div>
-                    <% } else {%>
-                        <% for (var i=0; i<6; i++){
-                            if(i >= buyInfo.length){
-                                break;
-                            }
-                            var buyItem=buyInfo[i];
-                        %>
-                            <div class="d-flex flex-column col border text-center ms-3">
-                                <a href="/sellBoard/sellRead/<%=buyItem.Bno%>">
-                                    <img src="<%= buyItem.Img %>" style="width: 180px; height: 210px; object-fit: cover;"
-                                        alt="구매 목록 이미지">
-                                </a>
-                                <b name="title" id="title">
-                                    <a href="/sellBoard/sellRead/<%=buyItem.Bno%>">
-                                        <%= buyItem.Title %>
-                                    </a>
-                                </b>
-                                <p name="price" id="price"><%= buyItem.Price %> 원</p>
-                            </div>
-                        <% } %>
-                    <% } %>
+            <% if (buyInfo.length === 0) { %>
+            <!-- 일정한 높이 설정을 위한 빈 컬럼 표시 -->
+                <div class="d-flex justify-content-center align-items-center" style="height: 210px;">
+                    구매 내역이 없습니다
                 </div>
+            <% } else {%>
+                <div class="row row-cols-6">
+                <% for (var i=0; i<6; i++){
+                    if(i >= buyInfo.length){
+                        break;
+                    }
+                    var buyItem=buyInfo[i]; %>
+                    <div class="d-flex flex-column col border text-center ms-3">
+                        <a href="/sellBoard/sellRead/<%=buyItem.Bno%>">
+                            <img src="<%= buyItem.Img %>" style="width: 180px; height: 210px; object-fit: cover;"
+                                alt="구매 목록 이미지">
+                        </a>
+                        <b name="title" id="title">
+                            <a href="/sellBoard/sellRead/<%=buyItem.Bno%>">
+                                <%= buyItem.Title %>
+                            </a>
+                        </b>
+                        <p name="price" id="price"><%= buyItem.Price %> 원</p>
+                    </div>
+                </div>
+                <% } %>
+            <% } %>    
             </div>
             <div class="tab-pane fade" id="nav-sell" role="tabpanel" aria-labelledby="nav-contact-tab" tabindex="0">
-                <div class="row row-cols-6">
-                    <% if (sellInfo.length === 0) { %>
-                        <!-- 일정한 높이 설정을 위한 빈 컬럼 표시 -->
-                        <div class="col text-center ms-3 hidden" style="height: 210px;">
-                        </div>
-                    <% } else {%>
-                        <% for (var i=0; i<6; i++){
-                            if(i >= sellInfo.length){
-                                break;
-                            }
-                            var sellItem=sellInfo[i];
-                        %>
-                            <div class="d-flex flex-column col border text-center ms-3">
-                                <a href="/sellBoard/sellRead/<%=sellItem.Bno%>">
-                                    <img src="<%= sellItem.Img %>" style="width: 180px; height: 210px; object-fit: cover;"
-                                        alt="판매 목록 이미지">
-                                </a>
-                                <b name="title" id="title">
-                                    <a href="/sellBoard/sellRead/<%=sellItem.Bno%>">
-                                        <%= sellItem.Title %>
-                                    </a>
-                                </b>
-                                <p name="price" id="price"><%= sellItem.Price %> 원</p>
-                            </div>
-                        <% } %>
-                    <% } %>
+            <% if (sellInfo.length === 0) { %>
+            <!-- 일정한 높이 설정을 위한 빈 컬럼 표시 -->
+                <div class="d-flex justify-content-center align-items-center" style="height: 210px;">
+                    판매 내역이 없습니다
                 </div>
+            <% } else {%>
+                <div class="row row-cols-6">
+                <% for (var i=0; i<6; i++){
+                    if(i >= sellInfo.length){
+                        break;
+                    }
+                    var sellItem=sellInfo[i];
+                %>
+                    <div class="d-flex flex-column col border text-center ms-3">
+                        <a href="/sellBoard/sellRead/<%=sellItem.Bno%>">
+                            <img src="<%= sellItem.Img %>" style="width: 180px; height: 210px; object-fit: cover;"
+                                alt="판매 목록 이미지">
+                        </a>
+                        <b name="title" id="title">
+                            <a href="/sellBoard/sellRead/<%=sellItem.Bno%>">
+                                <%= sellItem.Title %>
+                            </a>
+                        </b>
+                        <p name="price" id="price"><%= sellItem.Price %> 원</p>
+                    </div>
+                </div>
+                <% } %>
+            <% } %>
             </div>
         </div>
     </div>

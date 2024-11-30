@@ -1,0 +1,113 @@
+<!DOCTYPE html>
+
+<html>
+
+<head>
+    <link rel='stylesheet' href='/stylesheets/style.css' />
+    <script src="/javascripts/jquery-3.7.1.min.js"></script>
+
+    <!-- 상단바 css -->
+    <link rel='stylesheet' href='/stylesheets/nav.css' />
+
+    <!-- Bootstrap CSS -->
+    <link rel='stylesheet' href='/vendors/bootstrap/css/bootstrap.min.css' />
+    <link rel='stylesheet' href='/vendors/bootstrap/css/bootstrap-grid.min.css' />
+    <link rel='stylesheet' href='/vendors/bootstrap/css/bootstrap-reboot.min.css' />
+
+    <!-- Bootstrap Icon -->
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
+
+    <title>
+        <%= title %>
+    </title>
+
+    <style>
+        h2 {
+            margin-bottom: 20px;
+        }
+
+        form div {
+            margin-bottom: 10px;
+        }
+
+        form span {
+            display: block;
+            margin-bottom: 5px;
+        }
+
+        form input {
+            width: 300px;
+            padding: 6px;
+            box-sizing: border-box;
+        }
+
+        form button {
+            width: 300px;
+        }
+    </style>
+
+</head>
+
+<body>
+    <!-- 상단 바 -->
+    <%- include('../nav.ejs') %>
+
+        <!-- 제목 -->
+        <h2 class="d-flex justify-content-center">
+            <%= title %>
+        </h2>
+
+        <form class="d-flex align-items-center flex-column" action="/myPage/changePwd" method="post"
+            onsubmit="return onChangePwd()">
+            <div>
+                <span>기존 비밀번호</span> <!--최대 20글자-->
+                <input type="password" name="passwd" id="passwd" maxlength="20">
+            </div>
+            <div>
+                <span>새 비밀번호</span> <!--최대 20글자-->
+                <input type="password" name="newPasswd" id="newPasswd" maxlength="20">
+            </div>
+            <div>
+                <span>새 비밀번호 확인</span> <!--최대 20글자-->
+                <input type="password" name="newPasswd_check" id="newPasswd_check" maxlength="20">
+            </div>
+            <button type="submit" class="btn btn-dark">변경하기</button>
+        </form>
+
+        <!-- Bootstrap JS -->
+        <script src="/vendors/bootstrap/js/bootstrap.bundle.min.js"></script>
+
+        <script>
+            function onChangePwd() {
+                if ($("#passwd").val().trim() == "") {
+                    var message = "비밀번호를 입력해 주세요.";
+                    $("#passwd").val("");
+                    $("#passwd").focus();
+                    alert(message);
+                    return false;
+                }
+                if ($("#newPasswd").val().trim() == "") {
+                    var message = "새 비밀번호를 입력하세요.";
+                    $("#newPasswd").val("");
+                    $("#newPasswd").focus();
+                    alert(message);
+                    return false;
+                }
+                if ($("#newPasswd_check").val().trim() == "") {
+                    var message = "새 비밀번호 확인을 입력하세요.";
+                    $("#newPasswd_check").val("");
+                    $("#newPasswd_check").focus();
+                    alert(message);
+                    return false;
+                }
+                if ($("#newPasswd").val().trim() !== $("#newPasswd_check").val().trim()) {
+                    var message = "비밀번호가 일치하지 않습니다.";
+                    $("#newPasswd_check").focus();
+                    alert(message);
+                    return false;
+                }
+            }
+        </script>
+</body>
+
+</html>

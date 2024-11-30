@@ -10,6 +10,7 @@ var usersRouter = require('./routes/users');
 var vendorRouter = require('./routes/vendor');
 var rootsRouter = require('./routes/roots');
 var sellBoardRouter = require('./routes/sellBoard');
+var myPageRouter = require('./routes/myPage');
 
 var app = express();
 
@@ -41,6 +42,7 @@ app.use('/users', usersRouter);
 app.use('/roots', rootsRouter); // root 추가
 app.use('/vendors', vendorRouter);
 app.use('/sellBoard', sellBoardRouter);
+app.use('/myPage', myPageRouter);
 
 
 // catch 404 and forward to error handler
