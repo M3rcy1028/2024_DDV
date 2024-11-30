@@ -54,7 +54,7 @@ router.get('/myInfo', function (req, res, next) {
     var { usrLogin, rootLogin } = require('./index'); //사용자, 관리자 로그인 여부
     var { usrid } = require('./index');
 
-    var selectSql = "SELECT Lname, Fname, Uid, Pwd, Nickname, Bdate, Sex, EMail FROM PERSON AS P, USR AS U WHERE U.uid = ? and U.uid = P.pid";
+    var selectSql = "SELECT ProfileImg, Lname, Fname, Uid, Pwd, Nickname, Bdate, Sex, EMail FROM PERSON AS P, USR AS U WHERE U.uid = ? and U.uid = P.pid";
 
     connection.query(selectSql, usrid, (err, usrInfo, fileds) => {
         if (err) throw err;

@@ -24,6 +24,13 @@
     </title>
 
     <style>
+        .profile-image {
+            width: 150px;
+            height: 150px;
+            border-radius: 50%;
+            object-fit: cover;
+        }
+
         h2 {
             margin-bottom: 20px;
         }
@@ -57,7 +64,7 @@
             width: 300px;
         }
 
-        .change {
+        .no-margin {
             margin-bottom: 0px;
         }
     </style>
@@ -73,47 +80,55 @@
             <%= title %>
         </h2>
 
-        <form class="d-flex align-items-center flex-column" action="/myPage/myInfo" method="post"
-            onsubmit="return onUpdateSubmit(event)">
-            <div>
-                <span>성</span>
-                <input type="text" name="Lname" id="Lname" value="<%=usrInfo.Lname%>" maxlength="50">
-            </div>
-            <div>
-                <span>이름</span>
-                <input type="text" name="Fname" id="Fname" value="<%=usrInfo.Fname%>" maxlength="50">
-            </div>
-            <div>
-                <span>아이디</span> <!--최대 20글자-->
-                <input type="text" name="id" id="id" value="<%=usrInfo.Uid%>" maxlength="20" disabled readonly>
-            </div>
-            <div>
-                <span>비밀번호</span> <!--최대 20글자-->
-                <input type="password" name="passwd" id="passwd" value="<%=usrInfo.Pwd%>" maxlength="20" disabled
-                    readonly>
-                <p class="change text-end"><a href="/myPage/changePwd" style="font-size: 12px;">비밀번호 변경</a></p>
-            </div>
-            <div>
-                <span>닉네임</span> <!--최대 20글자-->
-                <input type="text" name="nickname" id="nickname" value="<%=usrInfo.Nickname%>" maxlength="20">
-            </div>
-            <div>
-                <span>생일</span>
-                <input type="date" name="Bdate" id="Bdate" value="<%=usrInfo.Bdate%>">
-            </div>
-            <div>
-                <span>성별</span>
-                <select name="sex" id="sex">
-                    <option value="Male" <%=usrInfo.Sex==='Male' ? 'selected' : '' %>>남자</option>
-                    <option value="Female" <%=usrInfo.Sex==='Female' ? 'selected' : '' %>>여자</option>
-                </select>
-            </div>
-            <div>
-                <span>이메일</span>
-                <input type="email" name="email" id="email" value="<%=usrInfo.EMail%>">
-            </div>
-            <button type="submit" class="btn btn-dark">수정하기</button>
-        </form>
+        <div class="d-flex justify-content-center">
+            <form class="d-flex flex-column" action="/myPage/myInfo" method="post"
+                onsubmit="return onUpdateSubmit(event)">
+                <div>
+                    <span>프로필 사진</span>
+                    <div class="no-margin d-flex justify-content-center" style="width:100%">
+                        <img src="<%=usrInfo.ProfileImg%>" class="profile-image">
+                    </div>
+                </div>
+                <div>
+                    <span>성</span>
+                    <input type="text" name="Lname" id="Lname" value="<%=usrInfo.Lname%>" maxlength="50">
+                </div>
+                <div>
+                    <span>이름</span>
+                    <input type="text" name="Fname" id="Fname" value="<%=usrInfo.Fname%>" maxlength="50">
+                </div>
+                <div>
+                    <span>아이디</span> <!--최대 20글자-->
+                    <input type="text" name="id" id="id" value="<%=usrInfo.Uid%>" maxlength="20" disabled readonly>
+                </div>
+                <div>
+                    <span>비밀번호</span> <!--최대 20글자-->
+                    <input type="password" name="passwd" id="passwd" value="<%=usrInfo.Pwd%>" maxlength="20" disabled
+                        readonly>
+                    <p class="no-margin text-end"><a href="/myPage/changePwd" style="font-size: 12px;">비밀번호 변경</a></p>
+                </div>
+                <div>
+                    <span>닉네임</span> <!--최대 20글자-->
+                    <input type="text" name="nickname" id="nickname" value="<%=usrInfo.Nickname%>" maxlength="20">
+                </div>
+                <div>
+                    <span>생일</span>
+                    <input type="date" name="Bdate" id="Bdate" value="<%=usrInfo.Bdate%>">
+                </div>
+                <div>
+                    <span>성별</span>
+                    <select name="sex" id="sex">
+                        <option value="Male" <%=usrInfo.Sex==='Male' ? 'selected' : '' %>>남자</option>
+                        <option value="Female" <%=usrInfo.Sex==='Female' ? 'selected' : '' %>>여자</option>
+                    </select>
+                </div>
+                <div>
+                    <span>이메일</span>
+                    <input type="email" name="email" id="email" value="<%=usrInfo.EMail%>">
+                </div>
+                <button type="submit" class="btn btn-dark">수정하기</button>
+            </form>
+        </div>
 
         <!-- Bootstrap JS -->
         <script src="/vendors/bootstrap/js/bootstrap.bundle.min.js"></script>
