@@ -13,6 +13,20 @@ const connection = mysql.createPool({
     connectionLimit: 10,
 });
 
+const multer = require('multer');
+const path = require("path");
+
+var storage = multer.diskStorage({
+    destination: function (req, file, cb) {
+        cb(null, "public/images/profile");
+    },
+    filename: function (req, file, cb) {
+        cb(null, file.originalname);
+    },
+});
+
+var upload = multer({ storage: storage });
+
 //마이페이지 화면 (/myPage)
 router.get('/', function (req, res, next) {
     var { usrLogin, rootLogin } = require('./index'); //사용자, 관리자 로그인 여부
@@ -72,7 +86,7 @@ router.get('/myInfo', function (req, res, next) {
 })
 
 //마이페이지 - 정보 수정 (POST 요청)
-router.post('/myInfo', function (req, res, next) {
+router.post('/myInfo', upload.single("profileImg"), function (req, res, next) {
     var { usrid } = require('./index');
     //수정할 정보 가져오기
     var Lname = req.body.Lname;
@@ -81,11 +95,19 @@ router.post('/myInfo', function (req, res, next) {
     var Bdate = req.body.Bdate;
     var Sex = req.body.sex;
     var Email = req.body.email;
+    var ProfileImg;
+
+    if (req.file == undefined) { //이미지가 없는 경우 - 기존 이미지 사용
+        ProfileImg = req.body.originImg;
+    }
+    else { //이미지가 있는 경우
+        ProfileImg = '/images/profile/' + req.file.filename; //이미지 경로
+    }
 
     //수정할 정보
-    var datas = [Lname, Fname, Nickname, Bdate, Sex, Email, usrid];
+    var datas = [ProfileImg, Lname, Fname, Nickname, Bdate, Sex, Email, usrid];
 
-    var updateSql = "UPDATE PERSON AS P, USR AS U SET P.Lname = ?, P.Fname = ?, U.Nickname = ?, P.Bdate = ?, P.Sex = ?, P.EMail = ? WHERE U.uid = ? and U.uid = P.pid";
+    var updateSql = "UPDATE PERSON AS P, USR AS U SET U.ProfileImg = ?, P.Lname = ?, P.Fname = ?, U.Nickname = ?, P.Bdate = ?, P.Sex = ?, P.EMail = ? WHERE U.uid = ? and U.uid = P.pid";
 
     connection.query(updateSql, datas, (err, usrInfo, fileds) => {
         if (err) throw err;

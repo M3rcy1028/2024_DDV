@@ -60,6 +60,10 @@
             width: 300px;
         }
 
+        .form-control {
+            width: 300px;
+        }
+
         #id {
             width: 300px;
         }
@@ -81,13 +85,16 @@
         </h2>
 
         <div class="d-flex justify-content-center">
-            <form class="d-flex flex-column" action="/myPage/myInfo" method="post"
+            <form class="d-flex flex-column" action="/myPage/myInfo" enctype="multipart/form-data" method="post"
                 onsubmit="return onUpdateSubmit(event)">
+                <input type="hidden" name="originImg" value="<%=usrInfo.ProfileImg%>">
                 <div>
                     <span>프로필 사진</span>
-                    <div class="no-margin d-flex justify-content-center" style="width:100%">
-                        <img src="<%=usrInfo.ProfileImg%>" class="profile-image">
+                    <div class="no-margin d-flex justify-content-center mb-2" style="width:100%">
+                        <img id="preview" src="<%=usrInfo.ProfileImg%>" class="profile-image">
                     </div>
+                    <input type="file" accept="image/jpeg, image/png" class="form-control" name="profileImg"
+                        id="profileImg" onchange="readURL(this);">
                 </div>
                 <div>
                     <span>성</span>
@@ -137,6 +144,35 @@
             async function onUpdateSubmit(event) {
                 event.preventDefault(); //form 제출 막기
 
+                if ($("#Lname").val().trim() == "") {
+                    var message = "성을 입력하세요.";
+                    $("#Lname").val("");
+                    $("#Lname").focus();
+                    alert(message);
+                    return false;
+                }
+                if ($("#Fname").val().trim() == "") {
+                    var message = "이름을 입력하세요.";
+                    $("#Fname").val("");
+                    $("#Fname").focus();
+                    alert(message);
+                    return false;
+                }
+                if ($("#nickname").val().trim() == "") {
+                    var message = "닉네임을 입력하세요.";
+                    $("#nickname").val("");
+                    $("#nickname").focus();
+                    alert(message);
+                    return false;
+                }
+                if ($("#email").val().trim() == "") {
+                    var message = "이메일을 입력하세요.";
+                    $("#email").val("");
+                    $("#email").focus();
+                    alert(message);
+                    return false;
+                }
+
                 const { value: password } = await Swal.fire({
                     title: "비밀번호를 입력하세요",
                     input: "password",
@@ -161,9 +197,19 @@
                         title: "변경 실패",
                         text: "정보 변경에 실패했습니다",
                     })
-                    location.reload();
+                    //location.reload();
                 }
                 return false;
+            }
+
+            function readURL(input) {
+                if (input.files && input.files[0]) {
+                    var reader = new FileReader();
+                    reader.onload = function (e) {
+                        document.getElementById('preview').src = e.target.result;
+                    };
+                    reader.readAsDataURL(input.files[0]);
+                }
             }
         </script>
 </body>

@@ -116,6 +116,10 @@
                         type="button" role="tab" aria-controls="nav-contact" aria-selected="false">
                         판매 내역
                     </button>
+                    <button class="nav-link" id="nav-review-tab" data-bs-toggle="tab" data-bs-target="#nav-review"
+                        type="button" role="tab" aria-controls="nav-contact" aria-selected="false">
+                        상점 후기
+                    </button>
                 </div>
             </nav>
             <div class="tab-content" id="nav-tabContent">
@@ -147,9 +151,9 @@
                                             <%= likeItem.Price %> 원
                                         </p>
                                     </div>
+                                    <% } %>
                             </div>
                             <% } %>
-                                <% } %>
                 </div>
                 <div class="tab-pane fade" id="nav-buy" role="tabpanel" aria-labelledby="nav-profile-tab" tabindex="0">
                     <% if (buyInfo.length===0) { %>
@@ -177,9 +181,9 @@
                                             <%= buyItem.Price %> 원
                                         </p>
                                     </div>
+                                    <% } %>
                             </div>
                             <% } %>
-                                <% } %>
                 </div>
                 <div class="tab-pane fade" id="nav-sell" role="tabpanel" aria-labelledby="nav-contact-tab" tabindex="0">
                     <% if (sellInfo.length===0) { %>
@@ -208,9 +212,15 @@
                                             <%= sellItem.Price %> 원
                                         </p>
                                     </div>
+                                    <% } %>
                             </div>
                             <% } %>
-                                <% } %>
+                </div>
+                <div class="tab-pane fade" id="nav-review" role="tabpanel" aria-labelledby="nav-home-tab" tabindex="0">
+                    <!-- 일정한 높이 설정을 위한 빈 컬럼 표시 -->
+                    <div class="d-flex justify-content-center align-items-center" style="height: 210px;">
+                        상점 후기가 없습니다
+                    </div>
                 </div>
             </div>
         </div>
