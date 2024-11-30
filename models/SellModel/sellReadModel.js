@@ -23,7 +23,7 @@ module.exports = {
             connection.query(selectSql, Bno, (err, row, fileds) => {
                 if (err) throw err;
 
-                if (usrid !== undefined){ //로그인을 한 경우
+                if (usrid !== undefined) { //로그인을 한 경우
                     //찜을 했는지 확인
                     connection.query(likeSql, [Bno, usrid], (err, likeCount) => {
                         if (err) throw err;
@@ -31,7 +31,7 @@ module.exports = {
                         callback(row, likeCount[0].LikeCount);
                     });
                 } //로그인을 하지 않은 경우
-                else{
+                else {
                     callback(row, 0);
                 }
             })

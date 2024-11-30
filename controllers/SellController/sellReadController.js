@@ -29,14 +29,13 @@ module.exports = {
             //개행 문자를 <br> 태그로 변경
             var newContent = row[0].Content;
             newContent = newContent.replaceAll("\r\n", '<br>');
-            console.log(newContent);
             row[0].Content = newContent;
 
             //글을 조회 중인 사용자와 글 작성자가 동일한 경우
-            if(Bid === usrid){
+            if (Bid === usrid) {
                 UpdateEnable = true;
             }
-            else{
+            else {
                 UpdateEnable = false;
             }
 
