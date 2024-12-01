@@ -56,7 +56,8 @@
 </head>
 
 <body>
-    <a href="/" id="home">로고</a>
+    <a href="/" id="home" class="me-auto p-2">
+        <img src="/images/design/weblogo.png" alt="로고" style="height: 100px;  width: 200px"></a>
 
     <h2 class="d-flex justify-content-center">
         <%= title %>
@@ -71,16 +72,58 @@
             <span>이메일</span>
             <input type="text" name="email" id="email">
         </div>
-        <button class="btn btn-dark">찾기</button>
+        <div>
+            <span id="find_status"></span>
+        </div>
+        <div>
+            <button class="btn btn-dark" id="find_pwd" onclick="location.href='/getpwd'">찾기</button>
+        </div>
     </form>
-
     <div class="d-flex justify-content-center link">
         <a class="me-2" href="/findId">아이디를 잊으셨나요?</a>
         <span class="me-2">|</span>
-        <a class="me-2"  href="/joinForm">회원가입하기</a>
-        <span class="me-2">|</span>
         <a class="me-2" href="/login">로그인하기</a>
+        <span class="me-2">|</span>
+        <a class="me-2"  href="/joinForm">회원가입하기</a>
     </div>
 </body>
+<script>
+    function FindPwdAvailability() {
+        const id = $('#id').val().trim();
+        const email = $('#email').val().trim();
 
+        if (!id) {
+            $('#find_status').text('아이디를 입력해주세요.').css('color', 'orange');
+            $('#id').focus();
+            return;
+        }
+        if (!email) {
+            $('#find_status').text('이메일을 입력해주세요.').css('color', 'orange');
+            $('#email').focus();
+            return;
+        }
+        $.ajax({
+            url: '/getpwd',
+            method: 'GET',
+            data: { id: id, email: email },
+            success: function (response) {
+                if (response.Pwd) {
+                    $('#find_status').text("<" + id + '>님의 새로운 비밀번호 : ' + response.Pwd).css('color', 'green');
+                } else {
+                    $('#find_status').text("<" + id + '> 유저를 찾을 수 없습니다.').css('color', 'red');
+                }
+            },
+            error: function () {
+                alert('비밀번호 찾기 중 오류가 발생했습니다.');
+            }
+        });
+    }
+    $(document).ready(function () {
+            // 비밀번호 중복 확인 버튼 클릭 시
+            $('#find_pwd').click(function (e) {
+                e.preventDefault(); // 기본 동작 방지 (페이지 이동 방지)
+                FindPwdAvailability(); // 중복 확인 함수 호출
+            });
+        });
+</script>
 </html>

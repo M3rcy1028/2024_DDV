@@ -2,6 +2,7 @@
 <html>
 
 <head>
+    <meta charset="UTF-8">
     <link rel='stylesheet' href='/stylesheets/style.css' />
     <script src="/javascripts/jquery-3.7.1.min.js"></script>
 
@@ -56,31 +57,80 @@
 </head>
 
 <body>
-    <a href="/" id="home">로고</a>
+    <a href="/" id="home" class="me-auto p-2">
+        <img src="/images/design/weblogo.png" alt="로고" style="height: 100px;  width: 200px"></a>
 
     <h2 class="d-flex justify-content-center">
         <%= title %>
     </h2>
 
-    <form class="d-flex align-items-center flex-column">
+    <form action="/findid" class="d-flex align-items-center flex-column">
         <div>
             <span>성</span>
-            <input type="text" name="Lname" id="Lname">
+            <input type="text" name="lname" id="lname" required>
             <span>이름</span>
-            <input type="text" name="Fname" id="Fname">
+            <input type="text" name="fname" id="fname" required>
             <span>이메일</span>
-            <input type="text" name="email" id="email">
+            <input type="text" name="email" id="email" required>
         </div>
-        <button class="btn btn-dark">찾기</button>
+        <div>
+            <span id="find_status"></span>
+        </div>
+        <div>
+            <button class="btn btn-dark" id="find_id" onclick="location.href='/getid'">찾기</button>
+        </div>
     </form>
-    
     <div class="d-flex justify-content-center link">
         <a class="me-2" href="/findPasswd">비밀번호를 잊으셨나요?</a>
         <span class="me-2">|</span>
-        <a class="me-2"  href="/joinForm">회원가입하기</a>
-        <span class="me-2">|</span>
         <a class="me-2" href="/login">로그인하기</a>
+        <span class="me-2">|</span>
+        <a class="me-2"  href="/joinForm">회원가입하기</a>
     </div>
 </body>
+<script>
+    function FindIdAvailability() {
+        const lname = $('#lname').val().trim();
+        const fname = $('#fname').val().trim();
+        const email = $('#email').val().trim();
 
+        if (!lname) {
+            $('#find_status').text('성을 입력해주세요.').css('color', 'orange');
+            $('#lname').focus();
+            return;
+        }
+        if (!fname) {
+            $('#find_status').text('이름을 입력해주세요.').css('color', 'orange');
+            $('#fname').focus();
+            return;
+        }
+        if (!email) {
+            $('#find_status').text('이메일을 입력해주세요.').css('color', 'orange');
+            $('#email').focus();
+            return;
+        }
+        $.ajax({
+            url: '/getid',
+            method: 'GET',
+            data: { lname: lname, fname: fname, email: email },
+            success: function (response) {
+                if (response.Pid) {
+                    $('#find_status').text("<" + lname + fname + '>님의 아이디 : ' + response.Pid).css('color', 'green');
+                } else {
+                    $('#find_status').text("<" + lname + fname + '>님의 아이디를 찾을 수 없습니다.').css('color', 'red');
+                }
+            },
+            error: function () {
+                alert('아이디 찾기 중 오류가 발생했습니다.');
+            }
+        });
+    }
+    $(document).ready(function () {
+            // 아이디 중복 확인 버튼 클릭 시
+            $('#find_id').click(function (e) {
+                e.preventDefault(); // 기본 동작 방지 (페이지 이동 방지)
+                FindIdAvailability(); // 중복 확인 함수 호출
+            });
+        });
+</script>
 </html>
