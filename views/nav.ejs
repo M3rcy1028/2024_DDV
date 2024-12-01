@@ -1,4 +1,12 @@
 <!-- 상단바 -->
+<nav class="header d-flex justify-content-end align-items-center">
+    <% if (rootLogin) { %> <!--로그인 됨-->
+        <div class="header d-flex justify-content-end align-items-center">관리자 <%= rootname %>님</div>
+    <% } %>
+    <% if (usrLogin) { %> <!--로그인 됨-->
+        <div class="header d-flex justify-content-end align-items-center">유저 <%= rootname %>님</div>
+    <% } %>
+</nav>
 
 <nav class="header d-flex justify-content-end align-items-center">
     <a href="/roots/notificationList" class="link p-2">공지사항</a>

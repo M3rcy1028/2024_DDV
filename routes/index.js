@@ -34,7 +34,7 @@ router.get('/', function (req, res, next) {
   connection.query(sql, (err, rows) => {
     if (err) throw err;
     console.log(rows);
-    res.render('index', { title: '중고장터', rows: rows, rootLogin, usrLogin });
+    res.render('index', { title: '중고장터', rows: rows, rootLogin, usrLogin, rootname });
   });
 });
 

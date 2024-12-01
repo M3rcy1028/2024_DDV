@@ -486,7 +486,7 @@ router.get('/manageBoardInfo/:Bno', function (req, res, next) {
     const productImg = path.join(__dirname, '../public', rows[0].Img);
     if (!fs.existsSync(productImg)) {
       console.log('Product image not found. Using default image.');
-      rows[0].Img = '/images/product/img_err.jpg';
+      rows[0].Img = '/images/product/img_err.png';
     }
     console.log('rows: ' + JSON.stringify(rows));
     // 정보보내기
@@ -505,7 +505,7 @@ router.post('/manageBoardUpdate', function (req, res, next) { // 게시판 정�
     console.log("req.file:" + req.file);
     console.log("product image:" + req.body.Img);
     // 파일 경로 결정
-    var image = req.body.Img || '/images/product/img_err.jpg';
+    var image = req.body.Img || '/images/product/img_err.png';
     if (req.file) {
       image = `/images/product/${req.file.filename}`;  // 새로 업로드된 파일 경로
     }
@@ -609,6 +609,10 @@ router.get('/manageAnalytics', function (req, res, next) {
               COUNT(CASE WHEN TIMESTAMPDIFF(YEAR, Bdate, CURDATE()) BETWEEN 40 AND 49 THEN 1 END) AS count4,
               COUNT(CASE WHEN TIMESTAMPDIFF(YEAR, Bdate, CURDATE()) >= 50 THEN 1 END) AS count5 
               FROM PERSON;`;
+  // 월별 회원가입 집계
+  var sql5 = `SELECT YEAR(Login) AS year, MONTH(Login) as month, COUNT(Pid) AS login_count
+              FROM PERSON GROUP BY YEAR(Login), MONTH(Login)
+              ORDER BY year, month`;
   // 쿼리 실행
   connection.query(sql1, function (err, gender) {
     if (err) {
@@ -681,15 +685,23 @@ router.get('/manageAnalytics', function (req, res, next) {
             age5: usrage[0].count5,
             maxcount: maxcount
           };
-          // 데이터 보내기
-          console.log(genderData);
-          console.log(trustData);
-          console.log(moneyData);
-          console.log(ageData);
-          console.log(rootname)
-          res.render('RootFunction/manageAnalytics',{ 
-          title: '사이트 분석', 
-          genderData:genderData, trustData:trustData, moneyData:moneyData, ageData:ageData, rootname });
+          connection.query(sql5, function(err, login) {
+            if (err) {
+              console.error("쿼리 실행 오류: " + err);
+              return res.status(500).send("데이터베이스 오류 발생");
+            }
+            const loginData = JSON.stringify(login);
+            // 데이터 보내기
+            console.log(genderData);
+            console.log(trustData);
+            console.log(moneyData);
+            console.log(ageData);
+            console.log(login);
+            res.render('RootFunction/manageAnalytics',{ 
+            title: '사이트 분석', 
+            genderData:genderData, trustData:trustData, moneyData:moneyData, 
+            ageData:ageData, loginData:loginData, rootname });
+          })
         });
       });
     });
