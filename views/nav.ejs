@@ -1,22 +1,12 @@
-<!-- 상단바 -->
-<nav class="header d-flex justify-content-end align-items-center">
-    <% if (rootLogin) { %> <!--로그인 됨-->
-        <div class="header d-flex justify-content-end align-items-center">관리자 <%= rootname %>님</div>
-    <% } %>
-    <% if (usrLogin) { %> <!--로그인 됨-->
-        <div class="header d-flex justify-content-end align-items-center">유저 <%= rootname %>님</div>
-    <% } %>
-</nav>
-
 <nav class="header d-flex justify-content-end align-items-center">
     <a href="/roots/notificationList" class="link p-2">공지사항</a>
     <% if (!rootLogin && !usrLogin) { %> <!--로그인 안 됨-->
         <a href="/joinForm" class="link p-2">회원가입</a>
         <a href="/login" class="link p-2">로그인</a>
-    <% } %>
-    <% if (rootLogin || usrLogin) { %> <!--로그인 됨-->
-        <a href="/logout" class="link p-2">로그아웃</a>
-    <% } %>
+        <% } %>
+            <% if (rootLogin || usrLogin) { %> <!--로그인 됨-->
+                <a href="/logout" class="link p-2">로그아웃</a>
+                <% } %>
 </nav>
 
 <nav class="d-flex justify-content-between align-items-center mb-3">
@@ -37,32 +27,31 @@
     </div>
 
     <% if (usrLogin) { %> <!--유저 로그인 됨-->
-    <div class="header">
-        <a href="/sellBoard/sellWrite" class="link p-2">판매하기</a>
-        <a href="/myPage/" class="link p-2">마이페이지</a>
-        <a href="/message" class="link p-2">메세지</a>
-    </div>
-    <% } else if (rootLogin) { %> <!--관리자 로그인 됨-->
-    <nav class="header">
-        <a href="/roots/manageUsrList" class="link p-2">회원관리</a>
-        <a href="/roots/manageBoardList" class="link p-2">게시판관리</a>
-        <a href="/roots/manageAnalytics" class="link p-2">사이트분석</a>
-    </nav>
-    <% } else { %> <!-- 로그인 안됨-->
-        <div class="header" style="visibility: hidden;">
+        <div class="header">
             <a href="/sellBoard/sellWrite" class="link p-2">판매하기</a>
-            <a href="/myPage" class="link p-2">마이페이지</a>
+            <a href="/myPage/" class="link p-2">마이페이지</a>
             <a href="/message" class="link p-2">메세지</a>
         </div>
-    <% } %>
+        <% } else if (rootLogin) { %> <!--관리자 로그인 됨-->
+            <nav class="header">
+                <a href="/roots/manageUsrList" class="link p-2">회원관리</a>
+                <a href="/roots/manageBoardList" class="link p-2">게시판관리</a>
+                <a href="/roots/manageAnalytics" class="link p-2">사이트분석</a>
+            </nav>
+            <% } else { %> <!-- 로그인 안됨-->
+                <div class="header" style="visibility: hidden;">
+                    <a href="/sellBoard/sellWrite" class="link p-2">판매하기</a>
+                    <a href="/myPage" class="link p-2">마이페이지</a>
+                    <a href="/message" class="link p-2">메세지</a>
+                </div>
+                <% } %>
 </nav>
 
 <hr> <!-- 구분선 -->
 
 <div class="menu-bar d-flex">
     <div class="dropdown me-2">
-        <a class="btn btn-dark dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown"
-            aria-expanded="false">
+        <a class="btn btn-dark dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown" aria-expanded="false">
             카테고리
         </a>
 

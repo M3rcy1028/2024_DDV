@@ -44,7 +44,7 @@ router.get('/joinForm', function (req, res, next) {
 })
 
 router.get('/checkId', function (req, res) { // 아이디 중복 확인
-  const {id} = req.query;
+  const { id } = req.query;
   console.log("Check duplicated id : " + id);
   if (!id) {
     return;
@@ -57,7 +57,7 @@ router.get('/checkId', function (req, res) { // 아이디 중복 확인
       return res.status(500).send("데이터베이스 오류 발생");
     }
     const isDuplicate = results[0].pid_check > 0;
-    res.json({duplicate: isDuplicate});
+    res.json({ duplicate: isDuplicate });
   });
 });
 
@@ -150,7 +150,7 @@ router.post('/rootLogin', function (req, res, next) { // 관리자 로그인 입
       rootid = req.body.id;
       module.exports.rootid = rootid;
       module.exports.rootLogin = rootLogin;
-      connection.query(sql2, rootid, function(err, res2) {
+      connection.query(sql2, rootid, function (err, res2) {
         if (err) throw (err);
         rootname = res2[0].Rname;
         module.exports.rootname = rootname;
@@ -185,7 +185,7 @@ router.get('/findId', function (req, res, next) {
 })
 
 router.get('/getid', function (req, res) { // 아이디 찾기
-  const {lname, fname, email} = req.query;
+  const { lname, fname, email } = req.query;
   console.log("Check: " + lname + " " + fname + " " + email);
   if (!lname || !fname || !email) {
     return;
@@ -199,7 +199,7 @@ router.get('/getid', function (req, res) { // 아이디 찾기
     }
     const Pid = results.length > 0 ? results[0].Pid : null;
     console.log("Find id : " + Pid)
-    res.json({Pid: Pid});
+    res.json({ Pid: Pid });
   });
 });
 
@@ -209,28 +209,29 @@ router.get('/findPasswd', function (req, res, next) {
 })
 
 //찜 버튼 눌렀을 때
-router.post('/addWish', function (req, res, next){
+router.post('/addWish', function (req, res, next) {
   var Bno = req.body.idx;
   var likeCount = req.body.like;
   var datas = [usrid, Bno]; //사용자 아이디, 게시판 번호
 
-  if (likeCount == 0){ //찜을 하지 않은 경우
+  if (likeCount == 0) { //찜을 하지 않은 경우
     var insertSql = "INSERT INTO WISHLIST(Uid, Bnum) VALUES(?, ?);"; //wishlist table에 삽입
     connection.query(insertSql, datas, function (err, rows) {
       if (err) console.error("err : " + err);
       res.redirect('/sellBoard/sellRead/' + String(Bno)); //기존에 보고 있던 게시글로 redirect
     })
   }
-  else{ //찜을 한 경우
+  else { //찜을 한 경우
     var deleteSql = "DELETE FROM WISHLIST WHERE Uid=? and Bnum=?"; //wishlist table에서 삭제
     connection.query(deleteSql, datas, function (err, rows) {
       if (err) console.error("err : " + err);
       res.redirect('/sellBoard/sellRead/' + String(Bno)); //기존에 보고 있던 게시글로 redirect
     })
   }
+});
 
 router.get('/getpwd', function (req, res) { // 비밀번호 찾기
-  const {id, email} = req.query;
+  const { id, email } = req.query;
   console.log("Check: " + id + " " + email);
   if (!id || !email) {
     return;
@@ -253,7 +254,7 @@ router.get('/getpwd', function (req, res) { // 비밀번호 찾기
         console.error("err : " + err);
         return res.status(500).send("데이터베이스 오류 발생");
       }
-      res.json({Pwd: Pwd});
+      res.json({ Pwd: Pwd });
     })
   });
 });
