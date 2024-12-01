@@ -1,4 +1,5 @@
 var express = require('express');
+var crypto = require('crypto'); // npm install -d crypto
 var router = express.Router();
 var mysql = require('mysql2');
 
@@ -15,17 +16,25 @@ const connection = mysql.createPool({
 
 var rootLogin = false;
 var rootid = "";
+var rootname = "";
 var usrLogin = false;
 var usrid = "";
 
+const algorithm = 'aes-192-cbc'
+const key = Buffer.from("123456789012345678901234", "utf8"); // 24바이트 키 (AES-192)
+const iv = Buffer.from("1234567890123456", "utf8"); // 16바이트 IV
+
 //시작 화면
 router.get('/', function (req, res, next) {
-  var sql = 'SELECT Bno, Img, Title, Price, Trade FROM board ORDER BY Bno DESC LIMIT 8 OFFSET 0'; //최신 게시글 8개
+  var sql = `SELECT Bno, Img, Title, Price, Trade 
+             FROM board 
+             ORDER BY Bno DESC 
+             LIMIT 8 OFFSET 0`; //최신 게시글 8개
 
   connection.query(sql, (err, rows) => {
     if (err) throw err;
     console.log(rows);
-    res.render('index', { title: '중고장터', rows: rows, rootLogin, usrLogin });
+    res.render('index', { title: '중고장터', rows: rows, rootLogin, usrLogin, rootname });
   });
 });
 
@@ -34,7 +43,28 @@ router.get('/joinForm', function (req, res, next) {
   res.render('LoginFunction/joinForm', { title: '회원가입', rootLogin, usrLogin });
 })
 
+router.get('/checkId', function (req, res) { // 아이디 중복 확인
+  const {id} = req.query;
+  console.log("Check duplicated id : " + id);
+  if (!id) {
+    return;
+  }
+  const sql1 = `SELECT COUNT(*) AS pid_check
+                FROM PERSON WHERE Pid=?`;
+  connection.query(sql1, id, function (err, results) {
+    if (err) {
+      console.error("err : " + err);
+      return res.status(500).send("데이터베이스 오류 발생");
+    }
+    const isDuplicate = results[0].pid_check > 0;
+    res.json({duplicate: isDuplicate});
+  });
+});
+
 router.post('/joinForm', function (req, res, next) { // 회원가입 정보 받기
+  var encrypt = crypto.createCipheriv(algorithm, key, iv);
+  var encryptResult = encrypt.update(req.body.passwd, 'utf8', 'hex') + encrypt.final('hex');
+
   var Pdatas = [
     req.body.id,
     req.body.Lname,
@@ -46,7 +76,7 @@ router.post('/joinForm', function (req, res, next) { // 회원가입 정보 받�
 
   var Udatas = [
     req.body.id,
-    req.body.passwd,
+    encryptResult,
     req.body.nickname,
   ];
 
@@ -75,9 +105,12 @@ router.get('/login', function (req, res, next) {
 })
 
 router.post('/login', function (req, res, next) { // 유저 로그인 입력
+  var encrypt = crypto.createCipheriv(algorithm, key, iv);
+  var encryptResult = encrypt.update(req.body.passwd, 'utf8', 'hex') + encrypt.final('hex');
+  
   var Udatas = [
     req.body.id,
-    req.body.passwd,
+    encryptResult,
   ];
 
   var sql = "SELECT * FROM USR WHERE Uid=? AND Pwd=?;";
@@ -108,16 +141,21 @@ router.post('/rootLogin', function (req, res, next) { // 관리자 로그인 입
     req.body.id,
     req.body.passwd,
   ];
-
-  var sql = "SELECT * FROM ROOT WHERE Rid=? AND Rpwd=?;";
-  connection.query(sql, Rdatas, function (err, results, fields) {
+  var sql1 = "SELECT * FROM ROOT WHERE Rid=? AND Rpwd=?;";
+  var sql2 = "SELECT Rname FROM ROOT WHERE Rid=?;";
+  connection.query(sql1, Rdatas, function (err, results, fields) {
     if (err) throw err;
     if (results.length > 0) { // db 반환값이 존재할 때
       rootLogin = true;
       rootid = req.body.id;
       module.exports.rootid = rootid;
       module.exports.rootLogin = rootLogin;
-      console.log("관리자 아이디 : " + rootid);
+      connection.query(sql2, rootid, function(err, res2) {
+        if (err) throw (err);
+        rootname = res2[0].Rname;
+        module.exports.rootname = rootname;
+      })
+      console.log("관리자 아이디 : " + rootid + "(" + rootname + ")");
       res.redirect('/'); // 회원가입 후 리다이렉트
     }
     else {
@@ -133,6 +171,7 @@ router.get('/logout', function (req, res, next) {
   usrLogin = false;
   usrid = "";
   rootid = "";
+  rootname = "";
   module.exports.rootid = rootid;
   module.exports.rootLogin = rootLogin;
   module.exports.usrid = usrid;
@@ -144,6 +183,25 @@ router.get('/logout', function (req, res, next) {
 router.get('/findId', function (req, res, next) {
   res.render('LoginFunction/findId', { title: '아이디 찾기' });
 })
+
+router.get('/getid', function (req, res) { // 아이디 찾기
+  const {lname, fname, email} = req.query;
+  console.log("Check: " + lname + " " + fname + " " + email);
+  if (!lname || !fname || !email) {
+    return;
+  }
+  const sql1 = `SELECT Pid
+            FROM PERSON WHERE Lname=? AND Fname=? AND Email=?`;
+  connection.query(sql1, [lname, fname, email], function (err, results) {
+    if (err) {
+      console.error("err : " + err);
+      return res.status(500).send("데이터베이스 오류 발생");
+    }
+    const Pid = results.length > 0 ? results[0].Pid : null;
+    console.log("Find id : " + Pid)
+    res.json({Pid: Pid});
+  });
+});
 
 //비밀번호 찾기 화면
 router.get('/findPasswd', function (req, res, next) {
@@ -170,7 +228,35 @@ router.post('/addWish', function (req, res, next){
       res.redirect('/sellBoard/sellRead/' + String(Bno)); //기존에 보고 있던 게시글로 redirect
     })
   }
-})
+
+router.get('/getpwd', function (req, res) { // 비밀번호 찾기
+  const {id, email} = req.query;
+  console.log("Check: " + id + " " + email);
+  if (!id || !email) {
+    return;
+  }
+  const sql1 = `SELECT Pwd FROM USR, PERSON 
+                WHERE Pid=Uid AND Uid=? AND Email=?`;
+  const sql2 = `UPDATE USR SET Pwd = ? WHERE Uid=?`;
+  connection.query(sql1, [id, email], function (err, results) {
+    if (err) {
+      console.error("err : " + err);
+      return res.status(500).send("데이터베이스 오류 발생");
+    }
+    const Pwd = crypto.randomBytes(5).toString('hex');
+    console.log("New pwd : " + Pwd);
+    // 암호화
+    var encrypt = crypto.createCipheriv(algorithm, key, iv);
+    var encryptResult = encrypt.update(Pwd, 'utf8', 'hex') + encrypt.final('hex');
+    connection.query(sql2, [encryptResult, id, email], function (err, results2) {
+      if (err) {
+        console.error("err : " + err);
+        return res.status(500).send("데이터베이스 오류 발생");
+      }
+      res.json({Pwd: Pwd});
+    })
+  });
+});
 
 //메세지 화면
 router.get('/message', function (req, res, next) {

@@ -11,6 +11,8 @@
 ```
 npm install -d crypto
 npm install mysql
+npm install http-errors
+npm install sharp
 ```
 
 ### 👥 팀원 및 역할
