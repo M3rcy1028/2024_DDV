@@ -258,6 +258,7 @@
             }
         });
         var cnum;
+        var c_sid;
 
         function sendMessage() {
             var input = document.getElementById('input');
@@ -269,6 +270,10 @@
                 });
                 input.value = '';
             }
+        }
+
+        function purchase() {
+            socket.emit('purchase', (cnum));
         }
 
         function load_chat_log(btn) {
@@ -346,6 +351,14 @@
             div.innerHTML = chatList.join('')
 
         })
+
+        socket.on('tradeCompleted', () => {
+            window.location.href = "/";
+        });
+
+        socket.on('needmoney', () => {
+            alert("잔액이 부족합니다. 충전 후 다시 시도해주세요.");
+        });
     </script>
 </head>
 
@@ -417,7 +430,8 @@
                     <div class="chat">
                         <div class="chat-header clearfix">
                             <div class="col-lg-6 hidden-sm text-right float-right">
-                                <a href="javascript:void(0);" class="btn btn-outline-secondary float-right">구매</a>
+                                <% if (usrId===) <button onclick="purchase()"
+                                    class="btn btn-outline-secondary float-right">구매</button>
                             </div>
                         </div>
                         <div class="chat-history">
