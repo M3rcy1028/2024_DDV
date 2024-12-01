@@ -86,7 +86,7 @@
                     <%=usrInfo.State%>
                 </span>
                 <div class="sub-info d-flex mb-2 border">
-                    <span class="text-center">포인트<br>
+                    <span class="text-center" id="point">포인트<br>
                         <%=usrInfo.Money%>
                     </span>
                     <span class="text-center">신뢰도<br>
@@ -94,6 +94,7 @@
                     </span>
                 </div>
                 <div>
+                    <!--<input type="text" id="chargePoint">-->
                     <button type="button" class="btn btn-secondary btn-sm" id="pointBtn">포인트 충전</button>
                     <button type="button" class="btn btn-secondary btn-sm" id="infoBtn"
                         onclick="location.href='/myPage/myInfo'">
@@ -229,6 +230,80 @@
         <script src="/vendors/bootstrap/js/bootstrap.bundle.min.js"></script>
 
         <script>
+            $(function () {
+                $("#pointBtn").on("click", postPoint);
+
+                async function postPoint() {
+                    //데이터 처리
+                    var Point = "<%=usrInfo.Money%>";
+
+                    //데이터 입력
+                    const { value: formValues } = await Swal.fire({
+                        title: "포인트 충전",
+                        html: `
+                            <input id="chargePoint" class="swal2-input" placeholder="충전할 포인트">
+                            <input id="password" type="password" class="swal2-input" placeholder="비밀번호">
+                        `,
+                        focusConfirm: false,
+                        preConfirm: () => {
+                            var chargePoint = document.getElementById("chargePoint").value.trim();
+                            var password = document.getElementById("password").value.trim();
+
+                            if (chargePoint == "") {
+                                Swal.fire("알림", "충전 포인트를 입력하세요", "warning");
+                                return;
+                            }
+
+                            if (password == "") {
+                                Swal.fire("알림", "비밀번호를 입력하세요", "warning");
+                                return;
+                            }
+
+                            return [chargePoint, password];
+                        }
+                    });
+
+                    if (formValues) {
+                        const [chargePoint, password] = formValues;
+
+                        console.log("충전할 포인트:", chargePoint);
+                        console.log("비밀번호:", password);
+
+                        $.ajax({
+                            type: "POST",
+                            url: "/myPage/chargePoint",
+                            data: {
+                                point: Point,
+                                update: chargePoint,
+                                pwd: password
+                            },
+                            dataType: "json",
+                            success: function (response) {
+                                if (!response.success) {
+                                    //포인트 충전 실패
+                                    Swal.fire({
+                                        title: "알림",
+                                        text: response.message,
+                                        icon: "error"
+                                    });
+                                } else {
+                                    //포인트 충전 성공
+                                    $("#Point").text(response.sumPoint); // 화면에 새 포인트 표시
+                                    Swal.fire("성공", "포인트가 충전되었습니다!", "success")
+                                        .then(() => {
+                                            console.log("충전 완료 후 화면 갱신");
+                                            location.reload();
+                                        });
+                                }
+                            },
+                            error: function (xhr, status, e) {
+                                console.log("Error: ", status, e);
+                                Swal.fire("오류", "포인트 충전 중 오류가 발생했습니다.", "error");
+                            }
+                        });
+                    }
+                }
+            })
         </script>
 
 </body>

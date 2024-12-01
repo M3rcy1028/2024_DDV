@@ -143,4 +143,37 @@ router.post('/changePwd', function (req, res, next) {
     })
 });
 
+//마이페이지 포인트 충전
+router.post("/chargePoint", function (req, res, next) {
+    var { usrid } = require('./index');
+
+    var point = Number(req.body.point);
+    var chargePoint = Number(req.body.update);
+    var sumPoint = point + chargePoint;
+
+    var password = req.body.pwd;
+
+    var datas = [sumPoint, usrid, password];
+
+    var updateSql = "UPDATE USR SET MONEY = ? WHERE uid = ? and Pwd = ?";
+
+    connection.query(updateSql, datas, (err, result) => {
+        if (err) throw err;
+
+        if (result.affectedRows == 0) {
+            //비밀번호 틀린 경우
+            return res.status(401).json({
+                success: false,
+                message: "패스워드가 일치하지 않거나, 잘못된 요청으로 인해 변경되지 않았습니다."
+            });
+        }
+        else {
+            res.json({
+                success: true,
+                sumPoint: sumPoint
+            });
+        }
+    })
+});
+
 module.exports = router;
