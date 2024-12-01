@@ -208,6 +208,27 @@ router.get('/findPasswd', function (req, res, next) {
   res.render('LoginFunction/findPasswd', { title: '비밀번호 찾기' });
 })
 
+//찜 버튼 눌렀을 때
+router.post('/addWish', function (req, res, next){
+  var Bno = req.body.idx;
+  var likeCount = req.body.like;
+  var datas = [usrid, Bno]; //사용자 아이디, 게시판 번호
+
+  if (likeCount == 0){ //찜을 하지 않은 경우
+    var insertSql = "INSERT INTO WISHLIST(Uid, Bnum) VALUES(?, ?);"; //wishlist table에 삽입
+    connection.query(insertSql, datas, function (err, rows) {
+      if (err) console.error("err : " + err);
+      res.redirect('/sellBoard/sellRead/' + String(Bno)); //기존에 보고 있던 게시글로 redirect
+    })
+  }
+  else{ //찜을 한 경우
+    var deleteSql = "DELETE FROM WISHLIST WHERE Uid=? and Bnum=?"; //wishlist table에서 삭제
+    connection.query(deleteSql, datas, function (err, rows) {
+      if (err) console.error("err : " + err);
+      res.redirect('/sellBoard/sellRead/' + String(Bno)); //기존에 보고 있던 게시글로 redirect
+    })
+  }
+
 router.get('/getpwd', function (req, res) { // 비밀번호 찾기
   const {id, email} = req.query;
   console.log("Check: " + id + " " + email);
@@ -236,11 +257,6 @@ router.get('/getpwd', function (req, res) { // 비밀번호 찾기
     })
   });
 });
-
-//마이페이지 화면
-router.get('/myPage', function (req, res, next) {
-  res.render('myPage', { title: '마이페이지', rootLogin, usrLogin });
-})
 
 //메세지 화면
 router.get('/message', function (req, res, next) {

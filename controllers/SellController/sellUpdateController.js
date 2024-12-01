@@ -28,8 +28,8 @@ exports.updateData = (req, res) => {
     var price = req.body.price;
     var image;
 
-    if (req.file == undefined) { //이미지가 없는 경우
-        image = '';
+    if (req.file == undefined) { //이미지가 없는 경우 - 기존 이미지 사용
+        image = req.body.originImg;
     }
     else { //이미지가 있는 경우
         image = '/images/product/' + req.file.filename; //이미지 경로
