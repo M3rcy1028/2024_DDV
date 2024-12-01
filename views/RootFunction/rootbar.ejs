@@ -1,0 +1,37 @@
+<% if (rootLogin) { %> <!--유저 로그인 됨-->
+<br>
+<nav class="header d-flex justify-content-end align-items-center">
+    <div class="header"></div>
+    <b>관리자 <%= rootname %>님
+    <a href="/logout" class="link p-2">로그아웃</a></b>
+</nav>
+<nav class="d-flex justify-content-between align-items-center mb-3">
+    <div>
+        <a href="/" id="home" class="me-auto p-2">
+            <img src="/images/design/weblogo.png" alt="로고" style="height: 100px;  width: 200px">
+        </a>
+    </div>
+    <nav class="header" style="text-align: right;">
+        <b>
+            <a href="/roots/notificationList" class="link p-2">공지사항</a>
+            <a href="/roots/notificationWrite" class="link p-2">공지작성</a>
+            <br>
+            <a href="/roots/manageUsrList" class="link p-2">회원관리</a>
+            <a href="/roots/manageBoardList" class="link p-2">게시판관리</a>
+            <a href="/roots/manageAnalytics" class="link p-2">사이트분석</a>
+        </b>
+    </nav>
+</nav>
+<% } else if (usrLogin) { %> <!--유저 로그인 됨-->
+    <%- include('../nav.ejs') %>
+<% } else { %> 
+    <nav class="d-flex justify-content-between align-items-center mb-3">
+        <div>
+            <a href="/" id="home" class="me-auto p-2">
+                <img src="/images/design/weblogo.png" alt="로고" style="height: 100px;  width: 200px">
+            </a>
+        </div>
+    </nav> 
+<% } %> 
+<!-- 기다란 선 추가
+<hr style="border: 1px solid #6c975d; margin-top: 20px;"> -->

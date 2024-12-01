@@ -1,0 +1,70 @@
+.btn2 {
+    background-color: white; /* 기본 버튼 배경 색상 */
+    border-color: #6c975d; /* 버튼 테두리 색상 */
+    color: black; /* 버튼 글자 색상 */
+}
+.btn2:hover {
+    background-color: #6c975d; /* 호버 시 색상 */
+    border-color: black;
+    color: white; /* 버튼 글자 색상 */
+}
+/* 테이블 스타일 추가 */
+.table1 {
+    width: 100%;
+    border-collapse: collapse;
+    /*box-shadow: 0 0 10px rgba(0, 0, 0, 0.15);*/
+    /*border-radius: 10px;*/
+    overflow: hidden;
+    /*border: 1px solid black;*/
+}
+.table1 th {
+    padding: 10px;
+    text-align: left;
+    border-bottom: 3px solid #6c975d;
+}
+.table1 th a {
+    color: black; /* 헤더 텍스트 색상 변경 */
+    text-decoration: none; /* 밑줄 제거 */
+}
+.table1 td {
+    padding: 10px;
+    text-align: left;
+    background-color: white;
+}
+.table1 thead {
+    background-color: white;
+}
+.button-container {
+    display: flex;
+    justify-content: flex-end; /* 오른쪽 정렬 */
+    margin-bottom: 20px; /* 아래쪽 여백 추가 */
+}
+/* 페이지네이션 스타일 */
+.pagination {
+    display: flex;
+    justify-content: center;
+    margin-top: 20px;
+}
+.pagination a {
+    margin: 0 5px;
+    padding: 5px 10px;
+    text-decoration: none;
+    background-color: #6c975d; /* 기본 버튼 배경 색상 */
+    border-color: #6c975d; /* 버튼 테두리 색상 */
+    color: white; /* 버튼 글자 색상 */
+    border-radius: 5px;
+}
+.pagination .active {
+    background-color: #6c975d; /* 기본 버튼 배경 색상 */
+    border-color: #6c975d; /* 버튼 테두리 색상 */
+    color: white; /* 버튼 글자 색상 */
+}
+.pagination a:hover {
+    background-color: white; /* 호버 시 색상 */
+    border-color: #6c975d;
+    color: black; /* 버튼 글자 색상 */
+}
+a {
+    color: #003458; /* 하이퍼링크 색을 #0000BB로 설정 */
+    text-decoration: none; /* 밑줄 제거 */
+}

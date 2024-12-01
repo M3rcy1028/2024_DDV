@@ -9,9 +9,8 @@
         <link rel='stylesheet' href='/vendors/bootstrap/css/bootstrap-grid.min.css' />
         <link rel='stylesheet' href='/vendors/bootstrap/css/bootstrap-reboot.min.css' />
 
-        <title>
-            <%= title %>
-        </title>
+        <!-- rootbar 디자인 -->
+        <link rel='stylesheet' href='/stylesheets/rootbar.css'/>
 
         <style>
             .adver_carousel {
@@ -25,112 +24,24 @@
                 height: 100%;
                 object-fit: cover;
             }
-
-            .search-box {
-                display: flex;
-                margin-left: 10px;
-            }
-
-            .search-box input {
-                width: 400px;
-            }
-
-            .search-btn {
-                margin-left: 10px;
-                margin-right: 10px;
-            }
-
             .posts {
                 margin-top: 20px;
                 margin-bottom: 20px;
             }
-
-            /* 테이블 스타일 추가 */
-            .table1 {
-                width: 100%;
-                border-collapse: collapse;
-                box-shadow: 0 0 10px rgba(0, 0, 0, 0.15);
-                border-radius: 10px;
-                overflow: hidden;
-                border: 1px solid black;
-            }
-
-            .table1 th, .table1 td {
-                padding: 10px;
-                text-align: left;
-            }
-
-            .table1 thead {
-                background-color: #75c7eb;
-                
-            }
-
-            .button-container {
-                display: flex;
-                justify-content: flex-end; /* 오른쪽 정렬 */
-                margin-bottom: 20px; /* 아래쪽 여백 추가 */
-            }
-            /* 페이지네이션 스타일 */
-            .pagination {
-                display: flex;
-                justify-content: center;
-                margin-top: 20px;
-            }
-            .pagination a {
-                margin: 0 5px;
-                padding: 5px 10px;
-                text-decoration: none;
-                border: 1px solid #ddd;
-                border-radius: 5px;
-            }
-            .pagination .active {
-                background-color: #0dcaf0;
-                color: white;
-            }
-            .pagination a:hover {
-                background-color: #ddd;
-            }
-            a {
-                color: #00008B; /* 하이퍼링크 색을 #0000BB로 설정 */
-                text-decoration: none; /* 밑줄 제거 */
-            }
         </style>
     </head>
     <body>
-        <% if (rootLogin) { %> <!--관리자 로그인 됨-->
-        <div class="header d-flex justify-content-end align-items-center">관리자 <%= rootname %>님</div>
-        <nav class="d-flex justify-content-between align-items-center mb-3">
-            <div>
-                <a href="/" id="home" class="me-auto p-2">
-                    <img src="/images/design/weblogo.png" alt="로고" style="height: 100px;  width: 200px">
-                </a>
-            </div>
-            <div class="header">
-                <a href="/roots/manageUsrList" class="link p-2">회원관리</a>
-                <a href="/roots/manageBoardList" class="link p-2">게시판관리</a>
-                <a href="/roots/manageAnalytics" class="link p-2">사이트분석</a>
-            </div>
-        </nav> <% }  else {%>
-            <a href="/" id="home" class="me-auto p-2">
-                <img src="/images/design/weblogo.png" alt="로고" style="height: 100px;  width: 200px">
-              </a>
-            <br>
-        <% } %>
+        <%- include('rootbar.ejs') %>
         <h2 class="d-flex justify-content-center">
-            <%= title %>
+            <b><%= title %></b>
         </h2>
-        <% if (rootLogin) { %> <!--관리자 로그인 됨-->
-        <nav class="button-container">
-                <button class="btn btn-outline-dark" onclick="location.href='/roots/notificationWrite'">공지사항 작성하기</button>
-        </nav>
-        <% } %>
         <table class="table1">
             <!--정렬 버튼-->
-            <div class="button-container">
+            <div class="button-container" gap: 10px;>
                 <form action="" method="get">
                     <input type="hidden" name="page" value="<%= currentPage %>">
                     <!-- No 기준 정렬 버튼 -->
-                    <button type="submit" name="sort" value="<%= sort === 'ASC' ? 'DESC' : 'ASC' %>" class="btn btn-outline-secondary">
+                    <button type="submit" name="sort" value="<%= sort === 'ASC' ? 'DESC' : 'ASC' %>" class="btn btn2">
                         <%= sort === 'ASC' ? '게시글 번호 내림차순' : '게시글 번호 오름차순' %>
                     </button>
                 </form>
@@ -147,8 +58,7 @@
             </thead>
             <tbody>
             <% for (var i=0; i < rows.length; i++) { 
-                        var oneItem = rows[i]; 
-            %>
+                        var oneItem = rows[i]; %>
             <tr onclick="window.location.href='/roots/notificationRead/<%= oneItem.Bid %>'" style="cursor: pointer;">
                     <td><%= oneItem.Bid %></td>
                     <td><%= oneItem.Rname %></td>
@@ -162,15 +72,15 @@
         <!-- 페이지네이션 -->
         <div class="pagination">
             <% if (currentPage > 1) { %>
-                <a href="?page=<%= currentPage - 1 %>&sort=<%= sort %>&order=<%= order %>" class="btn btn-info">이전</a>
+                <a href="?page=<%= currentPage - 1 %>&sort=<%= sort %>&order=<%= order %>" class="btn btn2">이전</a>
             <% } %>
 
             <% for (var i = 1; i <= totalPages; i++) { %>
-                <a href="?page=<%= i %>&sort=<%= sort %>&order=<%= order %>" class="btn btn-outline-info <%= i === currentPage ? 'active' : '' %>"><%= i %></a>
+                <a href="?page=<%= i %>&sort=<%= sort %>&order=<%= order %>" class="btn btn2<%= i === currentPage ? 'active' : '' %>"><%= i %></a>
             <% } %>
 
             <% if (currentPage < totalPages) { %>
-                <a href="?page=<%= currentPage + 1 %>&sort=<%= sort %>&order=<%= order %>" class="btn btn-info">다음</a>
+                <a href="?page=<%= currentPage + 1 %>&sort=<%= sort %>&order=<%= order %>" class="btn btn2">다음</a>
             <% } %>
         </div>
         <script>

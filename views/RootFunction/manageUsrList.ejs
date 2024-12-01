@@ -9,109 +9,13 @@
         <link rel='stylesheet' href='/vendors/bootstrap/css/bootstrap-grid.min.css' />
         <link rel='stylesheet' href='/vendors/bootstrap/css/bootstrap-reboot.min.css' />
 
-        <title>
-            <%= title %>
-        </title>
-
-        <style>
-            .adver_carousel {
-                width: 1000px;
-                height: 300px;
-                overflow: hidden;
-                margin-top: 30px;
-            }
-
-            .adver_carousel .carousel-inner {
-                height: 100%;
-                object-fit: cover;
-            }
-
-            .search-box {
-                display: flex;
-                margin-left: 10px;
-            }
-
-            .search-box input {
-                width: 400px;
-            }
-
-            .search-btn {
-                margin-left: 10px;
-                margin-right: 10px;
-            }
-
-            .posts {
-                margin-top: 20px;
-                margin-bottom: 20px;
-            }
-
-            /* 테이블 스타일 추가 */
-            .table1 {
-                width: 100%;
-                border-collapse: collapse;
-                box-shadow: 0 0 10px rgba(0, 0, 0, 0.15);
-                border-radius: 10px;
-                overflow: hidden;
-                border: 1px solid black;
-            }
-
-            .table1 th, .table1 td {
-                padding: 10px;
-                text-align: center;
-            }
-
-            .table1 thead {
-                background-color: #f4f6f7;
-                border-bottom: 3px solid #036;
-            }
-
-            .button-container {
-                display: flex;
-                justify-content: flex-end; /* 오른쪽 정렬 */
-                margin-bottom: 20px; /* 아래쪽 여백 추가 */
-            }
-            /* 페이지네이션 스타일 */
-            .pagination {
-                display: flex;
-                justify-content: center;
-                margin-top: 20px;
-            }
-            .pagination a {
-                margin: 0 5px;
-                padding: 5px 10px;
-                text-decoration: none;
-                border: 1px solid #ddd;
-                border-radius: 5px;
-            }
-            .pagination .active {
-                background-color: #75c7eb;
-                color: white;
-            }
-            .pagination a:hover {
-                background-color: #ddd;
-            }
-            a {
-                color: #00008B; /* 하이퍼링크 색을 #0000BB로 설정 */
-                text-decoration: none; /* 밑줄 제거 */
-            }
-        </style>
+        <!-- rootbar 디자인 -->
+        <link rel='stylesheet' href='/stylesheets/rootbar.css'/>
     </head>
     <body>
-        <div class="header d-flex justify-content-end align-items-center">관리자 <%= rootname %>님</div>
-        <nav class="d-flex justify-content-between align-items-center mb-3">
-            <div>
-                <a href="/" id="home" class="me-auto p-2">
-                    <img src="/images/design/weblogo.png" alt="로고" style="height: 100px;  width: 200px">
-                </a>
-            </div>
-            <nav class="header">
-                <a href="/roots/notificationList" class="link p-2">공지사항</a>
-                <a href="/roots/manageBoardList" class="link p-2">게시판관리</a>
-                <a href="/roots/manageAnalytics" class="link p-2">사이트분석</a>
-            </nav>
-        </nav>
-        <h2 class="d-flex justify-content-center"><%= title %></h2><br><br>
-        <table class="table1" border="1">
+        <%- include('rootbar.ejs') %>
+        <h2 class="d-flex justify-content-center"><b><%= title %></b></h2><br><br>
+        <table class="table1">
             <thead>
                 <tr>
                     <th>
@@ -165,15 +69,15 @@
         <!-- 페이지네이션 -->
         <div class="pagination">
             <% if (currentPage > 1) { %>
-                <a href="?page=<%= currentPage - 1 %>&sort=<%= sort %>&order=<%= order %>" class="btn btn-info">이전</a>
+                <a href="?page=<%= currentPage - 1 %>&sort=<%= sort %>&order=<%= order %>" class="btn btn">이전</a>
             <% } %>
 
             <% for (var i = 1; i <= totalPages; i++) { %>
-                <a href="?page=<%= i %>&sort=<%= sort %>&order=<%= order %>" class="btn btn-outline-info <%= i === currentPage ? 'active' : '' %>"><%= i %></a>
+                <a href="?page=<%= i %>&sort=<%= sort %>&order=<%= order %>" class="btn btn <%= i === currentPage ? 'active' : '' %>"><%= i %></a>
             <% } %>
 
             <% if (currentPage < totalPages) { %>
-                <a href="?page=<%= currentPage + 1 %>&sort=<%= sort %>&order=<%= order %>" class="btn btn-info">다음</a>
+                <a href="?page=<%= currentPage + 1 %>&sort=<%= sort %>&order=<%= order %>" class="btn btn">다음</a>
             <% } %>
         </div>
         <script>

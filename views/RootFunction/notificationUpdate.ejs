@@ -9,7 +9,9 @@
     <link rel='stylesheet' href='/vendors/bootstrap/css/bootstrap.min.css' />
     <link rel='stylesheet' href='/vendors/bootstrap/css/bootstrap-grid.min.css' />
     <link rel='stylesheet' href='/vendors/bootstrap/css/bootstrap-reboot.min.css' />
-
+    <!-- rootbar 디자인 -->
+    <link rel='stylesheet' href='/stylesheets/rootbar.css'/>
+    <link rel='stylesheet' href='/stylesheets/rootview.css'/>
     <style>
         h2 {
             margin-bottom: 20px;
@@ -39,54 +41,40 @@
         table button {
             width: 500px;
         }
-        a {
-            color: #00008B; /* 하이퍼링크 색을 #0000BB로 설정 */
-            text-decoration: none; /* 밑줄 제거 */
-        }
     </style>
 </head>
 
 <body>
-    <div class="header d-flex justify-content-end align-items-center">관리자 <%= rootname %>님</div>
-    <nav class="d-flex justify-content-between align-items-center mb-3">
-        <div>
-            <a href="/" id="home" class="me-auto p-2">
-                <img src="/images/design/weblogo.png" alt="로고" style="height: 100px;  width: 200px">
-            </a>
-        </div>
-        <nav class="header">
-            <a href="/roots/manageUsrList" class="link p-2">회원관리</a>
-            <a href="/roots/manageBoardList" class="link p-2">게시판관리</a>
-            <a href="/roots/manageAnalytics" class="link p-2">사이트분석</a>
-        </nav>
-    </nav>
-    <h2 class="d-flex justify-content-center">
-        <%= title %>
+    <%- include('rootbar.ejs') %>
+    <h2 class="d-flex justify-content-center"><b>
+        <%= title %></b>
     </h2>
     <br>
-    <form action="/roots/notificationUpdate" method="post" onsubmit="return onWriteSubmit()" class="d-flex align-items-center flex-column">
-        <table>
+    <div class="card" style="width: 40%;">
+        <form action="/roots/notificationUpdate" method="post" onsubmit="return onWriteSubmit()" class="d-flex align-items-center flex-column">
             <input type="hidden" name="Bid" value="<%=row.Bid%>"/>
-            <tr class="d-flex flex-column">
-                <td>제목</td>
-                <td><input type="text" name="title" id="title" value="<%=row.Title || '' %>" required/></td>
-            </tr>
-            <tr class="d-flex flex-column">
-                <td>내용</td>
-                <td><textarea name="content" id="content" required><%=row.Content || '' %></textarea></td>
-            </tr>
-            <tr class="d-flex flex-column">
-                <td>비밀번호</td>
-                <td><input type="password" name="passwd" id="passwd"></td>
-            </tr>
-            <tr class="d-flex justify-content-center">
-                <td> <button class="btn btn-outline-success" type="submit">수정완료</button> </td>
-            </tr>
-            <td>
+            
+            <table>
+                <tr class="d-flex flex-column">
+                    <td>제목</td>
+                    <td><input type="text" name="title" id="title" value="<%=row.Title || '' %>" required/></td>
+                </tr>
+                <tr class="d-flex flex-column">
+                    <td>내용</td>
+                    <td><textarea name="content" id="content" required><%=row.Content || '' %></textarea></td>
+                </tr>
+                <tr class="d-flex flex-column">
+                    <td>비밀번호</td>
+                    <td><input type="password" name="passwd" id="passwd"></td>
+                </tr>
+            </table>
+            
+            <div class="button-group">
+                <button class="btn btn-outline-success" type="submit">수정완료</button>
                 <button class="btn btn-outline-dark" type="button" onclick="location.href='/roots/notificationRead/<%=row.Bid%>'">돌아가기</button>
-            </td>
-        </table>
-    </form>
+            </div>
+        </form>
+    </div>
     <script>
         function onWriteSubmit(){
             if ($("#title").val().trim() == ""){

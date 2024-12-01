@@ -27,7 +27,8 @@ const iv = Buffer.from("1234567890123456", "utf8"); // 16바이트 IV
 
 //공지사항 리스트 화면
 router.get('/notificationList', function (req, res, next) {
-  var { rootLogin } = require('./index');
+  var { rootLogin, rootLogin, rootLogin } = require('./index');
+  var { usrLogin } = require('./index');
   var {rootname} = require("./index");
   console.log("rootLogin:", rootLogin);
   // 페이지 번호를 쿼리에서 가져오기 (기본값은 1)
@@ -64,6 +65,7 @@ router.get('/notificationList', function (req, res, next) {
         title: '공지사항',
         rows: rows,
         rootLogin,
+        usrLogin,
         currentPage: page,
         totalPages: totalPages,
         sort: sort,
@@ -92,6 +94,7 @@ router.get('/notificationRead/:Bid', function (req, res, next) {
   // 게시물 수정 권한
   var { rootid } = require('./index');
   var { rootLogin } = require('./index');
+  var { usrLogin } = require('./index');
   var {rootname} = require("./index");
   var sql3 = "SELECT * FROM ROOT, ROOTBOARD WHERE Rid=Rnum AND Rid=? AND Bid=?;";
   connection.query(sql3, [rootid, idx], (err, results, fields) => {
@@ -117,7 +120,7 @@ router.get('/notificationRead/:Bid', function (req, res, next) {
     }
     console.log('rows: ' + JSON.stringify(rows));
     // 정보보내기
-    res.render('RootFunction/notificationRead', { title: rows[0].Title, rootname, row: rows[0], UpdateEnable, rootLogin });
+    res.render('RootFunction/notificationRead', { title: rows[0].Title, usrLogin, rootname, row: rows[0], UpdateEnable, rootLogin });
   });
 })
 
@@ -175,8 +178,10 @@ router.post('/notificationDelete', function (req, res, next) { // 삭제수행
 router.get('/notificationWrite', function (req, res, next) {
   var { rootid } = require('./index');
   var {rootname} = require("./index");
+  var { rootLogin } = require('./index');
+  var { usrLogin } = require('./index');
   console.log("관리자 아이디 : " + rootid);
-  res.render('RootFunction/notificationWrite', { title: '공지사항 작성하기', rootname, rootid });
+  res.render('RootFunction/notificationWrite', { title: '공지사항 작성하기', rootname,rootLogin, usrLogin, rootid });
 })
 
 router.post('/notificationWrite', function (req, res, next) { // 공지사항 글쓰기
@@ -204,6 +209,8 @@ router.post('/notificationWrite', function (req, res, next) { // 공지사항 �
 router.get('/notificationUpdate', function (req, res, next) {
   var { rootid } = require('./index');
   var {rootname} = require("./index");
+  var { rootLogin } = require('./index');
+  var { usrLogin } = require('./index');
   var idx = req.query.Bid;
   console.log("관리자 아이디 : " + rootid);
   console.log("게시판 아이디 : " + idx);
@@ -220,7 +227,7 @@ router.get('/notificationUpdate', function (req, res, next) {
     }
     console.log('rows: ' + JSON.stringify(rows));
     // 정보보내기
-    res.render('RootFunction/notificationUpdate', { title: '공지사항 수정하기', rootname, row: rows[0] });
+    res.render('RootFunction/notificationUpdate', { title: '공지사항 수정하기', rootLogin, usrLogin, rootname, row: rows[0] });
   });
 })
 
@@ -308,6 +315,8 @@ router.get('/manageUsrList', function (req, res, next) {
 router.get('/manageUsrInfo/:Uno', function (req, res, next) {
   console.log('회원 번호 : ' + req.params.Uno);
   var {rootname} = require("./index");
+  var { rootLogin } = require('./index');
+  var { usrLogin } = require('./index');
   // 회원 정보 가져오기
   var sql = `SELECT * FROM PERSON, USR WHERE Pid=Uid AND Uno=?;`;
 
@@ -331,7 +340,8 @@ router.get('/manageUsrInfo/:Uno', function (req, res, next) {
     var decrypt = crypto.createDecipheriv(algorithm, key, iv);
     var decryptResult = decrypt.update(rows[0].Pwd, 'hex', 'utf8') + decrypt.final('utf8');
     // 정보보내기
-    res.render('RootFunction/manageUsrInfo', { title: '회원 정보 관리', row: rows[0], decryptResult, rootname });
+    res.render('RootFunction/manageUsrInfo', { 
+      title: '회원 정보 관리', row: rows[0], decryptResult, rootname, usrLogin, rootLogin });
   });
 });
 
@@ -420,6 +430,7 @@ router.post('/manageUsrDelete', function (req, res, next) { // 회원 삭제수�
 // 게시판 리스트 가져오기
 router.get('/manageBoardList', function (req, res, next) {
   var { rootLogin } = require('./index'); 
+  var { usrLogin } = require('./index');
   var { rootname } = require("./index");
   console.log("rootLogin:", rootLogin);
   // 페이지 번호를 쿼리에서 가져오기 (기본값은 1)
@@ -457,6 +468,7 @@ router.get('/manageBoardList', function (req, res, next) {
         title: '게시판 관리',
         rows: rows,
         rootLogin,
+        usrLogin,
         currentPage: page,
         totalPages: totalPages,
         sort: sort, 
@@ -471,6 +483,8 @@ router.get('/manageBoardList', function (req, res, next) {
 router.get('/manageBoardInfo/:Bno', function (req, res, next) {
   console.log('회원 번호 : ' + req.params.Bno);
   var {rootname} = require("./index");
+  var { rootLogin } = require('./index');
+  var { usrLogin } = require('./index');
   // 게시판 정보 가져오기
   var sql = `SELECT * FROM BOARD WHERE Bno=?;`;
   connection.query(sql, [req.params.Bno], (err, rows, fields) => {
@@ -490,7 +504,7 @@ router.get('/manageBoardInfo/:Bno', function (req, res, next) {
     }
     console.log('rows: ' + JSON.stringify(rows));
     // 정보보내기
-    res.render('RootFunction/manageBoardInfo', { title: '게시판 관리', row: rows[0], rootname });
+    res.render('RootFunction/manageBoardInfo', { title: '게시판 관리', row: rows[0], rootname, usrLogin, rootLogin });
   });
 });
 
@@ -588,6 +602,8 @@ router.post('/manageBoardDelete', function (req, res, next) { // 게시판 삭�
 //사이트 분석 화면 npm install chart
 router.get('/manageAnalytics', function (req, res, next) {
   var {rootname} = require("./index");
+  var { rootLogin } = require('./index');
+  var { usrLogin } = require('./index');
   // 성별 집계
   var sql1 = `SELECT COUNT(*) AS COUNT
               FROM PERSON
@@ -612,7 +628,7 @@ router.get('/manageAnalytics', function (req, res, next) {
   // 월별 회원가입 집계
   var sql5 = `SELECT YEAR(Login) AS year, MONTH(Login) as month, COUNT(Pid) AS login_count
               FROM PERSON GROUP BY YEAR(Login), MONTH(Login)
-              ORDER BY year, month`;
+              ORDER BY year, month LIMIT 36`;
   // 쿼리 실행
   connection.query(sql1, function (err, gender) {
     if (err) {
@@ -700,7 +716,7 @@ router.get('/manageAnalytics', function (req, res, next) {
             res.render('RootFunction/manageAnalytics',{ 
             title: '사이트 분석', 
             genderData:genderData, trustData:trustData, moneyData:moneyData, 
-            ageData:ageData, loginData:loginData, rootname });
+            ageData:ageData, loginData:loginData, rootname, rootLogin, usrLogin });
           })
         });
       });

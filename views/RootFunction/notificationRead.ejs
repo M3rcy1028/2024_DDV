@@ -12,16 +12,12 @@
 
     <!-- Bootstrap Icon -->
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
-
-    <title>
-        <%= title %>
-    </title>
+    <!-- rootbar 디자인 -->
+    <link rel='stylesheet' href='/stylesheets/rootbar.css'/>
+    <link rel='stylesheet' href='/stylesheets/rootview.css'/>
+    
 
     <style>
-        h2 {
-            margin-bottom: 20px;
-        }
-
         .read-box {
             width: 900px;
             padding: 20px;
@@ -40,85 +36,61 @@
         .board-content p {
             height: 100%;
         }
-
-        .btn-container {
-            display: flex;
-            gap: 10px; /* 버튼 간격 */
+        /* 공통 스타일 */
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 20px;
+            text-align: center;
         }
-        a {
-            color: #00008B; /* 하이퍼링크 색을 #0000BB로 설정 */
-            text-decoration: none; /* 밑줄 제거 */
-        }
+        /* 반응형 디자인 */
+        /*@media (max-width: 480px) {
+            .card {
+                width: 100%;
+                padding: 10px;
+            }
+            .password-input {
+                width: 100%;
+            }
+        }*/
     </style>
 </head>
 
 <body>
-    <% if (rootLogin) { %>
-    <div class="header d-flex justify-content-end align-items-center">관리자 <%= rootname %>님</div>
-    <nav class="d-flex justify-content-between align-items-center mb-3">
-        <div>
-            <a href="/" id="home" class="me-auto p-2">
-                <img src="/images/design/weblogo.png" alt="로고" style="height: 100px;  width: 200px">
-            </a>
-        </div>
-        <nav class="header">
-            <a href="/roots/manageUsrList" class="link p-2">회원관리</a>
-            <a href="/roots/manageBoardList" class="link p-2">게시판관리</a>
-            <a href="/roots/manageAnalytics" class="link p-2">사이트분석</a>
-        </nav>
-    </nav>
-    <button class="btn btn-outline-dark" type="button" onclick="location.href='/roots/notificationList' ">뒤로가기</button>
-    <br>
-    <h1><%= title %></h1><% } else {%>
-
-    <a href="/" id="home" class="me-auto p-2">
-        <img src="/images/design/weblogo.png" alt="로고" style="height: 100px;  width: 200px">
-      </a>
-    <br>
-    <br>
-    <button class="btn btn-outline-dark" type="button" onclick="location.href='/roots/notificationList' ">뒤로가기</button>
-    <br>
-    <h1><%= title %></h1> <% } %>
-    <div class="read-box">
-        <table>
-            <input type="hidden" name="Bid" value="<%= row.Bid %>" />
-            <tr>
-                <td>작성자</td>
-                <td><%= row.Rname %></td>
-            </tr>
-            <tr>
-                <td>내용</td>
-                <td><%= row.Content %></td>
-            </tr>
-            <tr>
-                <td>조회수</td>
-                <td><%= row.Hit %></td>
-            </tr>
-        </table>
-    </div>
-    <!-- 수정 폼 -->
-    <form action="/roots/notificationUpdate" method="get">
-        <input type="hidden" name="Bid" value="<%= row.Bid %>" />
-        <% if (rootLogin && UpdateEnable) { %>
-            <div class="btn-container">
-                <button class="btn btn-outline-warning" type="submit">수정하기</button>
+    <br><br>
+    <%- include('rootbar.ejs') %>
+    <!--<h2 class="card-title"><%= title %></h2><br>-->
+    <!-- 게시물 카드 -->
+    <div class="card-container">
+        <div class="card">
+            <h2 class="card-title"><%= title %></h2><br>
+            <div class="card-content">
+                <p><strong>작성자:</strong> <%= row.Rname %></p>
+                <p><strong>조회수:</strong> <%= row.Hit %></p>
+                <p><%= row.Content %></p>
             </div>
-        <% } %>
-    </form>
-    <!-- 삭제 폼 -->
-    <form action="/roots/notificationDelete" method="post" onsubmit="return confirm('정말 삭제하시겠습니까?');">
-        <input type="hidden" name="Bid" value="<%= row.Bid %>" />
-        <% if (rootLogin && UpdateEnable) { %>
-        <br>
-        <!-- 비밀번호 입력 필드 추가 -->
-        <div class="form-group">
-            <label for="passwd">비밀번호</label>
-            <input type="password" class="form-control" name="passwd" id="passwd" required />
+            <!-- 버튼 섹션 -->
+            <div class="card-footer">
+                <div class="button-group"> <!-- 오타 수정 -->
+                    <button class="btn btn2" type="button" onclick="location.href='/roots/notificationList'">뒤로가기</button>
+                    <% if (rootLogin && UpdateEnable) { %>
+                    <form action="/roots/notificationUpdate" method="get" style="display: inline;">
+                        <input type="hidden" name="Bid" value="<%= row.Bid %>" />
+                        <button class="btn btn-outline-warning" type="submit">수정하기</button>
+                    </form>
+                </div>
+            </div>
+            <div class="btn-container">
+                <form action="/roots/notificationDelete" method="post" onsubmit="return confirm('정말 삭제하시겠습니까?');">
+                    <input type="hidden" name="Bid" value="<%= row.Bid %>" />
+                    <input type="password" name="passwd" placeholder="비밀번호" class="password-input" required />
+                    <button class="btn btn-outline-danger" type="submit">삭제하기</button>
+                </form>
+                <% } %>
+            </div>
         </div>
-        <div class="btn-container">
-            <button class="btn btn-outline-danger" type="submit">삭제하기</button>
-        </div><% } %>
-    </form>
+    </div>
 </body>
+
 
 </html>

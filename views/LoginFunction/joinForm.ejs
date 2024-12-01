@@ -175,7 +175,7 @@
         }
         function NicknameFormatCheck(){ // 닉네임 유효성 검사
             const nickname = $('#nickname').val().trim();
-            const idPattern = /^[a-zA-Z0-9가-힣_-]{4,20}$/; // 닉네임 형식: 한글, 영문, 숫자, _, -
+            const idPattern = /^[a-zA-Z0-9가-힣_- ]{4,20}$/; // 닉네임 형식: 한글, 영문, 숫자, _, -
             // 닉네임 형식 확인
             if (!idPattern.test(nickname)) {
                 $('#nickname_status').text('닉네임은 4~20자 영문, 숫자, "_", "-"만 가능합니다.').css('color', 'orange');
