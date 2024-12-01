@@ -16,6 +16,7 @@ const connection = mysql.createPool({
 
 var rootLogin = false;
 var rootid = "";
+var rootname = "";
 var usrLogin = false;
 var usrid = "";
 
@@ -140,16 +141,21 @@ router.post('/rootLogin', function (req, res, next) { // 관리자 로그인 입
     req.body.id,
     req.body.passwd,
   ];
-
-  var sql = "SELECT * FROM ROOT WHERE Rid=? AND Rpwd=?;";
-  connection.query(sql, Rdatas, function (err, results, fields) {
+  var sql1 = "SELECT * FROM ROOT WHERE Rid=? AND Rpwd=?;";
+  var sql2 = "SELECT Rname FROM ROOT WHERE Rid=?;";
+  connection.query(sql1, Rdatas, function (err, results, fields) {
     if (err) throw err;
     if (results.length > 0) { // db 반환값이 존재할 때
       rootLogin = true;
       rootid = req.body.id;
       module.exports.rootid = rootid;
       module.exports.rootLogin = rootLogin;
-      console.log("관리자 아이디 : " + rootid);
+      connection.query(sql2, rootid, function(err, res2) {
+        if (err) throw (err);
+        rootname = res2[0].Rname;
+        module.exports.rootname = rootname;
+      })
+      console.log("관리자 아이디 : " + rootid + "(" + rootname + ")");
       res.redirect('/'); // 회원가입 후 리다이렉트
     }
     else {
@@ -165,6 +171,7 @@ router.get('/logout', function (req, res, next) {
   usrLogin = false;
   usrid = "";
   rootid = "";
+  rootname = "";
   module.exports.rootid = rootid;
   module.exports.rootLogin = rootLogin;
   module.exports.usrid = usrid;

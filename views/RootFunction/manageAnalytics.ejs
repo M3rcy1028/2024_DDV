@@ -55,15 +55,27 @@
                 padding: 10px; /* Adds padding around each chart */
                 box-sizing: border-box; /* Ensures padding doesn't affect chart width */
             }
+            a {
+                color: #00008B; /* 하이퍼링크 색을 #0000BB로 설정 */
+                text-decoration: none; /* 밑줄 제거 */
+            }
         </style>
     </head>
     <body>  
-        <a href="/" id="home" class="me-auto p-2">
-            <img src="/images/design/weblogo.png" alt="로고" style="height: 100px;  width: 200px">
-        </a>
-        <h2 class="d-flex justify-content-center">
-            <%= title %>
-        </h2>
+        <div class="header d-flex justify-content-end align-items-center">관리자 <%= rootname %>님</div>
+        <nav class="d-flex justify-content-between align-items-center mb-3">
+            <div>
+                <a href="/" id="home" class="me-auto p-2">
+                    <img src="/images/design/weblogo.png" alt="로고" style="height: 100px;  width: 200px">
+                </a>
+            </div>
+            <nav class="header">
+                <a href="/roots/manageUsrList" class="link p-2">회원관리</a>
+                <a href="/roots/manageBoardList" class="link p-2">게시판관리</a>
+                <a href="/roots/manageAnalytics" class="link p-2">사이트분석</a>
+            </nav>
+        </nav>
+        <h1 class="d-flex justify-content-center"><%= title %></h1>
         <br> <br> <br> <br>
         <!-- 표 나타내기 -->
         <div class="chart-container" style="display: flex; justify-content: space-between;">
@@ -214,5 +226,8 @@
             scale: {ticks: { beginAtZero:true, stepSize:1, max: <%= ageData.maxcount %>}}
             }
         });
+    // 회원가입 line-chart (x전체 / y월별)
+    // 게시글 조회수 top7 polar-chart (선택년도)
+    // wishlist 높은 게시글 top7 douhnut chart
     </script>
 </html>
