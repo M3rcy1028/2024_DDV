@@ -107,7 +107,7 @@ router.get('/login', function (req, res, next) {
 router.post('/login', function (req, res, next) { // 유저 로그인 입력
   var encrypt = crypto.createCipheriv(algorithm, key, iv);
   var encryptResult = encrypt.update(req.body.passwd, 'utf8', 'hex') + encrypt.final('hex');
-  
+
   var Udatas = [
     req.body.id,
     encryptResult,
@@ -260,7 +260,7 @@ router.get('/getpwd', function (req, res) { // 비밀번호 찾기
 
 //메세지 화면
 router.get('/message', function (req, res, next) {
-  res.render('message', { title: '메세지', rootLogin, usrLogin });
+  res.render('message', { title: '메세지', rootLogin, usrLogin, usrid });
 })
 
 module.exports = router;

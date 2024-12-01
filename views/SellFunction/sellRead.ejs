@@ -96,7 +96,12 @@
                 <div class="d-flex justify-content-between board-btn mt-auto">
                     <div class="d-flex">
                         <% if (!rootLogin){ %> <!-- 관리자에게 숨기기 -->
-                            <button type="button" class="btn btn-dark me-2">메세지 보내기</button>
+                            <form action="/sellBoard/newchat" method="post">
+                            <input type="hidden" name="rid" value="<%=row.realBid%>" />
+                            <input type="hidden" name="idx" value="<%=row.Bno%>" />
+                            <input type="hidden" name="sid" value="<%=usrid%>" />
+                            <button type="submit" class="btn btn-dark">메세지 보내기</button>
+                            </form>
                             <form action="/addWish" method="post" onsubmit="return onAddWishlist()">
                                 <input type="hidden" name="idx" value="<%=row.Bno%>" /> <!-- 게시글 번호 -->
                                 <input type="hidden" name="like" value="<%=likeCount%>" /> <!-- 찜 여부 -->

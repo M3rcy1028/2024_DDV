@@ -5,6 +5,9 @@
     <link rel='stylesheet' href='/stylesheets/style.css' />
     <script src="/javascripts/jquery-3.7.1.min.js"></script>
 
+    <!-- 상단바 css -->
+    <link rel='stylesheet' href='/stylesheets/nav.css' />
+
     <!-- Bootstrap CSS -->
     <link rel='stylesheet' href='/vendors/bootstrap/css/bootstrap.min.css' />
     <link rel='stylesheet' href='/vendors/bootstrap/css/bootstrap-grid.min.css' />
@@ -249,9 +252,13 @@
 
     <script src="/socket.io/socket.io.js"></script>
     <script>
-        const socket = io();
+        const socket = io({
+            auth: {
+                usrid: '<%= usrid %>'
+            }
+        });
         var cnum;
-        const userID = "M3rcy"
+        var c_sid;
 
         function sendMessage() {
             var input = document.getElementById('input');
@@ -259,10 +266,14 @@
                 socket.emit('chat_message', {
                     message: input.value,
                     cnum: cnum,
-                    sender: "user1", // 쿠키에서 보내는 사람
+                    sender: '<%= usrid %>', // 쿠키에서 보내는 사람
                 });
                 input.value = '';
             }
+        }
+
+        function purchase() {
+            socket.emit('purchase', (cnum));
         }
 
         function load_chat_log(btn) {
@@ -276,7 +287,7 @@
             item.classList.add('clearfix');
 
             const div = document.createElement('div');
-            if (chat.Sender === userID) {
+            if (chat.Sender === '<%= usrid %>') {
                 div.className = 'message my-message float-right';
             }
             else {
@@ -295,7 +306,7 @@
             const chatList = [];
             chats.forEach((chat) => {
                 console.log(chat.Message)
-                if (chat.Sender === userID) {
+                if (chat.Sender === '<%= usrid %>') {
                     chatList.push(`<li class="clearfix">
                                     <div class="message my-message float-right">${chat.Message}</div>
                                 </li>`)
@@ -318,7 +329,7 @@
             console.log(chatrooms)
 
             chatrooms.forEach(chatroom => {
-                if (chatroom.Sid === userID) {
+                if (chatroom.Sid === '<%= usrid %>') {
                     var id = chatroom.Rid;
                 }
                 else {
@@ -340,15 +351,66 @@
             div.innerHTML = chatList.join('')
 
         })
+
+        socket.on('tradeCompleted', () => {
+            window.location.href = "/";
+        });
+
+        socket.on('needmoney', () => {
+            alert("잔액이 부족합니다. 충전 후 다시 시도해주세요.");
+        });
     </script>
 </head>
 
 <body>
-    <a href="/" id="home">로고</a>
+    <nav class="header d-flex justify-content-end align-items-center">
+        <a href="/roots/notificationList" class="link p-2">공지사항</a>
+        <% if (!rootLogin && !usrLogin) { %> <!--로그인 안 됨-->
+            <a href="/joinForm" class="link p-2">회원가입</a>
+            <a href="/login" class="link p-2">로그인</a>
+            <% } %>
+                <% if (rootLogin || usrLogin) { %> <!--로그인 됨-->
+                    <a href="/logout" class="link p-2">로그아웃</a>
+                    <% } %>
+    </nav>
 
-    <h2 class="d-flex justify-content-center">
-        <%= title %>
-    </h2>
+    <nav class="d-flex justify-content-between align-items-center mb-3">
+        <div>
+            <a href="/" id="home" class="me-auto p-2">
+                <img src="/images/design/weblogo.jpg" alt="로고" style="height: 50px;">
+            </a>
+        </div>
+
+        <!-- 검색 창 -->
+        <div class="search-box d-flex align-items-center">
+            <form action="/sellBoard/search" method="post" class="d-flex w-100 justify-content-between">
+                <input class="search-txt" name="searchword" id="searchword" type="text" placeholder="상품명 입력" />
+                <button class="search-btn" type="submit">
+                    <i class="bi bi-search"></i>
+                </button>
+            </form>
+        </div>
+
+        <% if (usrLogin) { %> <!--유저 로그인 됨-->
+            <div class="header">
+                <a href="/sellBoard/sellWrite" class="link p-2">판매하기</a>
+                <a href="/myPage" class="link p-2">마이페이지</a>
+                <a href="/message" class="link p-2">메세지</a>
+            </div>
+            <% } else if (rootLogin) { %> <!--관리자 로그인 됨-->
+                <nav class="header">
+                    <a href="/roots/manageUsrList" class="link p-2">회원관리</a>
+                    <a href="/roots/manageBoardList" class="link p-2">게시판관리</a>
+                    <a href="/roots/message" class="link p-2">사이트분석</a>
+                </nav>
+                <% } else { %> <!-- 로그인 안됨-->
+                    <div class="header" style="visibility: hidden;">
+                        <a href="/sellBoard/sellWrite" class="link p-2">판매하기</a>
+                        <a href="/myPage" class="link p-2">마이페이지</a>
+                        <a href="/message" class="link p-2">메세지</a>
+                    </div>
+                    <% } %>
+    </nav>
 
     <div class="container">
         <div class="row clearfix">
@@ -367,26 +429,9 @@
                     </div>
                     <div class="chat">
                         <div class="chat-header clearfix">
-                            <div class="row">
-                                <div class="col-lg-6">
-                                    <a href="javascript:void(0);" data-toggle="modal" data-target="#view_info">
-                                        <img src="https://bootdey.com/img/Content/avatar/avatar2.png" alt="avatar">
-                                    </a>
-                                    <div class="chat-about">
-                                        <h6 class="m-b-0">Aiden Chavez</h6>
-                                        <small>Last seen: 2 hours ago</small>
-                                    </div>
-                                </div>
-                                <div class="col-lg-6 hidden-sm text-right">
-                                    <a href="javascript:void(0);" class="btn btn-outline-secondary"><i
-                                            class="fa fa-camera"></i></a>
-                                    <a href="javascript:void(0);" class="btn btn-outline-primary"><i
-                                            class="fa fa-image"></i></a>
-                                    <a href="javascript:void(0);" class="btn btn-outline-info"><i
-                                            class="fa fa-cogs"></i></a>
-                                    <a href="javascript:void(0);" class="btn btn-outline-warning"><i
-                                            class="fa fa-question"></i></a>
-                                </div>
+                            <div class="col-lg-6 hidden-sm text-right float-right">
+                                <% if (usrId===) <button onclick="purchase()"
+                                    class="btn btn-outline-secondary float-right">구매</button>
                             </div>
                         </div>
                         <div class="chat-history">

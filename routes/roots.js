@@ -269,9 +269,9 @@ router.get('/manageUsrList', function (req, res, next) {
   // 전체 유저 수를 계산하는 쿼리 (페이지네이션을 위한 totalUserCount)
   var sql1 = "SELECT COUNT(*) AS total FROM PERSON, USR WHERE Pid=Uid";
   // 회원 데이터 가져오기
-  var sql2 = `SELECT Uno, CONCAT(Lname, ' ', Fname) AS Name, 
-            Sex, Pid, Nickname, Money, Trust, Bcnt, Bdate, Login, Email 
-            FROM PERSON, USR WHERE Pid=Uid 
+  var sql2 = `SELECT Uno, CONCAT(Lname, ' ', Fname) AS Name,
+            Sex, Pid, Nickname, Money, Trust, Bcnt, Bdate, Login, Email
+            FROM PERSON, USR WHERE Pid=Uid
             ORDER BY ${order} ${sort}
             LIMIT ? OFFSET ?;`;
   connection.query(sql1, (err, countResult) => {
@@ -304,7 +304,7 @@ router.get('/manageUsrList', function (req, res, next) {
   });
 });
 
-// 특정 회원 관리 화면 
+// 특정 회원 관리 화면
 router.get('/manageUsrInfo/:Uno', function (req, res, next) {
   console.log('회원 번호 : ' + req.params.Uno);
   var {rootname} = require("./index");
@@ -326,7 +326,7 @@ router.get('/manageUsrInfo/:Uno', function (req, res, next) {
     if (!fs.existsSync(profileImgPath)) {
       console.log('Profile image not found. Using default image.');
       rows[0].ProfileImg = '/images/profile/basic_profile.jpg';
-    } 
+    }
     // 암호 복호화
     var decrypt = crypto.createDecipheriv(algorithm, key, iv);
     var decryptResult = decrypt.update(rows[0].Pwd, 'hex', 'utf8') + decrypt.final('utf8');
@@ -388,7 +388,7 @@ router.post('/manageUsrUpdate', function (req, res, next) { // 회원 정보 수
     ];
     console.log(datas);
     // SQL 쿼리 작성
-    var sql1 = `UPDATE PERSON, USR SET Lname = ?, Fname = ?, Pid = ?, Pwd = ?, Nickname = ?, 
+    var sql1 = `UPDATE PERSON, USR SET Lname = ?, Fname = ?, Pid = ?, Pwd = ?, Nickname = ?,
                 Sex = ?, Bdate = ?, Email = ?, Money = ?, Trust = ?, State = ?, ProfileImg = ?
                 WHERE Pid=Uid AND Uno = ?`;
     // 쿼리 실행
@@ -420,15 +420,15 @@ router.post('/manageUsrDelete', function (req, res, next) { // 회원 삭제수�
 // 게시판 리스트 가져오기
 router.get('/manageBoardList', function (req, res, next) {
   var { rootLogin } = require('./index'); 
-  var {rootname} = require("./index");
+  var { rootname } = require("./index");
   console.log("rootLogin:", rootLogin);
   // 페이지 번호를 쿼리에서 가져오기 (기본값은 1)
   const page = parseInt(req.query.page) || 1;
   const limit = 10; // 한 페이지당 10명
   const offset = (page - 1) * limit; // OFFSET 계산
   // 정렬 방향 설정 (기본값은 내림차순)
-  const sort = req.query.sort || 'DESC'; 
-  const order = req.query.order || 'Bno'; 
+  const sort = req.query.sort || 'DESC';
+  const order = req.query.order || 'Bno';
   // 전체 유저 수를 계산하는 쿼리 (페이지네이션을 위한 totalUserCount)
   var sql1 = "SELECT COUNT(*) AS total FROM BOARD";
   // 회원 데이터 가져오기
@@ -437,7 +437,7 @@ router.get('/manageBoardList', function (req, res, next) {
             FROM BOARD 
             ORDER BY ${order} ${sort}
             LIMIT ? OFFSET ?;`;
-  connection.query(sql1, (err, countResult)=>{
+  connection.query(sql1, (err, countResult) => {
     if (err) {
       console.error("err: " + err);
       return res.status(500).send("데이터베이스 오류");
@@ -467,7 +467,7 @@ router.get('/manageBoardList', function (req, res, next) {
   });
 });
 
-// 특정 게시판 관리 화면 
+// 특정 게시판 관리 화면
 router.get('/manageBoardInfo/:Bno', function (req, res, next) {
   console.log('회원 번호 : ' + req.params.Bno);
   var {rootname} = require("./index");
