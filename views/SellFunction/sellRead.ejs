@@ -5,6 +5,9 @@
     <link rel='stylesheet' href='/stylesheets/style.css' />
     <script src="/javascripts/jquery-3.7.1.min.js"></script>
 
+    <!-- 알림창 UI -->
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+
     <!-- 상단바 css -->
     <link rel='stylesheet' href='/stylesheets/nav.css' />
 
@@ -91,16 +94,27 @@
                     </span>
                 </div>
                 <div class="d-flex justify-content-between board-btn mt-auto">
-                    <div>
-                        <form action="/sellBoard/newchat" method="post">
+                    <div class="d-flex">
+                        <% if (!rootLogin){ %> <!-- 관리자에게 숨기기 -->
+                            <form action="/sellBoard/newchat" method="post">
                             <input type="hidden" name="rid" value="<%=row.realBid%>" />
                             <input type="hidden" name="idx" value="<%=row.Bno%>" />
                             <input type="hidden" name="sid" value="<%=usrid%>" />
                             <button type="submit" class="btn btn-dark">메세지 보내기</button>
-                            <button type="button" class="btn btn-outline-dark"><i
-                                    class="bi bi-heart me-2"></i>찜하기</button>
-                        </form>
-
+                            </form>
+                            <form action="/addWish" method="post" onsubmit="return onAddWishlist()">
+                                <input type="hidden" name="idx" value="<%=row.Bno%>" /> <!-- 게시글 번호 -->
+                                <input type="hidden" name="like" value="<%=likeCount%>" /> <!-- 찜 여부 -->
+                                <button type="submit" class="btn btn-outline-dark" id="wishBtn">
+                                    <% if (likeCount==0) { %> <!-- 찜을 하지 않은 경우-->
+                                        <i class="bi bi-heart me-2"></i>
+                                        <% } else { %>
+                                            <i class="bi bi-heart-fill me-2"></i>
+                                            <% } %>
+                                                찜하기
+                                </button>
+                            </form>
+                            <%}%>
                     </div>
                     <!-- 글 작성자에게만 보이는 버튼-->
                     <% if (usrLogin && UpdateEnable) { %>
@@ -111,7 +125,7 @@
                                 <button type="submit" class="btn btn-dark" id="updateBtn">수정</button>
                             </form>
                             <!-- 삭제 버튼 -->
-                            <form action="/sellBoard/sellDelete" method="post" onsubmit="return onDeleteSubmit()">
+                            <form action="/sellBoard/sellDelete" method="post" onsubmit="return onDeleteSubmit(event)">
                                 <input type="hidden" name="idx" value="<%=row.Bno%>" />
                                 <button type="submit" class="btn btn-dark" id="deleteBtn">삭제</button>
                             </form>
@@ -125,8 +139,58 @@
         <script src="/vendors/bootstrap/js/bootstrap.bundle.min.js"></script>
 
         <script>
-            function onDeleteSubmit() {
-                return confirm("정말 삭제하시겠습니까?"); //삭제 확인
+            //rootLogin, usrLogin 값
+            var rootLogin = '<%= rootLogin %>';
+            var usrLogin = '<%= usrLogin %>';
+
+            //문자열로 처리된 값 boolean으로 변경
+            usrLogin = (usrLogin === 'true');
+            rootLogin = (rootLogin === 'true');
+
+            console.log("서버에서 전달된 rootLogin 값:", rootLogin);
+            console.log("서버에서 전달된 usrLogin 값:", usrLogin);
+
+            async function onDeleteSubmit(event) {
+                event.preventDefault(); //form 제출 막기
+
+                // 삭제 여부 확인
+                var result = await Swal.fire({
+                    title: "삭제하시겠습니까?",
+                    text: "삭제 후 게시물 복구가 불가능합니다",
+                    icon: "warning",
+                    showCancelButton: true,
+                    confirmButtonColor: "#3085d6",
+                    cancelButtonColor: "#d33",
+                    confirmButtonText: "삭제",
+                    cancelButtonText: "취소"
+                });
+
+                // 삭제가 확인된 경우
+                if (result.isConfirmed) {
+                    // 삭제 완료 알림창 띄우기
+                    await Swal.fire({
+                        title: "삭제 완료",
+                        text: "삭제가 완료되었습니다",
+                        icon: "success"
+                    });
+
+                    event.target.submit(); //form 제출
+                }
+
+                return false;
+            }
+
+            function onAddWishlist() {
+                if (!usrLogin) { //로그인하지 않은 경우
+                    //로그인 후 이용 가능 알림창
+                    Swal.fire({
+                        icon: "error",
+                        title: "로그인 필요",
+                        text: "로그인 후 이용 가능합니다",
+                        footer: '<a href="/login" style="text-decoration: none;">로그인 하시겠습니까?</a>'
+                    });
+                    return false;
+                }
             }
         </script>
 </body>

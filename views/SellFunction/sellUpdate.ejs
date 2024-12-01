@@ -6,7 +6,7 @@
     <script src="/javascripts/jquery-3.7.1.min.js"></script>
 
     <!-- 상단바 css -->
-    <link rel='stylesheet' href='/stylesheets/nav.css'/>
+    <link rel='stylesheet' href='/stylesheets/nav.css' />
 
     <!-- Bootstrap CSS -->
     <link rel='stylesheet' href='/vendors/bootstrap/css/bootstrap.min.css' />
@@ -54,63 +54,71 @@
 <body>
     <!-- 상단 바 -->
     <%- include('../nav.ejs') %>
-    
-    <h3 class="d-flex justify-content-center">
-        <%= title %>
-    </h3>
 
-    <form action="/sellBoard/sellUpdate" method="post" enctype="multipart/form-data" onsubmit="return onUpdateSubmit()">
-        <table class="d-flex justify-content-center">
-            <input type="hidden" name="idx" value="<%=row.Bno%>" />
-            <tr>
-                <td>상품 사진</td>
-                <td><input type="file" accept="image/jpeg, image/png" class="form-control" name="image" id="image"></td>
-            </tr>
-            <tr>
-                <td>제목</td>
-                <td><input type="text" name="title" id="title" value="<%=row.Title%>">
-                </td>
-            </tr>
-            <tr>
-                <td>카테고리</td>
-                <td>
-                    <select name="category" id="category">
-                        <option value="">카테고리 선택</option>
-                        <% for (var category in categories) { %>
-                            <option value="<%= category %>" <%=row.Category===category ? 'selected' : '' %>>
-                                <%= category %>
-                            </option>
-                            <% } %>
-                    </select>
-                </td>
-            </tr>
-            <tr>
-                <td>가격</td>
-                <td><input type="number" name="price" id="price" value="<%=row.Price%>"></td>
-            </tr>
-            <tr>
-                <td>내용</td>
-                <td><textarea name="content" id="content"><%=row.Content%></textarea></td>
-            </tr>
-            <tr>
-                <td>구매 날짜</td>
-                <td><input type="date" name="buyDate" id="buyDate" value="<%=row.Pdate%>" disabled readonly></td>
-            </tr>
-            <tr>
-                <td>거래 희망 장소</td>
-                <td><input type=" text" name="place" id="place" value="<%=row.TradePlace%>" disabled readonly></td>
-            </tr>
-            <tr>
-                <td>
-                </td>
-                <td class="d-flex justify-content-end">
-                    <button type="submit" class="btn btn-dark" id="updateBtn">수정하기</button>
-                </td>
-            </tr>
-        </table>
-    </form>
+        <h3 class="d-flex justify-content-center">
+            <%= title %>
+        </h3>
 
-    <!--
+        <form action="/sellBoard/sellUpdate" method="post" enctype="multipart/form-data"
+            onsubmit="return onUpdateSubmit()">
+            <table class="d-flex justify-content-center">
+                <input type="hidden" name="idx" value="<%=row.Bno%>">
+                <input type="hidden" name="originImg" value="<%=row.Img%>">
+                <tr>
+                    <td>상품 사진</td>
+                    <td>
+                        <div class="d-flex justify-content-center mb-2">
+                            <img id="preview" src="<%=row.Img%>" style="width: 240px; height: 240px">
+                        </div>
+                        <input type="file" accept="image/jpeg, image/png" class="form-control" name="image" id="image"
+                            onchange="readURL(this);">
+                    </td>
+                </tr>
+                <tr>
+                    <td>제목</td>
+                    <td><input type="text" name="title" id="title" value="<%=row.Title%>">
+                    </td>
+                </tr>
+                <tr>
+                    <td>카테고리</td>
+                    <td>
+                        <select name="category" id="category">
+                            <option value="">카테고리 선택</option>
+                            <% for (var category in categories) { %>
+                                <option value="<%= category %>" <%=row.Category===category ? 'selected' : '' %>>
+                                    <%= category %>
+                                </option>
+                                <% } %>
+                        </select>
+                    </td>
+                </tr>
+                <tr>
+                    <td>가격</td>
+                    <td><input type="number" name="price" id="price" value="<%=row.Price%>"></td>
+                </tr>
+                <tr>
+                    <td>내용</td>
+                    <td><textarea name="content" id="content"><%=row.Content%></textarea></td>
+                </tr>
+                <tr>
+                    <td>구매 날짜</td>
+                    <td><input type="date" name="buyDate" id="buyDate" value="<%=row.Pdate%>" disabled readonly></td>
+                </tr>
+                <tr>
+                    <td>거래 희망 장소</td>
+                    <td><input type=" text" name="place" id="place" value="<%=row.TradePlace%>" disabled readonly></td>
+                </tr>
+                <tr>
+                    <td>
+                    </td>
+                    <td class="d-flex justify-content-end">
+                        <button type="submit" class="btn btn-dark" id="updateBtn">수정하기</button>
+                    </td>
+                </tr>
+            </table>
+        </form>
+
+        <!--
     <td>판매 상태</td>
     <td>
         <select name="category" id="category">
@@ -121,48 +129,53 @@
     </td>
     -->
 
-    <!-- Bootstrap JS -->
-    <script src="/vendors/bootstrap/js/bootstrap.bundle.min.js"></script>
+        <!-- Bootstrap JS -->
+        <script src="/vendors/bootstrap/js/bootstrap.bundle.min.js"></script>
 
-    <script>
-        function onUpdateSubmit() {
-            if ($("#image").val().trim() == "") {
-                var message = "상품 이미지를 선택해 주세요.";
-                $("#image").val("");
-                $("#image").focus();
-                alert(message);
-                return false;
+        <script>
+            function onUpdateSubmit() {
+                if ($("#title").val().trim() == "") {
+                    var message = "제목을 입력해 주세요.";
+                    $("#title").val("");
+                    $("#title").focus();
+                    alert(message);
+                    return false;
+                }
+                if ($("#category").val().trim() == "") {
+                    var message = "카테고리를 선택해 주세요.";
+                    $("#category").val("");
+                    $("#category").focus();
+                    alert(message);
+                    return false;
+                }
+                if ($("#price").val().trim() == "") {
+                    var message = "가격을 입력해 주세요.";
+                    $("#price").val("");
+                    $("#price").focus();
+                    alert(message);
+                    return false;
+                }
+                if ($("#content").val().trim() == "") {
+                    var message = "내용을 입력해 주세요.";
+                    $("#content").val("");
+                    $("#content").focus();
+                    alert(message);
+                    return false;
+                }
             }
-            if ($("#title").val().trim() == "") {
-                var message = "제목을 입력해 주세요.";
-                $("#title").val("");
-                $("#title").focus();
-                alert(message);
-                return false;
+
+            function readURL(input) {
+                if (input.files && input.files[0]) {
+                    var reader = new FileReader();
+                    reader.onload = function (e) {
+                        document.getElementById('preview').src = e.target.result;
+                    };
+                    reader.readAsDataURL(input.files[0]);
+                } else {
+                    document.getElementById('preview').src = "";
+                }
             }
-            if ($("#category").val().trim() == "") {
-                var message = "카테고리를 선택해 주세요.";
-                $("#category").val("");
-                $("#category").focus();
-                alert(message);
-                return false;
-            }
-            if ($("#price").val().trim() == "") {
-                var message = "가격을 입력해 주세요.";
-                $("#price").val("");
-                $("#price").focus();
-                alert(message);
-                return false;
-            }
-            if ($("#content").val().trim() == "") {
-                var message = "내용을 입력해 주세요.";
-                $("#content").val("");
-                $("#content").focus();
-                alert(message);
-                return false;
-            }
-        }
-    </script>
+        </script>
 </body>
 
 </html>

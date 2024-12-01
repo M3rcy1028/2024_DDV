@@ -97,14 +97,27 @@
             width: 80%;
             box-sizing: border-box; 
         }
+        a {
+            color: #00008B; /* 하이퍼링크 색을 #0000BB로 설정 */
+            text-decoration: none; /* 밑줄 제거 */
+        }
     </style>
 </head>
 
 <body>
-    <a href="/" id="home" class="me-auto p-2">
-        <img src="/images/design/weblogo.jpg" alt="로고" style="height: 50px;">
-      </a>
-    <br>
+    <div class="header d-flex justify-content-end align-items-center">관리자 <%= rootname %>님</div>
+    <nav class="d-flex justify-content-between align-items-center mb-3">
+        <div>
+            <a href="/" id="home" class="me-auto p-2">
+                <img src="/images/design/weblogo.png" alt="로고" style="height: 100px;  width: 200px">
+            </a>
+        </div>        
+        <nav class="header">
+            <a href="/roots/notificationList" class="link p-2">공지사항</a>
+            <a href="/roots/manageBoardList" class="link p-2">게시판관리</a>
+            <a href="/roots/manageAnalytics" class="link p-2">사이트분석</a>
+        </nav>
+    </nav>
     <br>
     <h1><%= title %></h1>
     <h2>회원번호 <<%= row.Uno %>></h2>

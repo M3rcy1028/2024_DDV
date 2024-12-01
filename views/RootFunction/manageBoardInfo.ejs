@@ -45,12 +45,16 @@
             display: flex;
             gap: 10px; /* 버튼 간격 */
         }
-        .profile-image {
-            width: 150px;
-            height: 150px;
-            border-radius: 50%;
-            object-fit: cover;
+        .product-image {
+            width: 300px;
+            height: 300px;
+            border-radius: 0%;
+            object-fit: contain;
             box-shadow: 0 0 5px rgba(0, 0, 0, 0.3);
+        }
+        table textarea {
+            width: 600px;
+            height: 150px;
         }
         /* 테이블 디자인 */
         table.type09, table.type09 th, table.type09 td {
@@ -97,22 +101,34 @@
             width: 80%;
             box-sizing: border-box; 
         }
+        a {
+            color: #00008B; /* 하이퍼링크 색을 #0000BB로 설정 */
+            text-decoration: none; /* 밑줄 제거 */
+        }
     </style>
 </head>
 
 <body>
-    <a href="/" id="home" class="me-auto p-2">
-        <img src="/images/design/weblogo.jpg" alt="로고" style="height: 50px;">
-      </a>
-    <br>
-    <br>
+    <div class="header d-flex justify-content-end align-items-center">관리자 <%= rootname %>님</div>
+    <nav class="d-flex justify-content-between align-items-center mb-3">
+        <div>
+            <a href="/" id="home" class="me-auto p-2">
+                <img src="/images/design/weblogo.png" alt="로고" style="height: 100px;  width: 200px">
+            </a>
+        </div>
+        <nav class="header">
+            <a href="/roots/notificationList" class="link p-2">공지사항</a>
+            <a href="/roots/manageUsrList" class="link p-2">회원관리</a>
+            <a href="/roots/manageAnalytics" class="link p-2">사이트분석</a>
+        </nav>
+    </nav>
     <h1><%= title %></h1>
     <h2>게시판번호 <<%= row.Bno %>></h2>
     
     <div style="display: flex; gap: 10px;">
     <!-- 뒤로 가기 및 삭제하기 버튼 -->
     <form action="/roots/manageBoardDelete" method="post">
-        <input type="hidden" name="Uno" value="<%= row.Uno %>" />
+        <input type="hidden" name="Bno" value="<%= row.Bno %>" />
         <div class="btn-container">
             <button class="btn btn-outline-dark" type="button" onclick="location.href='/roots/manageBoardList' ">뒤로가기</button>
             <button class="btn btn-outline-danger" type="submit">게시판 삭제하기</button>
@@ -154,14 +170,14 @@
                 </tr>
                 <tr>
                     <th scope="row">내용</th>
-                    <td colspan="2"><input type="content" style="width: 90%;" name="content" id="content" value="<%= row.Content || '' %>" required/></span></td>
+                    <td colspan="2"><textarea name="content" id="content" required><%=row.Content || '' %></textarea></td>
                 </tr>
                 <tr>
                     <th scope="row">게시날짜 / 구매날짜</th>
                     <td><input type="date" style="width: 80%;" name="updated" id="updated" 
                         value="<%= row.Updated ? new Date(row.Updated).toLocaleDateString('en-CA') : '' %>" 
                         required/></td>
-                        <td><input type="date" style="width: 90%;" name="pdate" id="pdate" 
+                        <td><input type="date" style="width: 80%;" name="pdate" id="pdate" 
                             value="<%= row.Pdate ? new Date(row.Pdate).toLocaleDateString('en-CA') : '' %>" 
                             required/></td>
                 </tr>
@@ -172,7 +188,7 @@
                         <option value="전자기기" <%= row.Category === '전자기기' ? 'selected' : '' %>>전자기기</option>
                         <option value="생활용품" <%= row.Category === '생활용품' ? 'selected' : '' %>>생활용품</option>
                     </select></td>
-                    <td><select name="trade" id="trade" style="width: 90%;" required>
+                    <td><select name="trade" id="trade" style="width: 80%;" required>
                         <option value="거래가능" <%= row.Trade === '거래가능' ? 'selected' : '' %>>거래가능</option>
                         <option value="거래중" <%= row.Trade === '거래중' ? 'selected' : '' %>>거래중</option>
                         <option value="거래완료" <%= row.Trade === '거래완료' ? 'selected' : '' %>>거래완료</option>
@@ -181,7 +197,7 @@
                 <tr>
                     <th scope="row">상품가격 / 거래장소</th>
                     <td><input type="number" name="price" id="price" value="<%= row.Price || '' %>" required/></td>
-                    <td colspan="2"><input type="text" style="width: 90%;" name="tradeplace" id="tradeplace" value="<%= row.TradePlace || '' %>" required/></span></td>
+                    <td colspan="2"><input type="text" style="width: 80%;" name="tradeplace" id="tradeplace" value="<%= row.TradePlace || '' %>" required/></span></td>
                 </tr>
             </table>
         </div>
