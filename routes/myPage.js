@@ -1,4 +1,5 @@
 var express = require('express');
+var crypto = require('crypto'); // npm install -d crypto
 var router = express.Router();
 var mysql = require('mysql2');
 
@@ -26,6 +27,10 @@ var storage = multer.diskStorage({
 });
 
 var upload = multer({ storage: storage });
+
+const algorithm = 'aes-192-cbc';
+const key = Buffer.from("123456789012345678901234", "utf8"); // 24바이트 키 (AES-192)
+const iv = Buffer.from("1234567890123456", "utf8"); // 16바이트 IV
 
 //마이페이지 화면 (/myPage)
 router.get('/', function (req, res, next) {
@@ -151,9 +156,10 @@ router.post("/chargePoint", function (req, res, next) {
     var chargePoint = Number(req.body.update);
     var sumPoint = point + chargePoint;
 
-    var password = req.body.pwd;
+    var encrypt = crypto.createCipheriv(algorithm, key, iv);
+    var encryptResult = encrypt.update(req.body.pwd, 'utf8', 'hex') + encrypt.final('hex');
 
-    var datas = [sumPoint, usrid, password];
+    var datas = [sumPoint, usrid, encryptResult];
 
     var updateSql = "UPDATE USR SET MONEY = ? WHERE uid = ? and Pwd = ?";
 

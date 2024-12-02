@@ -11,7 +11,7 @@
 }
 
 /* 검색 창 CSS */
-.search-box{
+.search-box {
     height: 40px;
     width: 300px;
     background: white;
@@ -20,7 +20,7 @@
     border: 1px solid black;
 }
 
-.search-txt{
+.search-txt {
     border: none;
     background: none;
     outline: none;
@@ -29,7 +29,7 @@
     width: 240px;
 }
 
-.search-btn{
+.search-btn {
     color: black;
     width: 40px;
     height: 100%;

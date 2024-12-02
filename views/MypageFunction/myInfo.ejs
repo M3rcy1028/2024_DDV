@@ -85,8 +85,8 @@
         </h2>
 
         <div class="d-flex justify-content-center">
-            <form class="d-flex flex-column" action="/myPage/myInfo" enctype="multipart/form-data" method="post"
-                onsubmit="return onUpdateSubmit(event)">
+            <form class="d-flex flex-column" id="newInfo" action="/myPage/myInfo" enctype="multipart/form-data"
+                method="post" onsubmit="return onUpdateSubmit(event)">
                 <input type="hidden" name="originImg" value="<%=usrInfo.ProfileImg%>">
                 <div>
                     <span>프로필 사진</span>
