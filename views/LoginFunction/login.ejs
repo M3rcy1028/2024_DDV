@@ -9,69 +9,37 @@
     <link rel='stylesheet' href='/vendors/bootstrap/css/bootstrap.min.css' />
     <link rel='stylesheet' href='/vendors/bootstrap/css/bootstrap-grid.min.css' />
     <link rel='stylesheet' href='/vendors/bootstrap/css/bootstrap-reboot.min.css' />
+    <link rel='stylesheet' href='/stylesheets/rootview.css' />
+    <link rel='stylesheet' href='/stylesheets/login.css' />
 
-    <title>
-        <%= title %>
-    </title>
-
-    <style>
-        h2 {
-            margin-bottom: 20px;
-        }
-
-        form div {
-            margin-bottom: 10px;
-        }
-
-        form input {
-            width: 300px;
-            padding: 6px;
-            box-sizing: border-box;
-        }
-
-        form button {
-            width: 300px;
-            margin-bottom: 10px;
-        }
-
-        .link a {
-            text-decoration: none;
-            color: rgb(159, 156, 156);
-        }
-
-        .link span {
-            color: rgb(159, 156, 156);
-        }
-    </style>
 </head>
 
 <body>
     <a href="/" id="home" class="me-auto p-2">
         <img src="/images/design/weblogo.png" alt="로고" style="height: 100px;  width: 200px"></a>
-
-    <h2 class="d-flex justify-content-center">
-        <%= title %>
-    </h2>
-    <form action="/login" method="post" onsubmit="return onWriteSubmit()"  class="d-flex align-items-center flex-column">
-        <div>
-            <input type="text" name="id" id="id" placeholder="아이디">
+    
+    <div class="container">
+        <h2 class="form-title"><b><%= title %></b></h2>
+        <form action="/login" method="post" onsubmit="return onWriteSubmit()">
+            <div class="form-group">
+                <input class="form-control" type="text" name="id" id="id" placeholder="아이디">
+            </div>
+            <div class="form-group">
+                <input class="form-control" type="password" name="passwd" id="passwd" placeholder="비밀번호">
+            </div>
+            <button type="submit" class="btn btn3" style="width: 100%;">로그인</button>
+        </form>
+    
+        <div class="form-footer link">
+            <a href="/findId">아이디 찾기</a>
+            <span >|</span>
+            <a href="/findPasswd">비밀번호 찾기</a>
+            <span >|</span>
+            <a href="/joinForm">회원가입</a>
         </div>
-        <div>
-            <input type="password" name="passwd" id="passwd" placeholder="비밀번호">
+        <div class="form-footer link">
+            <a href="/rootLogin">관리자 로그인하기</a>
         </div>
-        <button type="submit" class="btn btn-dark">로그인</button>
-    </form>
-
-    <div class="d-flex justify-content-center link">
-        <a class="me-2" href="/findId">아이디 찾기</a>
-        <span class="me-2">|</span>
-        <a class="me-2" href="/findPasswd">비밀번호 찾기</a>
-        <span class="me-2">|</span>
-        <a href="/joinForm">회원가입</a>
-    </div>
-
-    <div class="d-flex justify-content-center link">
-        <a href="/rootLogin">관리자 로그인하기</a>
     </div>
 </body>
 

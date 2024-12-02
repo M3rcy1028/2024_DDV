@@ -29,8 +29,7 @@ var upload = multer({ storage: storage });
 
 //마이페이지 화면 (/myPage)
 router.get('/', function (req, res, next) {
-    var { usrLogin, rootLogin } = require('./index'); //사용자, 관리자 로그인 여부
-    var { usrid } = require('./index');
+    var { usrLogin, rootLogin, usrid } = require('./index'); //사용자, 관리자 로그인 여부
 
     //마이페이지에 필요한 사용자 정보
     var usrSql = "SELECT ProfileImg, Nickname, Money, Trust, State FROM USR WHERE uid=?";
@@ -56,7 +55,7 @@ router.get('/', function (req, res, next) {
                 connection.query(sellSql, usrid, (err, sellInfo, fields) => {
                     if (err) throw err;
                     //console.log("판매 정보 : ", sellInfo);
-                    res.render('MypageFunction/myPage', { title: '마이페이지', rootLogin, usrLogin, usrInfo: usrInfo[0], likeInfo, buyInfo, sellInfo });
+                    res.render('MypageFunction/myPage', { title: '마이페이지', usrid, rootLogin, usrLogin, usrInfo: usrInfo[0], likeInfo, buyInfo, sellInfo });
                 })
             });
         });
@@ -65,8 +64,7 @@ router.get('/', function (req, res, next) {
 
 //마이페이지 - 정보 수정 (GET 요청)
 router.get('/myInfo', function (req, res, next) {
-    var { usrLogin, rootLogin } = require('./index'); //사용자, 관리자 로그인 여부
-    var { usrid } = require('./index');
+    var { usrLogin, rootLogin, usrid } = require('./index'); //사용자, 관리자 로그인 여부
 
     var selectSql = "SELECT ProfileImg, Lname, Fname, Uid, Pwd, Nickname, Bdate, Sex, EMail FROM PERSON AS P, USR AS U WHERE U.uid = ? and U.uid = P.pid";
 
@@ -161,7 +159,7 @@ router.post("/chargePoint", function (req, res, next) {
         if (err) throw err;
 
         if (result.affectedRows == 0) {
-            //비밀번호 틀린 경우
+            //비밀번호 틀린 경우    
             return res.status(401).json({
                 success: false,
                 message: "패스워드가 일치하지 않거나, 잘못된 요청으로 인해 변경되지 않았습니다."

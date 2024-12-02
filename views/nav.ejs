@@ -1,12 +1,18 @@
+<% if (usrLogin) { %> <!--유저 로그인 됨-->
+<nav class="header d-flex justify-content-end align-items-center">
+    <div class="header"></div>
+    <b>유저 <%= usrid %>님</b>
+</nav><% } %> 
+
 <nav class="header d-flex justify-content-end align-items-center">
     <a href="/roots/notificationList" class="link p-2">공지사항</a>
     <% if (!rootLogin && !usrLogin) { %> <!--로그인 안 됨-->
-        <a href="/joinForm" class="link p-2">회원가입</a>
-        <a href="/login" class="link p-2">로그인</a>
-        <% } %>
-            <% if (rootLogin || usrLogin) { %> <!--로그인 됨-->
-                <a href="/logout" class="link p-2">로그아웃</a>
-                <% } %>
+    <a href="/joinForm" class="link p-2">회원가입</a>
+    <a href="/login" class="link p-2">로그인</a>
+    <% } %>
+    <% if (rootLogin || usrLogin) { %> <!--로그인 됨-->
+    <a href="/logout" class="link p-2">로그아웃</a>
+    <% } %>
 </nav>
 
 <nav class="d-flex justify-content-between align-items-center mb-3">
@@ -14,16 +20,6 @@
         <a href="/" id="home" class="me-auto p-2">
             <img src="/images/design/weblogo.png" alt="로고" style="height: 100px;  width: 200px">
         </a>
-    </div>
-
-    <!-- 검색 창 -->
-    <div class="search-box d-flex align-items-center">
-        <form action="/sellBoard/search" method="post" class="d-flex w-100 justify-content-between">
-            <input class="search-txt" name="searchword" id="searchword" type="text" placeholder="상품명 입력" />
-            <button class="search-btn" type="submit">
-                <i class="bi bi-search"></i>
-            </button>
-        </form>
     </div>
 
     <% if (usrLogin) { %> <!--유저 로그인 됨-->
@@ -46,7 +42,15 @@
                 </div>
                 <% } %>
 </nav>
-
+<!-- 검색 창 -->
+<nav class="d-flex justify-content-between align-items-center mb-3">
+    <form action="/sellBoard/search" method="post" class="d-flex w-100 justify-content-between">
+        <input class="search-txt" style="width: 150%; text-align: center; background-color: #f5f5f5;border-radius: 5%;" name="searchword" id="searchword" type="text" placeholder="상품명 입력" />
+        <button class="search-btn" type="submit">
+            <i class="bi bi-search"></i>
+        </button>
+    </form>
+</nav>
 <hr> <!-- 구분선 -->
 
 <div class="menu-bar d-flex">
@@ -64,6 +68,10 @@
         </ul>
     </div>
     <a href="/sellBoard/sellList" , class="link p-2">전체 보기</a>
+    <a href="/#hotfive" class="link p-2">🔥Hot 4</a>
+    <% if (usrLogin) { %> <!-- 유저로그인 -->
+        <a href="/#wish" class="link p-2">💫위시리스트</a>
+    <% } %>
 </div>
 
 <hr> <!-- 구분선 -->

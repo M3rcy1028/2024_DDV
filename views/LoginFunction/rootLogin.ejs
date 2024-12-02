@@ -9,80 +9,31 @@
     <link rel='stylesheet' href='/vendors/bootstrap/css/bootstrap.min.css' />
     <link rel='stylesheet' href='/vendors/bootstrap/css/bootstrap-grid.min.css' />
     <link rel='stylesheet' href='/vendors/bootstrap/css/bootstrap-reboot.min.css' />
-
-    <title>
-        <%= title %>
-    </title>
-
-    <style>
-        h2 {
-            margin-bottom: 20px;
-        }
-
-        form div {
-            margin-bottom: 10px;
-        }
-
-        form input {
-            width: 300px;
-            padding: 6px;
-            box-sizing: border-box;
-        }
-
-        form button {
-            width: 300px;
-            margin-bottom: 10px;
-        }
-
-        .link a {
-            text-decoration: none;
-            color: rgb(159, 156, 156);
-        }
-
-        .link span {
-            color: rgb(159, 156, 156);
-        }
-
-        /* Styling the container */
-        .container {
-        position: absolute;
-        top: 50%;
-        left: 50%;
-        transform: translate(-50%, -50%);
-        max-width: 400px;
-        padding: 20px;
-        background-color: #f5f5f5;
-        border: 1px solid #ccc;
-        border-radius: 5px;
-        text-align: center;
-        font-family: "Roboto", sans-serif; /* Apply Roboto font */
-        }
-        /* Styling the heading */
-        .container h2 {
-        font-size: 35px;
-        margin-bottom: 20px;
-        margin-top: 10px;
-        }
-    </style>
+    <link rel='stylesheet' href='/stylesheets/rootview.css' />
+    <link rel='stylesheet' href='/stylesheets/login.css' />
 </head>
 
 <body>
     <a href="/" id="home" class="me-auto p-2">
         <img src="/images/design/weblogo.png" alt="로고" style="height: 100px;  width: 200px"></a>
+    
     <div class="container">
-    <h2 class="d-flex justify-content-center">
-        <%= title %>
-    </h2>
-    <form action="/rootLogin" method="post" onsubmit="return onWriteSubmit()" class="d-flex align-items-center flex-column">
-        <div>
-            <input type="text" name="id" id="id" placeholder="아이디">
+        <h2 class="form-title"><b><%= title %></b></h2>
+        <form action="/rootLogin" method="post" onsubmit="return onWriteSubmit()">
+            <div class="form-group">
+                <input class="form-control" type="text" name="id" id="id" placeholder="아이디">
+            </div>
+            <div class="form-group">
+                <input class="form-control" type="password" name="passwd" id="passwd" placeholder="비밀번호">
+            </div>
+            <button type="submit" class="btn btn3" style="width: 100%;">로그인</button>
+        </form>
+    
+        <div class="form-footer link">
+            <a href="/login">관리자가 아닌가요?</a>
         </div>
-        <div>
-            <input type="password" name="passwd" id="passwd" placeholder="비밀번호">
-        </div>
-        <button type="submit" class="btn btn-dark">로그인</button>
-    </form>
-    </div> 
+    </div>
+    <!---->
 </body>
 
 <script>

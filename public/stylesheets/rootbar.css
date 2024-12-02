@@ -1,3 +1,6 @@
+body {
+    background-image: linear-gradient(to right, #f9fffa, #f9fffc, #fafffe, #fcffff, #feffff, #feffff, #feffff, #feffff, #fcffff, #fafffe, #f9fffc, #f9fffa);
+}
 .btn2 {
     background-color: white; /* 기본 버튼 배경 색상 */
     border-color: #6c975d; /* 버튼 테두리 색상 */

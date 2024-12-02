@@ -27,9 +27,7 @@ const iv = Buffer.from("1234567890123456", "utf8"); // 16바이트 IV
 
 //공지사항 리스트 화면
 router.get('/notificationList', function (req, res, next) {
-  var { rootLogin, rootLogin, rootLogin } = require('./index');
-  var { usrLogin } = require('./index');
-  var {rootname} = require("./index");
+  var { rootLogin, usrLogin, rootname, usrid } = require('./index');
   console.log("rootLogin:", rootLogin);
   // 페이지 번호를 쿼리에서 가져오기 (기본값은 1)
   const page = parseInt(req.query.page) || 1;
@@ -59,7 +57,7 @@ router.get('/notificationList', function (req, res, next) {
         return res.status(500).send("데이터베이스 오류");
       }
       console.log('rows: ' + JSON.stringify(rows));
-
+      console.log('usrid', + usrid);
       // 렌더링할 데이터와 페이지네이션 정보를 클라이언트에 전달
       res.render('RootFunction/notificationList', {
         title: '공지사항',
@@ -70,7 +68,8 @@ router.get('/notificationList', function (req, res, next) {
         totalPages: totalPages,
         sort: sort,
         order: order,
-        rootname
+        rootname,
+        usrid
       });
     });
   });
@@ -92,10 +91,7 @@ router.get('/notificationRead/:Bid', function (req, res, next) {
     }
   });
   // 게시물 수정 권한
-  var { rootid } = require('./index');
-  var { rootLogin } = require('./index');
-  var { usrLogin } = require('./index');
-  var {rootname} = require("./index");
+  var { rootLogin, usrLogin, rootname, rootid, usrid } = require('./index');
   var sql3 = "SELECT * FROM ROOT, ROOTBOARD WHERE Rid=Rnum AND Rid=? AND Bid=?;";
   connection.query(sql3, [rootid, idx], (err, results, fields) => {
     if (err) {
@@ -120,7 +116,7 @@ router.get('/notificationRead/:Bid', function (req, res, next) {
     }
     console.log('rows: ' + JSON.stringify(rows));
     // 정보보내기
-    res.render('RootFunction/notificationRead', { title: rows[0].Title, usrLogin, rootname, row: rows[0], UpdateEnable, rootLogin });
+    res.render('RootFunction/notificationRead', { title: rows[0].Title, usrLogin, usrid, rootname, row: rows[0], UpdateEnable, rootLogin });
   });
 })
 
@@ -176,10 +172,7 @@ router.post('/notificationDelete', function (req, res, next) { // 삭제수행
 
 // 공지사항 글쓰기 화면
 router.get('/notificationWrite', function (req, res, next) {
-  var { rootid } = require('./index');
-  var {rootname} = require("./index");
-  var { rootLogin } = require('./index');
-  var { usrLogin } = require('./index');
+  var { rootLogin, usrLogin, rootname, rootid } = require('./index');
   console.log("관리자 아이디 : " + rootid);
   res.render('RootFunction/notificationWrite', { title: '공지사항 작성하기', rootname,rootLogin, usrLogin, rootid });
 })
@@ -207,10 +200,7 @@ router.post('/notificationWrite', function (req, res, next) { // 공지사항 �
 
 // 공지사항 글수정 화면
 router.get('/notificationUpdate', function (req, res, next) {
-  var { rootid } = require('./index');
-  var {rootname} = require("./index");
-  var { rootLogin } = require('./index');
-  var { usrLogin } = require('./index');
+  var { rootLogin, usrLogin, rootname } = require('./index');
   var idx = req.query.Bid;
   console.log("관리자 아이디 : " + rootid);
   console.log("게시판 아이디 : " + idx);
@@ -263,8 +253,7 @@ router.post('/notificationUpdate', function (req, res, next) { // 공지사항 �
 
 // 회원 리스트 가져오기
 router.get('/manageUsrList', function (req, res, next) {
-  var { rootLogin } = require('./index');
-  var {rootname} = require("./index");
+  var { rootLogin, rootname } = require('./index');
   console.log("rootLogin:", rootLogin);
   // 페이지 번호를 쿼리에서 가져오기 (기본값은 1)
   const page = parseInt(req.query.page) || 1;
@@ -314,9 +303,7 @@ router.get('/manageUsrList', function (req, res, next) {
 // 특정 회원 관리 화면
 router.get('/manageUsrInfo/:Uno', function (req, res, next) {
   console.log('회원 번호 : ' + req.params.Uno);
-  var {rootname} = require("./index");
-  var { rootLogin } = require('./index');
-  var { usrLogin } = require('./index');
+  var { rootLogin, usrLogin, rootname } = require('./index');
   // 회원 정보 가져오기
   var sql = `SELECT * FROM PERSON, USR WHERE Pid=Uid AND Uno=?;`;
 
@@ -429,9 +416,7 @@ router.post('/manageUsrDelete', function (req, res, next) { // 회원 삭제수�
 
 // 게시판 리스트 가져오기
 router.get('/manageBoardList', function (req, res, next) {
-  var { rootLogin } = require('./index'); 
-  var { usrLogin } = require('./index');
-  var { rootname } = require("./index");
+  var { rootLogin, usrLogin, rootname } = require('./index');
   console.log("rootLogin:", rootLogin);
   // 페이지 번호를 쿼리에서 가져오기 (기본값은 1)
   const page = parseInt(req.query.page) || 1;
@@ -482,9 +467,7 @@ router.get('/manageBoardList', function (req, res, next) {
 // 특정 게시판 관리 화면
 router.get('/manageBoardInfo/:Bno', function (req, res, next) {
   console.log('회원 번호 : ' + req.params.Bno);
-  var {rootname} = require("./index");
-  var { rootLogin } = require('./index');
-  var { usrLogin } = require('./index');
+  var { rootLogin, usrLogin, rootname } = require('./index');
   // 게시판 정보 가져오기
   var sql = `SELECT * FROM BOARD WHERE Bno=?;`;
   connection.query(sql, [req.params.Bno], (err, rows, fields) => {
@@ -601,9 +584,7 @@ router.post('/manageBoardDelete', function (req, res, next) { // 게시판 삭�
 
 //사이트 분석 화면 npm install chart
 router.get('/manageAnalytics', function (req, res, next) {
-  var {rootname} = require("./index");
-  var { rootLogin } = require('./index');
-  var { usrLogin } = require('./index');
+  var { rootLogin, usrLogin, rootname } = require('./index');
   // 성별 집계
   var sql1 = `SELECT COUNT(*) AS COUNT
               FROM PERSON
@@ -625,10 +606,14 @@ router.get('/manageAnalytics', function (req, res, next) {
               COUNT(CASE WHEN TIMESTAMPDIFF(YEAR, Bdate, CURDATE()) BETWEEN 40 AND 49 THEN 1 END) AS count4,
               COUNT(CASE WHEN TIMESTAMPDIFF(YEAR, Bdate, CURDATE()) >= 50 THEN 1 END) AS count5 
               FROM PERSON;`;
-  // 월별 회원가입 집계
+  // 월별 회원가입 집계 (최근 3년)
   var sql5 = `SELECT YEAR(Login) AS year, MONTH(Login) as month, COUNT(Pid) AS login_count
               FROM PERSON GROUP BY YEAR(Login), MONTH(Login)
               ORDER BY year, month LIMIT 36`;
+  // 카테고리 집계
+  var sql6 = `SELECT Category, COUNT(*) AS count
+              FROM BOARD GROUP BY Category; `;
+  
   // 쿼리 실행
   connection.query(sql1, function (err, gender) {
     if (err) {
@@ -707,17 +692,27 @@ router.get('/manageAnalytics', function (req, res, next) {
               return res.status(500).send("데이터베이스 오류 발생");
             }
             const loginData = JSON.stringify(login);
-            // 데이터 보내기
-            console.log(genderData);
-            console.log(trustData);
-            console.log(moneyData);
-            console.log(ageData);
-            console.log(login);
-            res.render('RootFunction/manageAnalytics',{ 
-            title: '사이트 분석', 
-            genderData:genderData, trustData:trustData, moneyData:moneyData, 
-            ageData:ageData, loginData:loginData, rootname, rootLogin, usrLogin });
-          })
+            connection.query(sql6, function (err, category) {
+              if (err) {
+                console.error("쿼리 실행 오류: " + err);
+                return res.status(500).send("데이터베이스 오류 발생");
+              }
+              const categoryData = JSON.stringify(category);
+              // 데이터 보기
+              console.log(genderData);
+              console.log(trustData);
+              console.log(moneyData);
+              console.log(ageData);
+              console.log(loginData);
+              console.log(categoryData);
+              // 데이터 보내기
+              res.render('RootFunction/manageAnalytics',{ 
+              title: '사이트 분석', 
+              genderData:genderData, trustData:trustData, moneyData:moneyData, 
+              ageData:ageData, loginData:loginData, categoryData:categoryData,
+              rootname, rootLogin, usrLogin });
+            });
+          });
         });
       });
     });

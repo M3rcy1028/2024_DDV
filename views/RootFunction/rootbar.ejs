@@ -23,7 +23,7 @@
     </nav>
 </nav>
 <% } else if (usrLogin) { %> <!--유저 로그인 됨-->
-    <%- include('../nav.ejs') %>
+    <%- include('../nav.ejs') %> <!--, { usrname: usrname }-->
 <% } else { %> 
     <nav class="d-flex justify-content-between align-items-center mb-3">
         <div>
@@ -33,5 +33,5 @@
         </div>
     </nav> 
 <% } %> 
-<!-- 기다란 선 추가
-<hr style="border: 1px solid #6c975d; margin-top: 20px;"> -->
+<!--
+<hr style="border: 2px solid #003458; margin-top: 10px;"> -->
