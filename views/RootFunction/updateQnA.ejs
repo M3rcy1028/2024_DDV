@@ -1,0 +1,93 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <link rel='stylesheet' href='/stylesheets/style.css' />
+    <script src="/javascripts/jquery-3.7.1.min.js"></script>
+
+    <!-- Bootstrap CSS -->
+    <link rel='stylesheet' href='/vendors/bootstrap/css/bootstrap.min.css' />
+    <link rel='stylesheet' href='/vendors/bootstrap/css/bootstrap-grid.min.css' />
+    <link rel='stylesheet' href='/vendors/bootstrap/css/bootstrap-reboot.min.css' />
+    <!-- rootbar 디자인 -->
+    <link rel='stylesheet' href='/stylesheets/rootbar.css'/>
+    <link rel='stylesheet' href='/stylesheets/rootview.css'/>
+    <link rel='stylesheet' href='/stylesheets/nav.css'/>
+    <style>
+        h2 {
+            margin-bottom: 20px;
+        }
+
+        table tr {
+            margin-bottom: 10px;
+        }
+
+        table input {
+            width: 500px;
+            padding: 8px;
+            box-sizing: border-box;
+        }
+
+        table textarea {
+            width: 500px;
+            height: 200px;
+        }
+
+        table select {
+            width: 500px;
+            padding: 8px;
+            box-sizing: border-box;
+        }
+
+        table button {
+            width: 500px;
+        }
+    </style>
+</head>
+
+<body>
+    <%- include('rootbar.ejs') %>
+    
+    <div class="card" style="width: 40%;">
+        <h2 class="d-flex justify-content-center"><b><%= title %></b></h2><br>
+        <form action="/roots/updateQnA" method="post" onsubmit="return onWriteSubmit()" class="d-flex align-items-center flex-column">
+            <input type="hidden" name="num" value="<%=row.num%>"/>
+            
+            <table>
+                <tr class="d-flex flex-column">
+                    <td>제목</td>
+                    <td><input type="text" name="title" id="title" value="<%=row.title || '' %>" required/></td>
+                </tr>
+                <tr class="d-flex flex-column">
+                    <td>내용</td>
+                    <td><textarea name="question" id="question" required><%=row.question || '' %></textarea></td>
+                </tr>
+            </table>
+            
+            <div class="button-group">
+                <button class="btn btn-outline-success" type="submit">수정완료</button>
+                <button class="btn btn-outline-dark" type="button" onclick="location.href='/roots/readQnA/<%=row.num%>'">돌아가기</button>
+            </div>
+        </form>
+    </div>
+    <script>
+        function onWriteSubmit(){
+            if ($("#title").val().trim() == ""){
+                var message = "제목을 입력해 주세요.";
+                $("#title").val("");
+                $("#title").focus();
+                alert(message);
+                return false;
+            }
+            if ($("#question").val().trim() == ""){
+                var message = "문의 내용을 입력해 주세요.";
+                $("#question").val("");
+                $("#question").focus();
+                alert(message);
+                return false;
+            }
+        }
+    </script>
+</body>
+
+</html>

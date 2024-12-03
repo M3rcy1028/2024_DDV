@@ -1,0 +1,122 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <link rel='stylesheet' href='/stylesheets/style.css' />
+    <script src="/javascripts/jquery-3.7.1.min.js"></script>
+
+    <!-- Bootstrap CSS -->
+    <link rel='stylesheet' href='/vendors/bootstrap/css/bootstrap.min.css' />
+    <link rel='stylesheet' href='/vendors/bootstrap/css/bootstrap-grid.min.css' />
+    <link rel='stylesheet' href='/vendors/bootstrap/css/bootstrap-reboot.min.css' />
+
+    <!-- Bootstrap Icon -->
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
+    <!-- rootbar 디자인 -->
+    <link rel='stylesheet' href='/stylesheets/rootbar.css'/>
+    <link rel='stylesheet' href='/stylesheets/rootview.css'/>
+    <link rel='stylesheet' href='/stylesheets/nav.css'/>
+</head>
+
+<body>
+    <br><br>
+    <%- include('rootbar.ejs') %>
+    <!--<h2 class="card-title"><%= title %></h2><br>-->
+    <!-- 게시물 카드 -->
+    <div class="card-container">
+        <div class="card">
+            <h2 class="card-title"><%= title %></h2><br>
+            <div class="card-content">
+                <p><strong>작성자 </strong> <%= row.uid %></p>
+                <p><%= row.question %></p>
+                <p style="font-size: small;" class="date" data-date="<%= row.updated %>"></p>
+            </div>
+            <!-- 버튼 섹션 -->
+            <div class="card-footer">
+                <div class="button-group"> <!-- 오타 수정 -->
+                    <button class="btn btn2" type="button" onclick="location.href='/roots/listQnA'">뒤로가기</button>
+                    
+                    <% if (ModiEnable) { %>
+                    <form action="/roots/updateQnA" method="get" style="display: inline;">
+                        <input type="hidden" name="num" value="<%= row.num %>" />
+                        <button class="btn btn-outline-warning" type="submit">수정하기</button>
+                    </form><% } %>
+                </div>
+            </div>
+            <!-- <% if (rootLogin) { %>
+            <div class="btn-container">
+                <form action="/roots/notificationDelete" method="post" onsubmit="return confirm('정말 삭제하시겠습니까?');">
+                    <input type="hidden" name="Bid" value="<%= row.num %>" />
+                    <input type="password" name="passwd" placeholder="비밀번호" class="password-input" required />
+                    <button class="btn btn-outline-danger" type="submit">삭제하기</button>
+                </form>
+            </div><% } %> -->
+        </div>
+    </div>
+    <% if (row.rname==null && rootLogin) {%> <!--댓글이 없고 관리자 로그인 일 떄 -->
+        <form action="/roots/updateAnswer" method="post" onsubmit="return onWriteSubmit()">
+        <input type="hidden" name="num" value="<%= row.num %>">
+        <div class="card-container">
+            <div class="card">
+                <div class="card-content">
+                    <p><strong>관리자 </strong><%= rootname %></p>
+                    <textarea style="border-radius: 10px; width: 70%;" name="answer" id="answer"></textarea>
+                </div>
+                <div class="card-content">
+                    <button class="btn btn3" type="submit">답변완료</button>
+                </div>
+            </div>
+        </div>
+        </form>
+    <%} else if (row.rname != null) {%> <!-- 댓글이 있을 때 -->
+        <div class="card-container">
+            <div class="card">
+                <div class="card-content">
+                    <p><strong>관리자 </strong><%= row.rname %></p>
+                    <p><%= row.answer %></p>
+                </div>
+            </div>
+        </div>
+    <%} else {%> <!--댓글이 없을 떄-->
+        <div class="card-container">
+            <div class="card">
+                <div class="card-content">
+                    <p>아직 답변이 없습니다.</p>
+                </div>
+            </div>
+        </div>
+    <%}%>
+</body>
+<script>
+    function formatDate(dateString) {
+        const date = new Date(dateString);
+        
+        const year = date.getFullYear();
+        const month = String(date.getMonth() + 1).padStart(2, '0'); // 월은 0부터 시작하므로 1을 더함
+        const day = String(date.getDate()).padStart(2, '0');
+        // 일반 날짜의 경우 시, 분, 초 포함
+        const hours = String(date.getHours()).padStart(2, '0');
+        const minutes = String(date.getMinutes()).padStart(2, '0');
+        const seconds = String(date.getSeconds()).padStart(2, '0');
+        
+        return `${year}-${month}-${day} ${hours}:${minutes}:${seconds}`;
+    }
+    // 페이지 로드 후 날짜 포맷팅
+    document.addEventListener("DOMContentLoaded", function() {
+        const dateElements = document.querySelectorAll('.date');
+        dateElements.forEach(el => {
+            const dateValue = el.getAttribute('data-date');
+            el.textContent = formatDate(dateValue);
+        });
+    });
+    function onWriteSubmit(){
+        if ($("#answer").val().trim() == ""){
+            var message = "답변을 입력해 주세요.";
+            $("#answer").val("");
+            $("#answer").focus();
+            alert(message);
+            return false;
+        }
+    }
+</script>
+</html>

@@ -19,28 +19,31 @@
             <thead>
                 <tr>
                     <th>
-                        <a href="?page=<%= currentPage %>&sort=<%= sort === 'ASC' ? 'DESC' : 'ASC' %>&order=Uno">No <%= sort === 'ASC' ? '↑' : '↓' %></a>
+                        <a style="width: 20px;" href="?page=<%= currentPage %>&sort=<%= sort === 'ASC' ? 'DESC' : 'ASC' %>&order=Uno">No <%= sort === 'ASC' ? '↑' : '↓' %></a>
                     </th>
-                    <th>이름</th>
+                    <th style="width: 120px;">이름</th>
                     <th>
-                        <a href="?page=<%= currentPage %>&sort=<%= sort === 'ASC' ? 'DESC' : 'ASC' %>&order=Sex">성별 <%= sort === 'ASC' ? '↑' : '↓' %></a>
+                        <a style="width: 20px;" href="?page=<%= currentPage %>&sort=<%= sort === 'ASC' ? 'DESC' : 'ASC' %>&order=Sex">성별 <%= sort === 'ASC' ? '↑' : '↓' %></a>
                     </th>
-                    <th>아이디</th>
-                    <th>닉네임</th>
+                    <th style="width: 200px;">아이디</th>
+                    <th style="width: 200px;">닉네임</th>
                     <th>
-                        <a href="?page=<%= currentPage %>&sort=<%= sort === 'ASC' ? 'DESC' : 'ASC' %>&order=Money">잔고 <%= sort === 'ASC' ? '↑' : '↓' %></a>
-                    </th>
-                    <th>
-                        <a href="?page=<%= currentPage %>&sort=<%= sort === 'ASC' ? 'DESC' : 'ASC' %>&order=Trust">신뢰도 <%= sort === 'ASC' ? '↑' : '↓' %></a>
+                        <a style="width: 20px;" href="?page=<%= currentPage %>&sort=<%= sort === 'ASC' ? 'DESC' : 'ASC' %>&order=Money">잔고 <%= sort === 'ASC' ? '↑' : '↓' %></a>
                     </th>
                     <th>
-                        <a href="?page=<%= currentPage %>&sort=<%= sort === 'ASC' ? 'DESC' : 'ASC' %>&order=Bcnt">게시글 수 <%= sort === 'ASC' ? '↑' : '↓' %></a>
+                        <a style="width: 20px;" href="?page=<%= currentPage %>&sort=<%= sort === 'ASC' ? 'DESC' : 'ASC' %>&order=Trust">신뢰도 <%= sort === 'ASC' ? '↑' : '↓' %></a>
                     </th>
                     <th>
-                        <a href="?page=<%= currentPage %>&sort=<%= sort === 'ASC' ? 'DESC' : 'ASC' %>&order=Bdate">생일 <%= sort === 'ASC' ? '↑' : '↓' %></a>
+                        <a style="width: 20px;" href="?page=<%= currentPage %>&sort=<%= sort === 'ASC' ? 'DESC' : 'ASC' %>&order=Bcnt">게시글 수 <%= sort === 'ASC' ? '↑' : '↓' %></a>
                     </th>
-                    <th>가입날짜</th>
-                    <th>이메일</th>
+                    <th>
+                        <a style="width: 120px;" href="?page=<%= currentPage %>&sort=<%= sort === 'ASC' ? 'DESC' : 'ASC' %>&order=Bdate">생일 <%= sort === 'ASC' ? '↑' : '↓' %></a>
+                    </th>
+                    <th style="width: 200px;">가입날짜</th>
+                    <th style="width: 200px;">이메일</th>
+                    <th>
+                        <a style="width: 20px;" href="?page=<%= currentPage %>&sort=<%= sort === 'ASC' ? 'DESC' : 'ASC' %>&order=Rcount">신고수 <%= sort === 'ASC' ? '↑' : '↓' %></a>
+                    </th>
                 </tr>
             </thead>
             <tbody>
@@ -60,6 +63,7 @@
                         <td><span class="date birthday" data-date="<%= oneItem.Bdate %>"></span></td>
                         <td><span class="date" data-date="<%= oneItem.Login %>"></span></td>
                         <td><%= oneItem.Email %></td>
+                        <td><%= oneItem.Rcount %></td>
                     </tr>
 <% 
                 } 
