@@ -46,11 +46,9 @@
 
 <body>
     <%- include('rootbar.ejs') %>
-    <h2 class="d-flex justify-content-center"><b>
-        <%= title %></b>
-    </h2>
-    <br>
+    
     <div class="card" style="width: 40%;">
+        <h2 class="d-flex justify-content-center"><b><%= title %></b></h2><br>
         <form action="/roots/notificationUpdate" method="post" onsubmit="return onWriteSubmit()" class="d-flex align-items-center flex-column">
             <input type="hidden" name="Bid" value="<%=row.Bid%>"/>
             

@@ -1,3 +1,7 @@
+<% if (rootLogin) { %> <!-- 관리자 로그인됨 -->
+<%- include('RootFunction/rootbar.ejs') %>
+<% } else { %> 
+
 <% if (usrLogin) { %> <!--유저 로그인 됨-->
 <nav class="header d-flex justify-content-end align-items-center">
     <div class="header"></div>
@@ -75,3 +79,4 @@
 </div>
 
 <hr> <!-- 구분선 -->
+<% } %>

@@ -200,7 +200,7 @@ router.post('/notificationWrite', function (req, res, next) { // 공지사항 �
 
 // 공지사항 글수정 화면
 router.get('/notificationUpdate', function (req, res, next) {
-  var { rootLogin, usrLogin, rootname } = require('./index');
+  var { rootLogin, usrLogin, rootname, rootid } = require('./index');
   var idx = req.query.Bid;
   console.log("관리자 아이디 : " + rootid);
   console.log("게시판 아이디 : " + idx);
@@ -217,7 +217,7 @@ router.get('/notificationUpdate', function (req, res, next) {
     }
     console.log('rows: ' + JSON.stringify(rows));
     // 정보보내기
-    res.render('RootFunction/notificationUpdate', { title: '공지사항 수정하기', rootLogin, usrLogin, rootname, row: rows[0] });
+    res.render('RootFunction/notificationUpdate', { title: '공지사항 수정하기', rootid, rootLogin, usrLogin, rootname, row: rows[0] });
   });
 })
 

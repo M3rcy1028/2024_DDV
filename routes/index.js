@@ -32,9 +32,9 @@ router.get('/', function (req, res, next) {
              ORDER BY Bno DESC 
              LIMIT 8 OFFSET 0`; //최신 게시글 8개
   var sql2 = `SELECT Bno, Img, Title, Price, Trade 
-             FROM board 
+             FROM board WHERE Trade='거래가능'
              ORDER BY Hit DESC LIMIT 4`;
-  var sql3 = `SELECT Bno, Img, Title, Price 
+  var sql3 = `SELECT Bno, Img, Title, Price, Trade
               FROM WISHLIST AS W, BOARD AS B WHERE uid=? and W.Bnum = B.Bno 
               ORDER BY Wno DESC LIMIT 40`;
   connection.query(sql1, (err, rows) => {

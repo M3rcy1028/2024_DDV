@@ -79,7 +79,7 @@ router.get('/myInfo', function (req, res, next) {
         usrInfo[0].Bdate = newBdate;
 
         console.log("회원 정보 : ", usrInfo);
-        res.render('MypageFunction/myInfo', { title: '내 정보 수정', rootLogin, usrLogin, usrInfo: usrInfo[0] });
+        res.render('MypageFunction/myInfo', { title: '내 정보 수정', rootLogin, usrLogin, usrid, usrInfo: usrInfo[0] });
     });
 })
 
@@ -115,8 +115,8 @@ router.post('/myInfo', upload.single("profileImg"), function (req, res, next) {
 
 //마이페이지 - 비밀번호 변경 (GET)
 router.get('/changePwd', function (req, res, next) {
-    var { usrLogin, rootLogin } = require('./index'); //사용자, 관리자 로그인 여부
-    res.render('MypageFunction/changePwd', { title: "비밀번호 변경", rootLogin, usrLogin });
+    var { usrLogin, rootLogin, usrid } = require('./index'); //사용자, 관리자 로그인 여부
+    res.render('MypageFunction/changePwd', { title: "비밀번호 변경", rootLogin, usrLogin, usrid });
 });
 
 //마이페이지 - 비밀번호 변경 (POST)

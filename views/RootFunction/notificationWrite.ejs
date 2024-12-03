@@ -49,8 +49,8 @@
 
 <body>
     <%- include('rootbar.ejs') %>
-    <h2 class="d-flex justify-content-center"><b><%= title %></b></h2><br>
     <div class="card" style="width: 40%;">
+        <h2 class="d-flex justify-content-center"><b><%= title %></b></h2><br>
         <form action="/roots/notificationWrite" method="post" onsubmit="return onWriteSubmit()" class="d-flex align-items-center flex-column">
             <table>
                 <tr class="d-flex flex-column">

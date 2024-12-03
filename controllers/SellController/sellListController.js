@@ -2,14 +2,14 @@ var listModel = require('../../models/SellModel/sellListModel');
 var express = require('express');
 
 exports.getList = (req, res, next) => {
-    var { rootLogin, usrLogin } = require('../../routes/index.js'); //사용자, 관리자 로그인 여부
+    var { rootLogin, usrLogin, usrid } = require('../../routes/index.js'); //사용자, 관리자 로그인 여부
 
     var page = req.params.page; //페이지 번호 (1페이지부터 시작)
     const itemNums = 16; //한 페이지에 보일 최대 아이템 수
     
     listModel.getList(page, itemNums, (rows) => {
         console.log('rows: ' + JSON.stringify(rows));
-        res.render('SellFunction/sellList', { title: "전체 보기", rootLogin, usrLogin, rows: rows });
+        res.render('SellFunction/sellList', { title: "전체 보기", rootLogin, usrLogin, usrid, rows: rows });
     })
 }
 
@@ -18,7 +18,7 @@ exports.getListFirst = (req, res) => {
 }
 
 exports.getCategoryList = (req, res, next) => {
-    var { rootLogin, usrLogin } = require('../../routes/index.js'); //사용자, 관리자 로그인 여부
+    var { rootLogin, usrLogin, usrid } = require('../../routes/index.js'); //사용자, 관리자 로그인 여부
 
     var page = req.params.page; //페이지 번호 (1페이지부터 시작)
     const itemNums = 16; //한 페이지에 보일 최대 아이템 수
@@ -29,7 +29,7 @@ exports.getCategoryList = (req, res, next) => {
 
     listModel.getCategoryList(page, itemNums, categoryName, (rows) => {
         console.log('rows: ' + JSON.stringify(rows));
-        res.render('SellFunction/sellListCategory', { title: "카테고리별 보기", rootLogin, usrLogin, rows: rows, categoryName: categoryName });
+        res.render('SellFunction/sellListCategory', { title: "카테고리별 보기", rootLogin, usrLogin, usrid, rows: rows, categoryName: categoryName });
     })
 }
 
