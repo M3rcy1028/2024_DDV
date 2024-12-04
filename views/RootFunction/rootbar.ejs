@@ -1,4 +1,21 @@
 <% if (rootLogin) { %> <!--유저 로그인 됨-->
+<head>
+    <link rel='stylesheet' href='/stylesheets/sidebar.css'/>
+    <link rel='stylesheet' href='/stylesheets/style.css' />
+    <script src="/javascripts/jquery-3.7.1.min.js"></script>
+
+    <!-- Bootstrap CSS -->
+    <link rel='stylesheet' href='/vendors/bootstrap/css/bootstrap.min.css' />
+    <link rel='stylesheet' href='/vendors/bootstrap/css/bootstrap-grid.min.css' />
+    <link rel='stylesheet' href='/vendors/bootstrap/css/bootstrap-reboot.min.css' />
+
+    <!-- rootbar 디자인 -->
+    <link rel='stylesheet' href='/stylesheets/rootbar.css'/>
+    <link rel='stylesheet' href='/stylesheets/rootview.css'/>
+    <link rel='stylesheet' href='/stylesheets/nav.css'/>
+    
+</head> <%}%>
+<% if (rootLogin) { %> <!--유저 로그인 됨-->
 <br>
 <nav class="header d-flex justify-content-end align-items-center">
     <div class="header"></div>
@@ -11,7 +28,7 @@
             <img src="/images/design/weblogo.png" alt="로고" style="height: 100px;  width: 200px">
         </a>
     </div>
-    <nav class="header" style="text-align: right;">
+    <!-- <nav class="header" style="text-align: right;">
         <b>
             <a href="/roots/listQnA" class="link p-2">문의사항</a>
             <a href="/roots/notificationList" class="link p-2">공지사항</a>
@@ -22,7 +39,7 @@
             <a href="/roots/manageReportedUsr" class="link p-2">신고내역</a>
             <a href="/roots/manageBoardList" class="link p-2">게시판관리</a>
         </b>
-    </nav>
+    </nav> -->
 </nav>
 <% } else if (usrLogin) { %> <!--유저 로그인 됨-->
     <%- include('../nav.ejs', { rootname: rootname }) %> <!--, { usrname: usrname }-->
@@ -39,5 +56,45 @@
         </div>
     </nav> 
 <% } %> 
+<% if (rootLogin) { %> <!--관리자 로그인 됨-->
 <!--
 <hr style="border: 2px solid #003458; margin-top: 10px;"> -->
+<aside class="side-bar">
+    <section class="side-bar__icon-box">
+      <section class="side-bar__icon-1">
+        <div></div>
+        <div></div>
+        <div></div>
+      </section>
+    </section>
+    <ul>
+      <li>
+        <a href="/">메인화면</a>
+      </li>
+      <li>
+        <a href="/roots/notificationList"><i class="fa-solid fa-cat"></i> 공지</a>
+        <ul>
+          <li><a href="/roots/notificationList">공지 리스트</a></li>
+          <li><a href="/roots/notificationWrite">공지작성</a></li>
+        </ul>
+      </li>
+      <li>
+        <a href="/roots/listQnA">문의</a>
+      </li>
+      <li>
+        <a href="/roots/manageUsrList">회원관리</a>
+        <ul>
+          <li><a href="/roots/manageUsrList">회원 리스트</a></li>
+          <li><a href="/roots/manageReportedUsr">신고 리스트</a></li>
+          <li><a href="/roots/manageRootList">관리자 리스트</a></li>
+        </ul>
+      </li>
+      <li>
+        <a href="/roots/manageBoardList">게시판관리</a>
+      </li>
+      <li>
+        <a href="/roots/manageAnalytics">사이트분석</a>
+      </li>
+    </ul>
+  </aside>
+<%}%>

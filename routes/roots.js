@@ -58,7 +58,7 @@ router.get('/listQnA', function (req, res, next) {
       }
       console.log('rows: ' + JSON.stringify(rows));
       // 렌더링할 데이터와 페이지네이션 정보를 클라이언트에 전달
-      res.render('RootFunction/listQnA', {
+      res.render('QnAboard/listQnA', {
         title: '문의하기',
         rows: rows,
         rootLogin,
@@ -77,7 +77,7 @@ router.get('/listQnA', function (req, res, next) {
 // 문의사항 글쓰기 화면
 router.get('/writeQnA', function (req, res, next) {
   var { rootLogin, usrLogin, rootname, usrid } = require('./index');
-  res.render('RootFunction/writeQnA', { title: '문의사항 작성하기', rootname,rootLogin, usrLogin, usrid });
+  res.render('QnAboard/writeQnA', { title: '문의사항 작성하기', rootname,rootLogin, usrLogin, usrid });
 })
 
 router.post('/writeQnA', function (req, res, next) { // 문의사항 글쓰기
@@ -120,7 +120,7 @@ router.get('/readQnA/:num', function (req, res, next) {
     // 아이디 숨기기
     rows[0].uid = rows[0].uid.slice(0, 4) + '*'.repeat(rows[0].uid.length - 4);
     // 정보보내기
-    res.render('RootFunction/readQnA', { title: rows[0].title, ModiEnable, usrLogin, rootid, usrid, rootname, row: rows[0], UpdateEnable, rootLogin });
+    res.render('QnAboard/readQnA', { title: rows[0].title, ModiEnable, usrLogin, rootid, usrid, rootname, row: rows[0], UpdateEnable, rootLogin });
   });
 })
 
@@ -141,7 +141,7 @@ router.get('/updateQnA', function (req, res, next) {
     }
     console.log('rows: ' + JSON.stringify(rows));
     // 정보보내기
-    res.render('RootFunction/updateQnA', { title: '문의사항 수정하기', rootid, usrid, rootLogin, usrLogin, rootname, row: rows[0] });
+    res.render('QnAboard/updateQnA', { title: '문의사항 수정하기', rootid, usrid, rootLogin, usrLogin, rootname, row: rows[0] });
   });
 })
 
@@ -180,6 +180,22 @@ router.post('/updateAnswer', function (req, res, next) { // 문의사항 댓글
   console.log(datas)
   var sql = "UPDATE QNA SET rname=?, answer=? WHERE num=?";
   connection.query(sql, datas, function (err, results) {
+    if (err) {
+      console.error("err: " + err);
+      return res.status(500).send("데이터베이스 오류 발생");
+    }
+    if (results.affectedRows == 0) {
+      res.send("<script>alert('잘못된 요청으로 인해 변경되지 않았습니다.');history.back();</script>");
+    }
+    else { // 수정 성공
+      res.redirect('/roots/readQnA/' + req.body.num);
+    }
+  });
+});
+
+router.post('/deleteAnswer', function (req, res, next) { // 문의사항 댓글 삭제
+  var sql = "UPDATE QNA SET rname=?, answer=? WHERE num=?";
+  connection.query(sql, [null, null, req.body.num], function (err, results) {
     if (err) {
       console.error("err: " + err);
       return res.status(500).send("데이터베이스 오류 발생");
@@ -465,6 +481,104 @@ router.get('/manageReportedUsr', function (req, res, next) {
         rootname
       });
     });
+  });
+});
+
+// 관리자 리스트 가져오기
+router.get('/manageRootList', function (req, res, next) {
+  var { rootLogin, rootname } = require('./index');
+  // 페이지 번호를 쿼리에서 가져오기 (기본값은 1)
+  const page = parseInt(req.query.page) || 1;
+  const limit = 10; // 한 페이지당 10명
+  const offset = (page - 1) * limit; // OFFSET 계산
+  // 정렬 방향 설정 (기본값은 내림차순)
+  const sort = req.query.sort || 'DESC';
+  const order = req.query.order || 'Rid';
+  // 전체 유저 수를 계산하는 쿼리 (페이지네이션을 위한 totalUserCount)
+  var sql1 = "SELECT COUNT(*) AS total FROM ROOT";
+  // 회원 데이터 가져오기
+  var sql2 = `SELECT * FROM ROOT
+              ORDER BY ${order} ${sort}
+              LIMIT ? OFFSET ?`;
+  connection.query(sql1, (err, countResult) => {
+    if (err) {
+      console.error("err: " + err);
+      return res.status(500).send("데이터베이스 오류");
+    }
+    const totalUsers = countResult[0].total;
+    const totalPages = Math.ceil(totalUsers / limit); // 전체 페이지 수 계산
+    // 회원 데이터 가져오기
+    connection.query(sql2, [limit, offset], (err, rows) => {
+      if (err) {
+        console.error("err: " + err);
+        return res.status(500).send("데이터베이스 오류");
+      }
+      console.log('rows: ' + JSON.stringify(rows));
+
+      // 렌더링할 데이터와 페이지네이션 정보를 클라이언트에 전달
+      res.render('RootFunction/manageRootList', {
+        title: '관리자 리스트',
+        rows: rows,
+        rootLogin,
+        currentPage: page,
+        totalPages: totalPages,
+        sort: sort,
+        order: order,
+        rootname
+      });
+    });
+  });
+});
+
+router.post('/addRoot', function (req, res, next) { // 관리자 추가
+  var sql = "INSERT INTO ROOT(Rname, Rid, Rpwd) VALUES(?,?,?);";
+  connection.query(sql, [req.body.Rname, req.body.Rid, req.body.Rpwd], function (err, results) {
+    if (err) {
+      console.error("err: " + err);
+      return res.status(500).send("데이터베이스 오류 발생");
+    }
+    if (results.affectedRows == 0) {
+      res.send("<script>alert('잘못된 요청으로 인해 변경되지 않았습니다.');history.back();</script>");
+    }
+    else { // 수정 성공
+      res.redirect('/roots/manageRootList/');
+    }
+  });
+});
+
+router.post('/updateRoot', function (req, res, next) { // 관리자 수정
+  var datas = [req.body.Rname, req.body.Rpwd, req.body.Rid];
+  console.log(datas);
+  var sql = "UPDATE ROOT SET Rname=?, Rpwd=? WHERE Rid=?;";
+  connection.query(sql, datas, function (err, results) {
+    if (err) {
+      console.error("err: " + err);
+      return res.status(500).send("데이터베이스 오류 발생");
+    }
+    if (results.affectedRows == 0) {
+      res.send("<script>alert('잘못된 요청으로 인해 변경되지 않았습니다.');history.back();</script>");
+    }
+    else { // 수정 성공
+      res.redirect('/roots/manageRootList/');
+    }
+  });
+});
+
+router.post('/deleteRoot', function (req, res, next) { // 관리자 삭제
+  var datas = [req.body.Rname, req.body.Rid];
+  console.log(datas);
+  var sql = "DELETE FROM ROOT WHERE Rname=? AND Rid=?";
+  connection.query(sql, datas, function (err, results) {
+    if (err) {
+      console.error("err: " + err);
+      return res.status(500).send("데이터베이스 오류 발생");
+    }
+    if (results.affectedRows == 0) {
+      res.send("<script>alert('잘못된 요청으로 인해 변경되지 않았습니다.');history.back();</script>");
+    }
+    else { // 수정 성공
+      res.redirect('/roots/manageRootList/');
+    }
   });
 });
 

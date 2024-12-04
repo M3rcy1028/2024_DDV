@@ -1,0 +1,181 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <link rel='stylesheet' href='/stylesheets/rootbar.css'/>
+    </head>
+    <style>
+        /* 공통 팝업 스타일 */
+        .popup-widget {
+            width: 300px;
+            display: none;
+            position: fixed;
+            top: 55%;
+            transform: translateY(-50%);
+            background-color: white;
+            padding: 20px;
+            border: 2px solid #6c975d;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.3);
+            z-index: 1000;
+            border-radius: 10px;
+        }
+
+        /* 위치 조정: 관리자 추가 팝업 */
+        #addRootPopup {
+            left: 70%;
+        }
+
+        /* 위치 조정: 행 정보 팝업 */
+        #rowInfoPopup {
+            left: 70%;
+        }
+
+        /* 팝업 내부 입력 필드 스타일 */
+        .popup-widget input {
+            margin: 10px 0;
+            width: 100%;
+            padding: 8px;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+        }
+
+        /* 팝업 내부 버튼 컨테이너 */
+        .popup-widget .popup-buttons {
+            display: flex;
+            justify-content: flex-end;
+        }
+
+        /* 팝업 내부 버튼 스타일 */
+        .popup-widget .popup-buttons button {
+            margin-left: 10px;
+        }
+
+        /* 배경 어둡게 */
+        #popupOverlay {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0, 0, 0, 0.5);
+            z-index: 999;
+        }
+    </style>
+    <body>
+        <%- include('rootbar.ejs') %>
+        <!-- 관리자 추가 버튼 -->
+
+        <h2 class="d-flex justify-content-center"><b><%= title %></b></h2><br><br>
+        <!-- 관리자 추가 버튼 -->
+        <div class="d-flex justify-content-center" style="margin-left: 30%;">
+            <button class="btn btn2" onclick="openPopup('addRootPopup')">관리자 추가하기</button>
+        </div>
+
+        <!-- 관리자 추가 팝업 -->
+        <div id="addRootPopup" class="popup-widget">
+            <h3><b>관리자 추가</b></h3>
+            <form action="/roots/addRoot" method="post">
+                <input type="text" name="Rname" placeholder="닉네임" required>
+                <input type="text" name="Rid" placeholder="아이디" required>
+                <input type="password" name="Rpwd" placeholder="비밀번호" required>
+                <div class="popup-buttons">
+                    <button class="btn btn2" type="button" onclick="closePopup('addRootPopup')">취소</button>
+                    <button class="btn btn3" type="submit">추가</button>
+                </div>
+            </form>
+        </div>
+        <!-- 행 정보 팝업 -->
+        <div id="rowInfoPopup" class="popup-widget" style="left: 15%;">
+            <h3><b>관리자 정보</b></h3>
+            <form action="/roots/updateRoot" method="post">
+                <input id="popupRname" type="text" name="Rname" placeholder="닉네임">
+                <input id="popupRid" type="text" name="Rid" placeholder="아이디" readonly>
+                <input id="popupRpwd" type="text" name="Rpwd" placeholder="비밀번호">
+                <div class="popup-buttons">
+                    <button class="btn btn2" type="button" onclick="closePopup('rowInfoPopup')">닫기</button>
+                    <button class="btn btn-outline-warning" type="submit">수정</button>
+                    <button class="btn btn-outline-danger" type="button" onclick="submitDeleteForm()">삭제</button>
+                </div>
+            </form>
+            <form id="deleteForm" action="/roots/deleteRoot" method="post">
+                <input type="hidden" name="Rid" id="deleteRid">
+                <input type="hidden" name="Rname" id="deleteRname">
+            </form>
+        </div>
+        <br>
+        <table class="table1" style="width: 35%;">
+            <thead>
+                <tr>
+                    <th>
+                        <a style="width: 20px;" href="?page=<%= currentPage %>&sort=<%= sort === 'ASC' ? 'DESC' : 'ASC' %>&order=Rname">닉네임 <%= sort === 'ASC' ? '↑' : '↓' %></a>
+                    </th>
+                    <th>
+                        <a style="width: 20px;" href="?page=<%= currentPage %>&sort=<%= sort === 'ASC' ? 'DESC' : 'ASC' %>&order=Rid">아이디 <%= sort === 'ASC' ? '↑' : '↓' %></a>
+                    </th>
+                    <th style="width: 200px;">비밀번호</th>
+                </tr>
+            </thead>
+            <tbody>
+<% 
+                    for (var i=0; i < rows.length; i++) { 
+                        var oneItem = rows[i]; 
+%>
+                    <tr onclick="showPopup('<%= oneItem.Rid %>', '<%= oneItem.Rname %>', '<%= oneItem.Rpwd %>')">
+                        <td><%= oneItem.Rname %></td>
+                        <td><%= oneItem.Rid %></td>
+                        <td><%= oneItem.Rpwd %></td>
+                    </tr>
+<% 
+                } 
+%>
+            </tbody>
+        </table>
+        <!-- 페이지네이션 -->
+        <div class="pagination">
+            <% if (currentPage > 1) { %>
+                <a href="?page=<%= currentPage - 1 %>&sort=<%= sort %>&order=<%= order %>" class="btn btn">이전</a>
+            <% } %>
+
+            <% for (var i = 1; i <= totalPages; i++) { %>
+                <a href="?page=<%= i %>&sort=<%= sort %>&order=<%= order %>" class="btn btn <%= i === currentPage ? 'active' : '' %>"><%= i %></a>
+            <% } %>
+
+            <% if (currentPage < totalPages) { %>
+                <a href="?page=<%= currentPage + 1 %>&sort=<%= sort %>&order=<%= order %>" class="btn btn">다음</a>
+            <% } %>
+        </div>
+    </body>
+    <script>
+        // 특정 팝업 열기
+        function openPopup(popupId) {
+            document.getElementById(popupId).style.display = 'block';
+        }
+
+        // 팝업 닫기
+        function closePopup(popupId) {
+            document.getElementById(popupId).style.display = 'none';
+        }
+
+        // 행 정보 표시 팝업 열기
+        function showPopup(rid, rname, rpwd) {
+            // 행 데이터를 팝업 필드에 채우기
+            document.getElementById('popupRname').value = rname;
+            document.getElementById('popupRid').value = rid;
+            document.getElementById('popupRpwd').value = rpwd;
+
+            // 행 정보 팝업 표시
+            openPopup('rowInfoPopup');
+        }
+        function submitDeleteForm() {
+            // 관리자의 ID를 삭제 폼에 동적으로 추가
+            const rid = document.getElementById('popupRid').value;
+            const rname = document.getElementById('popupRname').value;
+            document.getElementById('deleteRid').value = rid;
+            document.getElementById('deleteRname').value = rname;
+
+            // 삭제 폼 제출
+            document.getElementById('deleteForm').submit();
+        }
+
+    </script>
+</html>

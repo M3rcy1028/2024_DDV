@@ -363,23 +363,7 @@
 </head>
 
 <body>
-    <nav class="header d-flex justify-content-end align-items-center">
-        <a href="/roots/notificationList" class="link p-2">공지사항</a>
-        <a href="/logout" class="link p-2">로그아웃</a>
-    </nav>
-
-    <nav class="d-flex justify-content-between align-items-center mb-3">
-        <div> 
-            <a href="/" id="home" class="me-auto p-2">
-                <img src="/images/design/weblogo.png" alt="로고" style="height: 100px;  width: 200px;">
-            </a>
-        </div>
-        <div class="header">
-            <a href="/sellBoard/sellWrite" class="link p-2">판매하기</a>
-            <a href="/myPage" class="link p-2">마이페이지</a>
-            <a href="/message" class="link p-2">메세지</a>
-        </div>
-    </nav>
+    <%- include('nav.ejs') %>
     
     <div class="container">
         <div class="row clearfix">

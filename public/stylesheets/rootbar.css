@@ -13,8 +13,9 @@ body {
 }
 /* 테이블 스타일 추가 */
 .table1 {
-    width: 100%;
+    width: 95%;
     border-collapse: collapse;
+    margin: 0 auto; /* 수평 중앙 정렬 */
     /*box-shadow: 0 0 10px rgba(0, 0, 0, 0.15);*/
     /*border-radius: 10px;*/
     overflow: hidden;
@@ -71,3 +72,4 @@ a {
     color: #003458; /* 하이퍼링크 색을 #0000BB로 설정 */
     text-decoration: none; /* 밑줄 제거 */
 }
+/*  */
