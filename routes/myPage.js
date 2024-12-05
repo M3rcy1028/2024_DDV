@@ -38,7 +38,7 @@ router.get('/', function (req, res, next) {
     var { usrid } = require('./index');
 
     //마이페이지에 필요한 사용자 정보
-    var usrSql = "SELECT ProfileImg, Nickname, Money, Trust, State FROM USR WHERE uid=?";
+    var usrSql = "SELECT ProfileImg, Nickname, Money, Trust, State, Login FROM USR AS U, PERSON AS P WHERE uid=? and U.uid=P.pid";
 
     //찜한 목록 (최신순 6개)
     var likeSql = "SELECT Bno, Img, Title, Price FROM WISHLIST AS W, BOARD AS B WHERE uid=? and W.Bnum = B.Bno ORDER BY Wno DESC LIMIT 6 OFFSET 0";
@@ -52,7 +52,17 @@ router.get('/', function (req, res, next) {
     //사용자가 찜해둔 목록
     connection.query(usrSql, usrid, (err, usrInfo, fileds) => {
         if (err) throw err;
-        //console.log("마이페이지 정보 : ", usrInfo);
+
+        const date1 = new Date(); //현재 일자
+        const date2 = new Date(usrInfo[0].Login); //가입 일자
+
+        const diffDate = date1.getTime() - date2.getTime();
+        const diff = Math.floor(Math.abs(diffDate / (1000 * 60 * 60 * 24))); //현재 일자 - 가입 일자    
+
+        usrInfo[0].JoinedDate = diff; //가입 일자 추가
+
+        console.log("마이페이지 정보 : ", usrInfo);
+
         connection.query(likeSql, usrid, (err, likeInfo, fields) => {
             if (err) throw err;
             console.log("찜 정보 : ", likeInfo);

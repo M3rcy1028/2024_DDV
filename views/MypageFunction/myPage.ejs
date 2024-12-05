@@ -92,6 +92,9 @@
                     <span class="text-center">신뢰도<br>
                         <%=usrInfo.Trust%>
                     </span>
+                    <span class="text-center">가입한지<br>
+                        <%=usrInfo.JoinedDate%> 일
+                    </span>
                 </div>
                 <div>
                     <button type="button" class="btn btn-secondary btn-sm" id="pointBtn">포인트 충전</button>
@@ -289,10 +292,10 @@
                             error: function (xhr, status, e) {
                                 // 서버가 401 상태 코드를 반환
                                 if (xhr.status === 401) {
-                                    Swal.fire("알림", "패스워드가 일치하지 않거나, 잘못된 요청으로 인해 변경되지 않았습니다.", "warning");
+                                    Swal.fire("실패", "패스워드가 일치하지 않거나, 잘못된 요청으로 인해 변경되지 않았습니다.", "error");
                                 } else {
                                     console.log("Error: ", status, e);
-                                    Swal.fire("오류", "포인트 충전 중 오류가 발생했습니다.", "error");
+                                    Swal.fire("실패", "포인트 충전 중 오류가 발생했습니다.", "error");
                                 }
                             }
                         });

@@ -28,7 +28,10 @@ app.use(express.static(path.join(__dirname, 'public')));
 const categories = {
   "농식품": 100,
   "전자기기": 200,
-  "생활용품": 300
+  "생활용품": 300,
+  "패션잡화": 400,
+  "반려동물": 500,
+  "무료나눔": 600
 };
 
 //모든 router에서 사용 가능
