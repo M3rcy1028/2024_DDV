@@ -112,7 +112,10 @@
                     <span>비밀번호</span> <!--최대 20글자-->
                     <input type="password" name="passwd" id="passwd" value="<%=usrInfo.Pwd%>" maxlength="20" disabled
                         readonly>
-                    <p class="no-margin text-end"><a href="/myPage/changePwd" style="font-size: 12px;">비밀번호 변경</a></p>
+                </div>
+                <div>
+                    <span>비밀번호 확인</span> <!--최대 20글자-->
+                    <input type="password" name="passwd_check" id="passwd_check" maxlength="20">
                 </div>
                 <div>
                     <span>닉네임</span> <!--최대 20글자-->
@@ -141,8 +144,8 @@
         <script src="/vendors/bootstrap/js/bootstrap.bundle.min.js"></script>
 
         <script>
-            async function onUpdateSubmit(event) {
-                event.preventDefault(); //form 제출 막기
+            function onUpdateSubmit(event) {
+                //event.preventDefault(); //form 제출 막기
 
                 if ($("#Lname").val().trim() == "") {
                     var message = "성을 입력하세요.";
@@ -155,6 +158,13 @@
                     var message = "이름을 입력하세요.";
                     $("#Fname").val("");
                     $("#Fname").focus();
+                    alert(message);
+                    return false;
+                }
+                if ($("#passwd_check").val().trim() == "") {
+                    var message = "비밀번호를 확인해주세요.";
+                    $("#passwd_check").val("");
+                    $("#passwd_check").focus();
                     alert(message);
                     return false;
                 }
@@ -173,6 +183,7 @@
                     return false;
                 }
 
+                /*
                 const { value: password } = await Swal.fire({
                     title: "비밀번호를 입력하세요",
                     input: "password",
@@ -197,9 +208,9 @@
                         title: "변경 실패",
                         text: "정보 변경에 실패했습니다",
                     })
-                    //location.reload();
                 }
                 return false;
+                */
             }
 
             function readURL(input) {

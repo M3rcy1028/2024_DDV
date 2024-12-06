@@ -110,6 +110,7 @@ router.post('/myInfo', upload.single("profileImg"), function (req, res, next) {
     var Bdate = req.body.Bdate;
     var Sex = req.body.sex;
     var Email = req.body.email;
+    var passwd_check = req.body.passwd_check;
     var ProfileImg;
 
     if (req.file == undefined) { //이미지가 없는 경우 - 기존 이미지 사용
@@ -119,14 +120,24 @@ router.post('/myInfo', upload.single("profileImg"), function (req, res, next) {
         ProfileImg = '/images/profile/' + req.file.filename; //이미지 경로
     }
 
-    //수정할 정보
-    var datas = [ProfileImg, Lname, Fname, Nickname, Bdate, Sex, Email, usrid];
+    //암호화
+    var encrypt = crypto.createCipheriv(algorithm, key, iv);
+    var passwd = encrypt.update(passwd_check, 'utf8', 'hex') + encrypt.final('hex');
 
-    var updateSql = "UPDATE PERSON AS P, USR AS U SET U.ProfileImg = ?, P.Lname = ?, P.Fname = ?, U.Nickname = ?, P.Bdate = ?, P.Sex = ?, P.EMail = ? WHERE U.uid = ? and U.uid = P.pid";
+    //수정할 정보
+    var datas = [ProfileImg, Lname, Fname, Nickname, Bdate, Sex, Email, usrid, passwd];
+
+    var updateSql = "UPDATE PERSON AS P, USR AS U SET U.ProfileImg = ?, P.Lname = ?, P.Fname = ?, U.Nickname = ?, P.Bdate = ?, P.Sex = ?, P.EMail = ? WHERE U.uid = ? and U.pwd = ? and U.uid = P.pid";
 
     connection.query(updateSql, datas, (err, usrInfo, fileds) => {
         if (err) throw err;
-        res.redirect('/myPage/myInfo');
+
+        if (usrInfo.affectedRows == 0) {
+            res.send("<script>alert('패스워드가 일치하지 않거나, 잘못된 요청으로 인해 변경되지 않았습니다.');history.back();</script>");
+        }
+        else {
+            res.redirect('/myPage/myInfo');
+        }
     });
 })
 
@@ -139,8 +150,14 @@ router.get('/changePwd', function (req, res, next) {
 //마이페이지 - 비밀번호 변경 (POST)
 router.post('/changePwd', function (req, res, next) {
     var { usrid } = require('./index');
-    var passwd = req.body.passwd;
-    var newPasswd = req.body.newPasswd;
+
+    //암호화 (기존 비밀번호)
+    var encrypt1 = crypto.createCipheriv(algorithm, key, iv);
+    var passwd = encrypt1.update(req.body.passwd, 'utf8', 'hex') + encrypt1.final('hex');
+
+    //암호화 (변경 비밀번호)
+    var encrypt2 = crypto.createCipheriv(algorithm, key, iv);
+    var newPasswd = encrypt2.update(req.body.newPasswd, 'utf8', 'hex') + encrypt2.final('hex');
 
     var datas = [newPasswd, usrid, passwd];
 

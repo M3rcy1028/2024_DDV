@@ -32,8 +32,8 @@ module.exports = {
             newContent = newContent.replaceAll("\r\n", '<br>');
             row[0].Content = newContent;
 
-            //글을 조회 중인 사용자와 글 작성자가 동일한 경우
-            if (Bid === usrid) {
+            //글을 조회 중인 사용자와 글 작성자가 동일하고 물건이 거래 완료가 아닌 경우
+            if ((Bid === usrid) && (row[0].Trade !== "거래완료")) {
                 UpdateEnable = true;
             }
             else {

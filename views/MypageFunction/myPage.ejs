@@ -101,6 +101,8 @@
                     <button type="button" class="btn btn-secondary btn-sm" id="infoBtn"
                         onclick="location.href='/myPage/myInfo'">
                         회원정보 수정</button>
+                    <button type="button" class="btn btn-secondary btn-sm" id="passwdBtn"
+                        onclick="location.href='/myPage/changePwd'">비밀번호 변경</button>
                 </div>
             </div>
         </div>
@@ -171,18 +173,22 @@
                                     }
                                     var buyItem=buyInfo[i]; %>
                                     <div class="d-flex flex-column col border text-center ms-3">
-                                        <a href="/sellBoard/sellRead/<%=buyItem.Bno%>">
-                                            <img src="<%= buyItem.Img %>"
-                                                style="width: 180px; height: 210px; object-fit: cover;" alt="구매 목록 이미지">
-                                        </a>
-                                        <b name="title" id="title">
+                                        <form>
                                             <a href="/sellBoard/sellRead/<%=buyItem.Bno%>">
-                                                <%= buyItem.Title %>
+                                                <img src="<%= buyItem.Img %>"
+                                                    style="width: 180px; height: 210px; object-fit: cover;"
+                                                    alt="구매 목록 이미지">
                                             </a>
-                                        </b>
-                                        <p name="price" id="price">
-                                            <%= buyItem.Price %> 원
-                                        </p>
+                                            <b name="title" id="title">
+                                                <a href="/sellBoard/sellRead/<%=buyItem.Bno%>">
+                                                    <%= buyItem.Title %>
+                                                </a>
+                                            </b>
+                                            <p name="price" id="price">
+                                                <%= buyItem.Price %> 원
+                                            </p>
+                                            <button>후기 작성</button>
+                                        </form>
                                     </div>
                                     <% } %>
                             </div>

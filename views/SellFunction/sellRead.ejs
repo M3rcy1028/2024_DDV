@@ -97,10 +97,10 @@
                     <div class="d-flex">
                         <% if (!rootLogin){ %> <!-- 관리자에게 숨기기 -->
                             <form action="/sellBoard/newchat" method="post">
-                            <input type="hidden" name="rid" value="<%=row.realBid%>" />
-                            <input type="hidden" name="idx" value="<%=row.Bno%>" />
-                            <input type="hidden" name="sid" value="<%=usrid%>" />
-                            <button type="submit" class="btn btn-dark">메세지 보내기</button>
+                                <input type="hidden" name="rid" value="<%=row.realBid%>" />
+                                <input type="hidden" name="idx" value="<%=row.Bno%>" />
+                                <input type="hidden" name="sid" value="<%=usrid%>" />
+                                <button type="submit" class="btn btn-dark me-2">메세지 보내기</button>
                             </form>
                             <form action="/addWish" method="post" onsubmit="return onAddWishlist()">
                                 <input type="hidden" name="idx" value="<%=row.Bno%>" /> <!-- 게시글 번호 -->
@@ -117,7 +117,7 @@
                             <%}%>
                     </div>
                     <!-- 글 작성자에게만 보이는 버튼-->
-                    <% if (usrLogin && UpdateEnable) { %>
+                    <% if (UpdateEnable) { %>
                         <div class="d-flex">
                             <!-- 수정 버튼 -->
                             <form class="me-2" action="/sellBoard/sellUpdate" method="get">
