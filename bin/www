@@ -88,8 +88,10 @@ io.on('connection', (socket) => {
     // DB에서 로그 불러오기
     db.query('SELECT Message, Sender FROM MSGLOG WHERE Cnum = ?',
       [cno],
-      (_err, results) => {
-        socket.emit('load_chatlog', results);
+      (_err, msgs) => {
+        db.query("SELECT Rid FROM chatroom WHERE Cno=?", [cno], (_err, sellerId) => {
+          socket.emit('load_chatlog', msgs, sellerId[0].Rid);
+        });
       });
   })
 

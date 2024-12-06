@@ -31,6 +31,18 @@
             height: 100%;
         }
 
+        .input-group .input-group-text {
+            height: 100%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .input-group .form-control {
+            height: auto;
+            /* 높이를 자동으로 설정 */
+        }
+
         .card {
             background: #fff;
             transition: .5s;
@@ -260,6 +272,7 @@
         var cnum;
         var c_sid;
 
+        // 채팅 입력 시 서버에 메시지 내용과 메타데이터 전송
         function sendMessage() {
             var input = document.getElementById('input');
             if (input.value) {
@@ -272,16 +285,19 @@
             }
         }
 
+        // 구매 버튼 클릭 시 서버에 구매 명령 전송
         function purchase() {
             socket.emit('purchase', (cnum));
         }
 
+        // 채팅방 클릭 시 서버에 채팅 기록 요청
         function load_chat_log(btn) {
             console.log("load chatroom", btn.id)
             socket.emit('load_chatlog', (btn.id))
             cnum = btn.id;
         }
 
+        // 단일 채팅 쓰기
         socket.on('chat_message', (chat) => {
             const item = document.createElement('li');
             item.classList.add('clearfix');
@@ -301,7 +317,11 @@
             scroll.scrollTop = scroll.scrollHeight;
         });
 
-        socket.on('load_chatlog', (chats) => {
+        // 채팅방의 채팅기록 불러오기
+        socket.on('load_chatlog', (chats, sellerId) => {
+            if (sellerId != '<%= usrid %>') {
+                purchase_btn.disabled = false;
+            }
             messages.innerHTML = "";
             const chatList = [];
             chats.forEach((chat) => {
@@ -322,6 +342,7 @@
             scroll.scrollTop = scroll.scrollHeight;
         })
 
+        // 채팅방 리스트 불러오기
         socket.on('load_chatrooms', (chatrooms) => {
             const div = document.getElementById('chat-list')
             const chatList = [];
@@ -377,7 +398,7 @@
     <nav class="d-flex justify-content-between align-items-center mb-3">
         <div>
             <a href="/" id="home" class="me-auto p-2">
-                <img src="/images/design/weblogo.jpg" alt="로고" style="height: 50px;">
+                <img src="/images/design/weblogo.png" alt="로고" style="height: 50px;">
             </a>
         </div>
 
@@ -430,7 +451,8 @@
                     <div class="chat">
                         <div class="chat-header clearfix">
                             <div class="col-lg-6 hidden-sm text-right float-right">
-                                <button onclick="purchase()" class="btn btn-outline-secondary float-right">구매</button>
+                                <button id="purchase_btn" onclick="purchase()"
+                                    class="btn btn-outline-secondary float-right" disabled>구매</button>
                             </div>
                         </div>
                         <div class="chat-history">
@@ -441,9 +463,12 @@
                         <div class="chat-message clearfix">
                             <div class="input-group mb-0">
                                 <div class="input-group-prepend" style="flex:auto">
-                                    <span class="input-group-text" style="flex:auto"><input id="input"
-                                            class="form-controll" autocomplete="off" style="flex:auto" /><button
-                                            onclick="sendMessage()"><i class="fa fa-send"></i></button></span>
+                                    <span class="input-group-text">
+                                        <input id="input" type="text" class="form-control" autocomplete="off"
+                                            style="flex:auto" onkeypress="sendMessage()" />
+                                        <button class="input-group-text" onclick="sendMessage()"><i
+                                                class="fa fa-send"></i></button>
+                                    </span>
                                 </div>
                             </div>
                         </div>
