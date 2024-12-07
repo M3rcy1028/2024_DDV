@@ -254,7 +254,33 @@ router.get('/reviewRead/:Rno', readController.readData);
 //마이페이지 - 내 상점 후기
 router.get('/storeReview', function (req, res, next) {
     var { usrLogin, rootLogin } = require('./index'); //사용자, 관리자 로그인 여부
-    res.render('MypageFunction/storeReview', { title: "내 상점 후기", rootLogin, usrLogin });
+    var { usrid } = require('./index');
+
+    //판매 물품 중 후기 작성 된 것
+    var storeReviewSql = "SELECT Rno, Bno, Img, Nickname, Buyer, Score, Rtext FROM BOARD AS B, REVIEW AS R, USR AS U WHERE B.Bid=? AND B.Bno = R.Bnum AND B.Buyer = U.Uid ORDER BY Bno DESC LIMIT 6 OFFSET 0";
+
+    connection.query(storeReviewSql, usrid, (err, storeReviewedItems, fileds) => {
+        if (err) throw err;
+        console.log("작성된 후기 : ", storeReviewedItems);
+
+        var sum = 0; //별점 합계
+
+        for (let i = 0; i < storeReviewedItems.length; i++) {
+            var score = storeReviewedItems[i].Score;
+            sum += score;
+
+            var buyerId = storeReviewedItems[i].Buyer, newBuyerId;
+            newBuyerId = buyerId.slice(0, 4) + '*'.repeat(buyerId.length - 4); //아이디는 4번째자리까지만 표기
+            storeReviewedItems[i].Buyer = newBuyerId;
+        }
+
+        const avg = (sum / storeReviewedItems.length).toFixed(2); //평균 별점
+        const avgStar = Math.floor(avg); //평균 별점을 표시할 별 개수
+
+        var avgScore = { avg, avgStar };
+
+        res.render('MypageFunction/storeReview', { title: "내 상점 후기", rootLogin, usrLogin, avgScore, storeReviewedItems });
+    });
 });
 
 

@@ -39,6 +39,22 @@
         .nav-underline .nav-link:hover {
             color: #5a8348;
         }
+
+        /* 평균 별점 css */
+        .avg-star {
+            font-size: 30px;
+            color: #6c975d;
+        }
+
+        /* 별점 css */
+        .rating {
+            width: 400px;
+        }
+
+        .rating-star {
+            font-size: 14px;
+            color: #6c975d;
+        }
     </style>
 </head>
 
@@ -63,6 +79,127 @@
             </li>
         </ul>
 
+        <div>
+            <div class="mb-4" style="height: 100px;">
+                <div>
+                    <div class="mb-2">
+                        평균 별점 (<%=avgScore.avg%> 점)
+                    </div>
+                    <div class="d-flex align-items-center">
+                        <input type="hidden" name="rating" id="avgValue" value="<%= avgScore.avgStar %>">
+                        <div class="rating mb-2">
+                            <i class="avg-star bi bi-star"></i>
+                            <i class="avg-star bi bi-star"></i>
+                            <i class="avg-star bi bi-star"></i>
+                            <i class="avg-star bi bi-star"></i>
+                            <i class="avg-star bi bi-star"></i>
+                        </div>
+                    </div>
+                </div>
+                <hr>
+                <div class="mb-2">
+                    작성된 리뷰
+                    <b>
+                        <%= storeReviewedItems.length %>
+                    </b> 건
+                </div>
+                <% if (storeReviewedItems.length===0) { %>
+                    <!-- 빈 컬럼 표시 -->
+                    <div class="d-flex justify-content-center align-items-center" style="width: 1000px; height: 210px;">
+                        작성된 후기가 없습니다
+                    </div>
+                    <% } else {%>
+                        <% for (var i=0; i<6; i++){ if(i>= storeReviewedItems.length){
+                            break;
+                            }
+                            var item = storeReviewedItems[i];
+                            %>
+                            <div class="d-flex align-items-center" style="width : 1000px;">
+                                <div>
+                                    <a href="/sellBoard/sellRead/<%=item.Bno%>">
+                                        <img class="me-4" src="<%= item.Img %>"
+                                            style="width: 180px; height: 180px; object-fit: cover;" alt="상품 이미지">
+                                    </a>
+                                </div>
+                                <div style="width: 100%;">
+                                    <div class="mb-2">
+                                        <%= item.Nickname %> (<%= item.Buyer %>)
+                                    </div>
+                                    <div class="rating mb-2">
+                                        <input type="hidden" name="rating" value="<%= item.Score %>">
+                                        <i class="rating-star bi bi-star"></i>
+                                        <i class="rating-star bi bi-star"></i>
+                                        <i class="rating-star bi bi-star"></i>
+                                        <i class="rating-star bi bi-star"></i>
+                                        <i class="rating-star bi bi-star"></i>
+                                    </div>
+                                    <p>
+                                        <%- item.Rtext %>
+                                    </p>
+                                    <div>
+                                        <!-- 조회 버튼 -->
+                                        <button class="btn btn-outline-dark" type="button"
+                                            onclick="location.href = '/myPage/reviewRead/<%=item.Rno%>'">
+                                            리뷰 확인
+                                        </button>
+                                    </div>
+                                </div>
+                            </div>
+                            <hr>
+                            <% } %>
+                                <% } %>
+
+            </div>
+
+            <!-- Bootstrap JS -->
+            <script src="/vendors/bootstrap/js/bootstrap.bundle.min.js"></script>
+
+            <script>
+                window.onload = function () {
+                    //별을 업데이트하는 함수
+                    function updateStars(stars, index) {
+                        stars.forEach((star, i) => {
+                            if (i <= index) {
+                                star.classList.add("bi-star-fill");
+                                star.classList.remove("bi-star");
+                            } else {
+                                star.classList.remove("bi-star-fill");
+                                star.classList.add("bi-star");
+                            }
+                        });
+                    }
+
+                    const avgStars = [...document.getElementsByClassName("avg-star")]
+                    const avgInput = document.getElementById("avgValue"); //평균 값
+
+                    //초기 상태
+                    if (avgInput.value) {
+                        updateStars(avgStars, parseInt(avgInput.value) - 1);
+                    }
+
+                    //별점 그룹
+                    const ratingGroups = document.querySelectorAll('.rating');
+
+                    ratingGroups.forEach(group => {
+                        // 해당 그룹 내의 rating 값
+                        const ratingInput = group.querySelector('input[name="rating"]');
+
+                        // ratingInput이 null인 경우
+                        if (!ratingInput) {
+                            console.error("Rating input not found in this group.");
+                            return;
+                        }
+
+                        //별점 요소
+                        const ratingStars = [...group.querySelectorAll('.rating-star')];
+
+                        //별점 업데이트
+                        if (ratingInput.value) {
+                            updateStars(ratingStars, parseInt(ratingInput.value) - 1);
+                        }
+                    });
+                };
+            </script>
 </body>
 
 </html>
