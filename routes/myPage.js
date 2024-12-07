@@ -3,6 +3,10 @@ var crypto = require('crypto'); // npm install -d crypto
 var router = express.Router();
 var mysql = require('mysql2');
 
+var writeController = require('../controllers/ReviewController/reviewWriteController.js');
+var updateController = require('../controllers/ReviewController/reviewUpdateController.js');
+var readController = require('../controllers/ReviewController/reviewReadController.js');
+
 require('dotenv').config();
 
 const connection = mysql.createPool({
@@ -208,5 +212,50 @@ router.post("/chargePoint", function (req, res, next) {
         }
     })
 });
+
+//마이페이지 - 리뷰 (작성 및 조회)
+router.get('/productReview', function (req, res, next) {
+    var { usrLogin, rootLogin } = require('./index'); //사용자, 관리자 로그인 여부
+    var { usrid } = require('./index');
+
+    //구매 물품 중 후기 작성 안 한 것
+    var nonReviewSql = "SELECT Bno, Img, Title, Price FROM BOARD AS B LEFT JOIN REVIEW AS R ON B.Bno = R.Bnum WHERE B.Buyer=? AND R.Rno IS NULL ORDER BY Bno DESC LIMIT 6 OFFSET 0";
+
+    //구매 물품 중 후기 작성 한 것
+    var reviewSql = "SELECT Rno, Bno, Img, Title, Price FROM BOARD AS B, REVIEW AS R WHERE B.Buyer=? AND B.Bno = R.Bnum ORDER BY Bno DESC LIMIT 6 OFFSET 0";
+
+    //후기 작성 안 한 것
+    connection.query(nonReviewSql, usrid, (err, nonReviewedItems, fileds) => {
+        if (err) throw err;
+        console.log("후기 작성 가능 : ", nonReviewedItems);
+        connection.query(reviewSql, usrid, (err, reviewedItems, fields) => {
+            if (err) throw err;
+            console.log("후기 작성 : ", reviewedItems);
+            res.render('MypageFunction/productReview', { title: "리뷰", rootLogin, usrLogin, nonReviewedItems, reviewedItems });
+        })
+    });
+});
+
+//마이페이지 - 후기 작성 (GET)
+router.get('/reviewWrite', writeController.writeForm);
+
+//마이페이지 - 후기 작성 (POST)
+router.post('/reviewWrite', writeController.writeData);
+
+//마이페이지 - 후기 수정 (GET)
+router.get('/reviewUpdate', updateController.updateForm);
+
+//마이페이지 - 후기 수정 (POST)
+router.post('/reviewUpdate', updateController.updateData);
+
+//마이페이지 - 후기 확인 (GET)
+router.get('/reviewRead/:Rno', readController.readData);
+
+//마이페이지 - 내 상점 후기
+router.get('/storeReview', function (req, res, next) {
+    var { usrLogin, rootLogin } = require('./index'); //사용자, 관리자 로그인 여부
+    res.render('MypageFunction/storeReview', { title: "내 상점 후기", rootLogin, usrLogin });
+});
+
 
 module.exports = router;

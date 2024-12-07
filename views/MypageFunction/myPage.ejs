@@ -61,6 +61,14 @@
             padding-top: 20px;
             padding-bottom: 20px;
         }
+
+        .nav-underline .nav-link.active {
+            color: #6c975d !important;
+        }
+
+        .nav-link:hover {
+            color: #5a8348;
+        }
     </style>
 </head>
 
@@ -72,6 +80,18 @@
         <h2>
             <%= title %>
         </h2>
+
+        <ul class="nav nav-underline mb-4">
+            <li class="nav-item">
+                <a class="nav-link active" aria-current="page" href="/myPage">홈</a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link" href="/myPage/productReview">리뷰</a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link" href="/myPage/storeReview">내 상점 후기</a>
+            </li>
+        </ul>
 
         <!-- 사용자 정보 -->
         <div class="usr-info d-flex align-items-center mb-4 border">
@@ -92,6 +112,7 @@
                     <span class="text-center">신뢰도<br>
                         <%=usrInfo.Trust%>
                     </span>
+                    <hr>
                     <span class="text-center">가입한지<br>
                         <%=usrInfo.JoinedDate%> 일
                     </span>
@@ -121,10 +142,6 @@
                         type="button" role="tab" aria-controls="nav-contact" aria-selected="false">
                         판매 내역
                     </button>
-                    <button class="nav-link" id="nav-review-tab" data-bs-toggle="tab" data-bs-target="#nav-review"
-                        type="button" role="tab" aria-controls="nav-contact" aria-selected="false">
-                        상점 후기
-                    </button>
                 </div>
             </nav>
             <div class="tab-content" id="nav-tabContent">
@@ -145,7 +162,7 @@
                                     <div class="d-flex flex-column col border text-center ms-3">
                                         <a href="/sellBoard/sellRead/<%=likeItem.Bno%>">
                                             <img src="<%= likeItem.Img %>"
-                                                style="width: 180px; height: 210px; object-fit: cover;" alt="찜 목록 이미지">
+                                                style="width: 170px; height: 210px; object-fit: cover;" alt="찜 목록 이미지">
                                         </a>
                                         <b name="title" id="title">
                                             <a href="/sellBoard/sellRead/<%=likeItem.Bno%>">
@@ -173,22 +190,18 @@
                                     }
                                     var buyItem=buyInfo[i]; %>
                                     <div class="d-flex flex-column col border text-center ms-3">
-                                        <form>
+                                        <a href="/sellBoard/sellRead/<%=buyItem.Bno%>">
+                                            <img src="<%= buyItem.Img %>"
+                                                style="width: 170px; height: 210px; object-fit: cover;" alt="구매 목록 이미지">
+                                        </a>
+                                        <b name="title" id="title">
                                             <a href="/sellBoard/sellRead/<%=buyItem.Bno%>">
-                                                <img src="<%= buyItem.Img %>"
-                                                    style="width: 180px; height: 210px; object-fit: cover;"
-                                                    alt="구매 목록 이미지">
+                                                <%= buyItem.Title %>
                                             </a>
-                                            <b name="title" id="title">
-                                                <a href="/sellBoard/sellRead/<%=buyItem.Bno%>">
-                                                    <%= buyItem.Title %>
-                                                </a>
-                                            </b>
-                                            <p name="price" id="price">
-                                                <%= buyItem.Price %> 원
-                                            </p>
-                                            <button>후기 작성</button>
-                                        </form>
+                                        </b>
+                                        <p name="price" id="price">
+                                            <%= buyItem.Price %> 원
+                                        </p>
                                     </div>
                                     <% } %>
                             </div>
@@ -210,7 +223,7 @@
                                     <div class="d-flex flex-column col border text-center ms-3">
                                         <a href="/sellBoard/sellRead/<%=sellItem.Bno%>">
                                             <img src="<%= sellItem.Img %>"
-                                                style="width: 180px; height: 210px; object-fit: cover;" alt="판매 목록 이미지">
+                                                style="width: 170px; height: 210px; object-fit: cover;" alt="판매 목록 이미지">
                                         </a>
                                         <b name="title" id="title">
                                             <a href="/sellBoard/sellRead/<%=sellItem.Bno%>">
@@ -224,12 +237,6 @@
                                     <% } %>
                             </div>
                             <% } %>
-                </div>
-                <div class="tab-pane fade" id="nav-review" role="tabpanel" aria-labelledby="nav-home-tab" tabindex="0">
-                    <!-- 일정한 높이 설정을 위한 빈 컬럼 표시 -->
-                    <div class="d-flex justify-content-center align-items-center" style="height: 210px;">
-                        상점 후기가 없습니다
-                    </div>
                 </div>
             </div>
         </div>
