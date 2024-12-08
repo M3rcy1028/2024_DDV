@@ -229,7 +229,7 @@ router.get('/productReview', function (req, res, next) {
         connection.query(reviewSql, usrid, (err, reviewedItems, fields) => {
             if (err) throw err;
             console.log("후기 작성 : ", reviewedItems);
-            res.render('MypageFunction/productReview', { title: "리뷰", rootLogin, usrLogin, nonReviewedItems, reviewedItems });
+            res.render('MypageFunction/productReview', { title: "리뷰", rootLogin, usrLogin, usrid, nonReviewedItems, reviewedItems });
         })
     });
 });
@@ -277,7 +277,7 @@ router.get('/storeReview', function (req, res, next) {
 
         var avgScore = { avg, avgStar };
 
-        res.render('MypageFunction/storeReview', { title: "내 상점 후기", rootLogin, usrLogin, avgScore, storeReviewedItems });
+        res.render('MypageFunction/storeReview', { title: "내 상점 후기", rootLogin, usrLogin, usrid, avgScore, storeReviewedItems });
     });
 });
 
