@@ -9,104 +9,68 @@
     <link rel='stylesheet' href='/vendors/bootstrap/css/bootstrap.min.css' />
     <link rel='stylesheet' href='/vendors/bootstrap/css/bootstrap-grid.min.css' />
     <link rel='stylesheet' href='/vendors/bootstrap/css/bootstrap-reboot.min.css' />
-
-    <title> <%= title %> </title>
+    <link rel='stylesheet' href='/stylesheets/rootview.css' />
+    <link rel='stylesheet' href='/stylesheets/login.css' />
     <meta charset='utf-8'>
-
-    <style>
-        h2 {
-            margin-bottom: 20px;
-        }
-
-        form div {
-            margin-bottom: 10px;
-        }
-
-        form span {
-            display: block;
-            margin-bottom: 5px;
-        }
-
-        form input {
-            width: 300px;
-            padding: 6px;
-            box-sizing: border-box;
-        }
-
-        form select {
-            width: 300px;
-            padding: 6px;
-            box-sizing: border-box;
-        }
-
-        form button {
-            width: 300px;
-        }
-
-        #id {
-            width: 200px;
-        }
-
-        #id_check {
-            width: 90px;
-        }
-    </style>
 </head>
 
 <body>
     <a href="/" id="home" class="me-auto p-2">
         <img src="/images/design/weblogo.png" alt="로고" style="height: 100px;  width: 200px"></a>
-
-    <h2 class="d-flex justify-content-center"> <%= title %> </h2>
-
-    <form action="/joinForm" method="post" onsubmit="return onWriteSubmit()" class="d-flex align-items-center flex-column">
-        <div>
-            <span>성</span>
-            <input type="text" name="Lname" id="Lname" maxlength="50" required>
-        </div>
-        <div>
-            <span>이름</span>
-            <input type="text" name="Fname" id="Fname" maxlength="50" required>
-        </div>
-        <div>
-            <span>아이디</span> <!--최대 20글자-->
-            <input type="text" name="id" id="id" maxlength="20" required>
-            <button class="btn btn-dark" id="id_check" onclick="location.href='/checkId'">중복확인</button>
-        </div>
-        <div><span id="id_status"></span></div>
-        <div>
-            <span>비밀번호</span> <!--최대 20글자-->
-            <input type="password" name="passwd" id="passwd" maxlength="20" required>
-        </div>
-        <div><span id="passwd_format"></span></div>
-        <div>
-            <span>비밀번호 확인</span>
-            <input type="password" name="passwd_check" id="passwd_check" required>
-        </div>
-        <div><span id="passwd_match"></span></div>
-        <div>
-            <span>닉네임</span> <!--최대 20글자-->
-            <input type="text" name="nickname" id="nickname" maxlength="20" required>
-        </div>
-        <div><span id="nickname_status"></span></div>
-        <div>
-            <span>생일</span>
-            <input type="date" name="Bdate" id="Bdate" required>
-        </div>
-        <div>
-            <span>성별</span>
-            <select name="sex" id="sex" required>
-                <option value="Male">남자</option>
-                <option value="Female">여자</option>
-            </select>
-        </div>
-        <div>
-            <span>이메일</span>
-            <input type="email" name="email" id="email" required>
-        </div>
-        <button type="submit" class="btn btn-dark">회원가입</button>
-    </form>
-
+    
+    <div class="container">
+        <h2 class="form-title"><b><%= title %></b></h2>
+        <form action="/joinForm" method="post" onsubmit="return onWriteSubmit()">
+            <div class="form-group">
+                <input class="form-control" placeholder="성" type="text" name="Lname" id="Lname" maxlength="50" required>
+            </div>
+            <div class="form-group">
+                <input class="form-control" placeholder="이름" type="text" name="Fname" id="Fname" maxlength="50" required>
+            </div>
+            <div class="form-group">
+                <div class="d-flex align-items-center" style="gap: 10px;">
+                    <input class="form-control" placeholder="아이디" style="width: 80%;" type="text" name="id" id="id" maxlength="20" required>
+                    <button class="btn btn3" style="width: 20%;" id="id_check" onclick="location.href='/checkId'">중복확인</button>
+                </div>
+                <div><small style="margin-left: 10px;"id="id_status"></small></div>
+                
+            </div>
+            <div class="form-group">
+                <div class="d-flex align-items-center" style="gap: 10px;">
+                    <input class="form-control" placeholder="비밀번호" type="password" name="passwd" id="passwd" maxlength="20" required>
+                    <input class="form-control" placeholder="비밀번호 확인" type="password" name="passwd_check" id="passwd_check" required>
+                </div>
+                <div class="d-flex align-items-center" style="gap: 10px;">
+                    <small style="margin-left: 10px; width: 50%;" id="passwd_format"></small>
+                    <small style="margin-left: 10px; width: 50%;" id="passwd_match"></small>
+                </div>
+            </div>
+            <div class="form-group">
+                <input class="form-control" placeholder="닉네임" type="text" name="nickname" id="nickname" maxlength="20" required>
+            </div>
+            <div class="form-group">
+                <div class="d-flex align-items-center" style="gap: 10px;">
+                    <label style="width: 50%; margin-left: 10px;" for="Bdate">생일</label>
+                    <label style="width: 50%; margin-left: 10px;" for="sex">성별</label>
+                </div>
+                <div class="d-flex align-items-center" style="gap: 10px;">
+                    <input style="width: 50%; text-align: center;" class="form-control" type="date" name="Bdate" id="Bdate" required>
+                    <select class="form-control" style="width: 50%; text-align: center;" name="sex" id="sex" required>
+                        <option value="Male">남자</option>
+                        <option value="Female">여자</option>
+                    </select>
+                </div>
+            </div>
+            <div class="form-group">
+                <input class="form-control" placeholder="이메일" type="email" name="email" id="email" required>
+            </div>
+            <button type="submit" style="width: 100%;"" class="btn btn3">회원가입</button>
+            <div class="form-footer link">
+                <a href="/login">아이디가 있으신가요?</a>
+            </div>
+        </form>
+    </div>
+    <!---->
     <script>
         let ValidCheck = false;
         function checkIdAvailability() {

@@ -1,0 +1,115 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <link rel='stylesheet' href='/stylesheets/style.css' />
+        <script src="/javascripts/jquery-3.7.1.min.js"></script>
+
+        <!-- Bootstrap CSS -->
+        <link rel='stylesheet' href='/vendors/bootstrap/css/bootstrap.min.css' />
+        <link rel='stylesheet' href='/vendors/bootstrap/css/bootstrap-grid.min.css' />
+        <link rel='stylesheet' href='/vendors/bootstrap/css/bootstrap-reboot.min.css' />
+
+        <!-- rootbar 디자인 -->
+        <link rel='stylesheet' href='/stylesheets/nav.css'/>
+        <link rel='stylesheet' href='/stylesheets/rootbar.css'/>
+        <link rel='stylesheet' href='/stylesheets/rootview.css'/>
+    </head>
+    <body>
+        <%- include('../RootFunction/rootbar.ejs') %>
+        <h2 class="d-flex justify-content-center"><b><%= title %></b></h2><br><br>
+        <% if (usrLogin) { %>
+        <button class="btn btn3" style="margin-left: 80%;" onclick="location.href='/roots/writeQnA';">작성하기</button><br><br>
+        <% } %>
+        <div style="display: flex; justify-content: center; align-items: center;">
+        <table class="table1" style="width: 75%;">
+            <thead>
+                <tr>
+                    <th>
+                        <a href="?page=<%= currentPage %>&sort=<%= sort === 'ASC' ? 'DESC' : 'ASC' %>&order=num">No <%= sort === 'ASC' ? '↑' : '↓' %></a>
+                    </th>
+                    <th>작성자</th>
+                    <th>제목</th>
+                    <th>게시일</th>
+                    <th>문의상태</th>
+                </tr>
+            </thead>
+            <tbody>
+<% 
+                    for (var i=0; i < rows.length; i++) { 
+                        var oneItem = rows[i]; 
+%>
+                    <tr onclick="window.location.href='/roots/readQnA/<%= oneItem.num %>'" style="cursor: pointer;">
+                        <td><%= oneItem.num %></td>
+                        <td class="uid"><%= oneItem.uid %></td>
+                        <td><%= oneItem.title %></td>
+                        <td><span class="date" data-date="<%= oneItem.updated %>"></span></td>
+                        <% if (oneItem.rname==null) {%>
+                            <td>확인중</td>
+                        <% } else {%>
+                            <td>확인완료</td>
+                            <%}%>
+                    </tr>
+<% 
+                } 
+%>
+            </tbody>
+        </table>
+        </div>
+        <!-- 페이지네이션 -->
+        <div class="pagination">
+            <% if (currentPage > 1) { %>
+                <a href="?page=<%= currentPage - 1 %>&sort=<%= sort %>&order=<%= order %>" class="btn btn">이전</a>
+            <% } %>
+
+            <% for (var i = 1; i <= totalPages; i++) { %>
+                <a href="?page=<%= i %>&sort=<%= sort %>&order=<%= order %>" class="btn btn <%= i === currentPage ? 'active' : '' %>"><%= i %></a>
+            <% } %>
+
+            <% if (currentPage < totalPages) { %>
+                <a href="?page=<%= currentPage + 1 %>&sort=<%= sort %>&order=<%= order %>" class="btn btn">다음</a>
+            <% } %>
+        </div>
+    </body>
+    <script>
+    function formatDate(dateString) {
+        const date = new Date(dateString);
+        const now = new Date();
+        const diffInSeconds = Math.floor((now - date) / 1000); // 초 단위 차이
+
+        if (diffInSeconds < 60) {
+            return `${diffInSeconds}초 전`;
+        } else if (diffInSeconds < 3600) { // 1시간 미만
+            const minutes = Math.floor(diffInSeconds / 60);
+            return `${minutes}분 전`;
+        } else if (diffInSeconds < 86400) { // 24시간 미만
+            const hours = Math.floor(diffInSeconds / 3600);
+            return `${hours}시간 전`;
+        } else if (diffInSeconds < 31536000) { // 1년 미만
+            return `${date.getMonth() + 1}월 ${date.getDate()}일`;
+        } else { // 1년 이상
+            return `${date.getFullYear()}년 ${date.getMonth() + 1}월 ${date.getDate()}일`;
+        }
+    }
+    // UID 마스킹 함수
+    function maskUid(uid) {
+        if (uid.length <= 4) {
+            return uid; // UID가 4자리 이하인 경우 그대로 반환
+        }
+        return uid.slice(0, 4) + '*'.repeat(uid.length - 4);
+    }
+    // 페이지 로드 후 날짜 포맷팅
+    document.addEventListener("DOMContentLoaded", function() {
+        const dateElements = document.querySelectorAll('.date');
+        dateElements.forEach(el => {
+            const dateValue = el.getAttribute('data-date');
+            el.textContent = formatDate(dateValue);
+        });
+        // UID 마스킹
+        const uidElements = document.querySelectorAll('.uid');
+        uidElements.forEach(el => {
+            const uidValue = el.textContent;
+            el.textContent = maskUid(uidValue);
+        });
+    });
+    </script>
+</html>

@@ -1,0 +1,70 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <link rel='stylesheet' href='/stylesheets/style.css' />
+        <script src="/javascripts/jquery-3.7.1.min.js"></script>
+
+        <!-- Bootstrap CSS -->
+        <link rel='stylesheet' href='/vendors/bootstrap/css/bootstrap.min.css' />
+        <link rel='stylesheet' href='/vendors/bootstrap/css/bootstrap-grid.min.css' />
+        <link rel='stylesheet' href='/vendors/bootstrap/css/bootstrap-reboot.min.css' />
+
+        <!-- rootbar 디자인 -->
+        <link rel='stylesheet' href='/stylesheets/rootbar.css'/>
+    </head>
+    <body>
+        <%- include('rootbar.ejs') %>
+        <h2 class="d-flex justify-content-center"><b><%= title %></b></h2><br><br>
+        <table class="table1">
+            <thead>
+                <tr>
+                    <th>
+                        <a href="?page=<%= currentPage %>&sort=<%= sort === 'ASC' ? 'DESC' : 'ASC' %>&order=Rno">No <%= sort === 'ASC' ? '↑' : '↓' %></a>
+                    </th>
+                    <th>
+                        <a href="?page=<%= currentPage %>&sort=<%= sort === 'ASC' ? 'DESC' : 'ASC' %>&order=Uno">회원번호 <%= sort === 'ASC' ? '↑' : '↓' %></a>
+                    </th>
+                    <th>
+                        <a href="?page=<%= currentPage %>&sort=<%= sort === 'ASC' ? 'DESC' : 'ASC' %>&order=Name">이름 <%= sort === 'ASC' ? '↑' : '↓' %></a>
+                    </th>
+                    <th>
+                        <a href="?page=<%= currentPage %>&sort=<%= sort === 'ASC' ? 'DESC' : 'ASC' %>&order=Pid">아이디 <%= sort === 'ASC' ? '↑' : '↓' %></a>
+                    </th>
+                    <th>닉네임</th>
+                    <th>신고사유</th>
+                </tr>
+            </thead>
+            <tbody>
+<% 
+                    for (var i=0; i < rows.length; i++) { 
+                        var oneItem = rows[i]; 
+%>
+                    <tr onclick="window.location.href='/roots/manageUsrInfo/<%= oneItem.Uno %>'" style="cursor: pointer;">
+                        <td><%= oneItem.Rno %></td>
+                        <td><%= oneItem.Uno %></td>
+                        <td><%= oneItem.Name %></td>
+                        <td><%= oneItem.Pid %></td>
+                        <td><%= oneItem.Nickname %></td>
+                        <td><%= oneItem.Reason %></td>
+                    </tr>
+<% 
+                } 
+%>
+            </tbody>
+        </table>
+        <!-- 페이지네이션 -->
+        <div class="pagination">
+            <% if (currentPage > 1) { %>
+                <a href="?page=<%= currentPage - 1 %>&sort=<%= sort %>&order=<%= order %>" class="btn btn">이전</a>
+            <% } %>
+
+            <% for (var i = 1; i <= totalPages; i++) { %>
+                <a href="?page=<%= i %>&sort=<%= sort %>&order=<%= order %>" class="btn btn <%= i === currentPage ? 'active' : '' %>"><%= i %></a>
+            <% } %>
+
+            <% if (currentPage < totalPages) { %>
+                <a href="?page=<%= currentPage + 1 %>&sort=<%= sort %>&order=<%= order %>" class="btn btn">다음</a>
+            <% } %>
+        </div>
+    </body>
+</html>
