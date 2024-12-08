@@ -3,7 +3,7 @@ var express = require('express');
 var url = require('url');
 
 exports.writeForm = (req, res) => {
-    var { rootLogin, usrLogin, usrid     } = require('../../routes/index.js'); //사용자, 관리자 로그인 여부
+    var { rootLogin, usrLogin, usrid } = require('../../routes/index.js'); //사용자, 관리자 로그인 여부
 
     var queryData = url.parse(req.url, true).query;
     var Bno = queryData.idx; //게시판 번호
@@ -18,11 +18,12 @@ exports.writeForm = (req, res) => {
 
 exports.writeData = (req, res) => {
     var Bno = req.body.idx;
+    var sellerId = req.body.seller;
     var content = req.body.content;
     var score = req.body.rating;
 
     var datas = [Bno, content, score];
-    writeModel.insertData(datas, () => {
+    writeModel.insertData(datas, sellerId, () => {
         res.redirect('/myPage/productReview');
     });
 };
