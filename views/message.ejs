@@ -278,36 +278,36 @@
 
 <body>
     <%- include('nav.ejs') %>
-    <div class="container">
-        <div class="row clearfix">
-            <div class="col-lg-12">
-                <div class="card chat-app">
-                    <div id="plist" class="people-list">
-                        <ul id="chat-list" class="list-unstyled chat-list mt-2 mb-0">
-
-                        </ul>
-                    </div>
-                    <div class="chat">
-                        <div class="chat-header clearfix">
-                        </div>
-                        <div class="chat-history">
-                            <ul id="messages" class="m-b-0">
+        <div class="container">
+            <div class="row clearfix">
+                <div class="col-lg-12">
+                    <div class="card chat-app">
+                        <div id="plist" class="people-list">
+                            <ul id="chat-list" class="list-unstyled chat-list mt-2 mb-0">
 
                             </ul>
                         </div>
-                        <div class="chat-message clearfix">
-                            <div class="input-group mb-0">
-                                <div class="input-group-prepend">
-                                    <span class="input-group-text"><i class="fa fa-send"></i></span>
+                        <div class="chat">
+                            <div class="chat-header clearfix">
+                            </div>
+                            <div class="chat-history">
+                                <ul id="messages" class="m-b-0">
+
+                                </ul>
+                            </div>
+                            <div class="chat-message clearfix">
+                                <div class="input-group mb-0">
+                                    <div class="input-group-prepend">
+                                        <span class="input-group-text"><i class="fa fa-send"></i></span>
+                                    </div>
+                                    <input id="input" type="text" class="form-control" autocomplete="off" />
                                 </div>
-                                <input id="input" type="text" class="form-control" autocomplete="off" />
                             </div>
                         </div>
                     </div>
                 </div>
             </div>
         </div>
-    </div>
 
 
 </body>
@@ -456,12 +456,17 @@
                 var id = chatroom.Sid;
             }
 
+            // 길이 제한에 따른 메시지 처리
+            const lastMsg = chatroom.Lastmsg.length > 10
+                ? chatroom.Lastmsg.slice(0, 10) + "..."
+                : chatroom.Lastmsg;
+
             chatList.push(`<button onclick='load_chat_log(this)' id='${chatroom.Cno}' a_img='${chatroom.Image}' class="chat-select list-group-item list-group-item-action">
                 <li class="clearfix">
                             <img src="${chatroom.Image}" alt="profileImage">
                             <div class="about">
                                 <div class="name">${id}</div>
-                                <div class="status"> ${chatroom.Lastmsg} </div>
+                                <div class="status"> ${lastMsg} </div>
                             </div>
                         </li>
             </button>`)

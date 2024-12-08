@@ -59,31 +59,60 @@ io.on('connection', (socket) => {
       return res.status(500).send('서버 오류');
     }
 
-    // Promise 배열 생성
+    // // Promise 배열 생성
+    // const promises = results.map((result) => {
+    //   return new Promise((resolve, reject) => {
+    //     // 마지막 채팅기록
+    //     db.query('SELECT Message FROM msglog WHERE Cnum = ? ORDER BY Mtime DESC LIMIT 1', [result.Cno], (_err, msg) => {
+    //       result["Lastmsg"] = msg.length > 0 ? msg[0].Message : '메시지 없음';
+    //     })
+
+    //     if (userId === result.Sid) {
+    //       // Rid로 프로필 가져오기
+    //       db.query(`SELECT ProfileImg FROM usr WHERE uid = ?`, [result.Rid], (err, img) => {
+    //         if (err) return reject(err);
+    //         result['Image'] = img.length > 0 ? img[0].ProfileImg : null;
+    //         resolve();
+    //       });
+    //     } else {
+    //       // Sid로 가져오기
+    //       db.query(`SELECT ProfileImg FROM usr WHERE uid = ?`, [result.Sid], (err, img) => {
+    //         if (err) return reject(err);
+    //         result['Image'] = img.length > 0 ? img[0].ProfileImg : null;
+    //         resolve();
+    //       });
+    //     }
+    //   });
+    // });
     const promises = results.map((result) => {
       return new Promise((resolve, reject) => {
-        // 마지막 채팅기록
+        // 마지막 채팅 기록 가져오기
         db.query('SELECT Message FROM msglog WHERE Cnum = ? ORDER BY Mtime DESC LIMIT 1', [result.Cno], (_err, msg) => {
-          result["Lastmsg"] = msg.length > 0 ? msg[0].Message : '메시지 없음';
-        })
+          if (_err) {
+            result["Lastmsg"] = '오류 발생';
+            return reject(_err);
+          }
+          result["Lastmsg"] = Array.isArray(msg) && msg.length > 0 ? msg[0].Message : '메시지 없음';
 
-        if (userId === result.Sid) {
-          // Rid로 프로필 가져오기
-          db.query(`SELECT ProfileImg FROM usr WHERE uid = ?`, [result.Rid], (err, img) => {
-            if (err) return reject(err);
+          const profileQuery = userId === result.Sid
+            ? 'SELECT ProfileImg FROM usr WHERE uid = ?'
+            : 'SELECT ProfileImg FROM usr WHERE uid = ?';
+
+          const userIdParam = userId === result.Sid ? result.Rid : result.Sid;
+
+          // 프로필 이미지 가져오기
+          db.query(profileQuery, [userIdParam], (err, img) => {
+            if (err) {
+              result["Image"] = null;
+              return reject(err);
+            }
             result['Image'] = img.length > 0 ? img[0].ProfileImg : null;
-            resolve();
+            resolve(); // 모든 작업 완료 후 resolve 호출
           });
-        } else {
-          // Sid로 가져오기
-          db.query(`SELECT ProfileImg FROM usr WHERE uid = ?`, [result.Sid], (err, img) => {
-            if (err) return reject(err);
-            result['Image'] = img.length > 0 ? img[0].ProfileImg : null;
-            resolve();
-          });
-        }
+        });
       });
     });
+
 
     // 모든 Promise가 완료될 때까지 대기
     try {
