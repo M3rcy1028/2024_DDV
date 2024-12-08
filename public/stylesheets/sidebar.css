@@ -43,7 +43,7 @@ body, ul, li {
     justify-content: flex-end;
   }
   
-  .side-bar__icon-1 {
+  .side-bar__icon-1 { 
     position: relative;
     width: 23px;
     height: 17px;
