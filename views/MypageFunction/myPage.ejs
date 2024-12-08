@@ -61,6 +61,15 @@
             padding-top: 20px;
             padding-bottom: 20px;
         }
+
+        .nav-underline .nav-link.active {
+            color: #6c975d !important;
+        }
+        
+        .nav-link:hover {
+            color: #5a8348;
+        }
+        
         .btn3 {
             background-color: #6c975d; /* 호버 시 색상 */
             /* border-color: black; */
@@ -85,6 +94,18 @@
             <%= title %>
         </h2>
 
+        <ul class="nav nav-underline mb-4">
+            <li class="nav-item">
+                <a class="nav-link active" aria-current="page" href="/myPage">홈</a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link" href="/myPage/productReview">리뷰</a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link" href="/myPage/storeReview">내 상점 후기</a>
+            </li>
+        </ul>
+
         <!-- 사용자 정보 -->
         <div class="usr-info d-flex align-items-center mb-4 border">
             <div class="left-info me-4">
@@ -104,6 +125,10 @@
                     <span class="text-center">신뢰도<br>
                         <%=usrInfo.Trust%>
                     </span>
+                    <hr>
+                    <span class="text-center">가입한지<br>
+                        <%=usrInfo.JoinedDate%> 일
+                    </span>
                 </div>
                 <div>
                     <!--<input type="text" id="chargePoint">-->
@@ -111,6 +136,8 @@
                     <button type="button" class="btn btn3" id="infoBtn"
                         onclick="location.href='/myPage/myInfo'">
                         회원정보 수정</button>
+                    <button type="button" class="btn btn-secondary btn-sm" id="passwdBtn"
+                        onclick="location.href='/myPage/changePwd'">비밀번호 변경</button>
                 </div>
             </div>
         </div>
@@ -128,10 +155,6 @@
                     <button class="nav-link" id="nav-sell-tab" data-bs-toggle="tab" data-bs-target="#nav-sell"
                         type="button" role="tab" aria-controls="nav-contact" aria-selected="false">
                         판매 내역
-                    </button>
-                    <button class="nav-link" id="nav-review-tab" data-bs-toggle="tab" data-bs-target="#nav-review"
-                        type="button" role="tab" aria-controls="nav-contact" aria-selected="false">
-                        상점 후기
                     </button>
                 </div>
             </nav>
@@ -153,7 +176,7 @@
                                     <div class="d-flex flex-column col border text-center ms-3">
                                         <a href="/sellBoard/sellRead/<%=likeItem.Bno%>">
                                             <img src="<%= likeItem.Img %>"
-                                                style="width: 180px; height: 210px; object-fit: cover;" alt="찜 목록 이미지">
+                                                style="width: 170px; height: 210px; object-fit: cover;" alt="찜 목록 이미지">
                                         </a>
                                         <b name="title" id="title">
                                             <a href="/sellBoard/sellRead/<%=likeItem.Bno%>">
@@ -183,7 +206,7 @@
                                     <div class="d-flex flex-column col border text-center ms-3">
                                         <a href="/sellBoard/sellRead/<%=buyItem.Bno%>">
                                             <img src="<%= buyItem.Img %>"
-                                                style="width: 180px; height: 210px; object-fit: cover;" alt="구매 목록 이미지">
+                                                style="width: 170px; height: 210px; object-fit: cover;" alt="구매 목록 이미지">
                                         </a>
                                         <b name="title" id="title">
                                             <a href="/sellBoard/sellRead/<%=buyItem.Bno%>">
@@ -214,7 +237,7 @@
                                     <div class="d-flex flex-column col border text-center ms-3">
                                         <a href="/sellBoard/sellRead/<%=sellItem.Bno%>">
                                             <img src="<%= sellItem.Img %>"
-                                                style="width: 180px; height: 210px; object-fit: cover;" alt="판매 목록 이미지">
+                                                style="width: 170px; height: 210px; object-fit: cover;" alt="판매 목록 이미지">
                                         </a>
                                         <b name="title" id="title">
                                             <a href="/sellBoard/sellRead/<%=sellItem.Bno%>">
@@ -229,12 +252,6 @@
                             </div>
                             <% } %>
                 </div>
-                <div class="tab-pane fade" id="nav-review" role="tabpanel" aria-labelledby="nav-home-tab" tabindex="0">
-                    <!-- 일정한 높이 설정을 위한 빈 컬럼 표시 -->
-                    <div class="d-flex justify-content-center align-items-center" style="height: 210px;">
-                        상점 후기가 없습니다
-                    </div>
-                </div>
             </div>
         </div>
 
@@ -246,10 +263,10 @@
                 $("#pointBtn").on("click", postPoint);
 
                 async function postPoint() {
-                    //데이터 처리
+                    // 데이터 처리
                     var Point = "<%=usrInfo.Money%>";
 
-                    //데이터 입력
+                    // 데이터 입력
                     const { value: formValues } = await Swal.fire({
                         title: "포인트 충전",
                         html: `
@@ -291,31 +308,27 @@
                             },
                             dataType: "json",
                             success: function (response) {
-                                if (!response.success) {
-                                    //포인트 충전 실패
-                                    Swal.fire({
-                                        title: "알림",
-                                        text: response.message,
-                                        icon: "error"
-                                    });
-                                } else {
-                                    //포인트 충전 성공
-                                    $("#Point").text(response.sumPoint); // 화면에 새 포인트 표시
+                                // 포인트 충전 성공
+                                if (response.success) {
                                     Swal.fire("성공", "포인트가 충전되었습니다!", "success")
                                         .then(() => {
-                                            console.log("충전 완료 후 화면 갱신");
-                                            location.reload();
+                                            $("#point").html("포인트<br>" + response.sumPoint); // 화면에 새 포인트 표시
                                         });
                                 }
                             },
                             error: function (xhr, status, e) {
-                                console.log("Error: ", status, e);
-                                Swal.fire("오류", "포인트 충전 중 오류가 발생했습니다.", "error");
+                                // 서버가 401 상태 코드를 반환
+                                if (xhr.status === 401) {
+                                    Swal.fire("실패", "패스워드가 일치하지 않거나, 잘못된 요청으로 인해 변경되지 않았습니다.", "error");
+                                } else {
+                                    console.log("Error: ", status, e);
+                                    Swal.fire("실패", "포인트 충전 중 오류가 발생했습니다.", "error");
+                                }
                             }
                         });
                     }
                 }
-            })
+            });
         </script>
 
 </body>

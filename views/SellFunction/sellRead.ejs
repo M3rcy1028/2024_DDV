@@ -107,23 +107,22 @@
                                     <button type="submit" class="btn btn-dark">메세지 보내기</button>
                                 </form>
                                 <%}%>
-
-                                    <form action="/addWish" method="post" onsubmit="return onAddWishlist()">
-                                        <input type="hidden" name="idx" value="<%=row.Bno%>" /> <!-- 게시글 번호 -->
-                                        <input type="hidden" name="like" value="<%=likeCount%>" /> <!-- 찜 여부 -->
-                                        <button type="submit" class="btn btn-outline-dark" id="wishBtn">
-                                            <% if (likeCount==0) { %> <!-- 찜을 하지 않은 경우-->
-                                                <i class="bi bi-heart me-2"></i>
-                                                <% } else { %>
-                                                    <i class="bi bi-heart-fill me-2"></i>
-                                                    <% } %>
-                                                        찜하기
-                                        </button>
-                                    </form>
-                                    <%}%>
+                            <form action="/addWish" method="post" onsubmit="return onAddWishlist()">
+                                <input type="hidden" name="idx" value="<%=row.Bno%>" /> <!-- 게시글 번호 -->
+                                <input type="hidden" name="like" value="<%=likeCount%>" /> <!-- 찜 여부 -->
+                                <button type="submit" class="btn btn-outline-dark" id="wishBtn">
+                                    <% if (likeCount==0) { %> <!-- 찜을 하지 않은 경우-->
+                                        <i class="bi bi-heart me-2"></i>
+                                        <% } else { %>
+                                            <i class="bi bi-heart-fill me-2"></i>
+                                            <% } %>
+                                                찜하기
+                                </button>
+                            </form>
+                            <%}%>
                     </div>
                     <!-- 글 작성자에게만 보이는 버튼-->
-                    <% if (usrLogin && UpdateEnable) { %>
+                    <% if (UpdateEnable) { %>
                         <div class="d-flex">
                             <!-- 수정 버튼 -->
                             <form class="me-2" action="/sellBoard/sellUpdate" method="get">

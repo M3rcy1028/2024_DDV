@@ -1,6 +1,11 @@
 var express = require('express');
+var crypto = require('crypto'); // npm install -d crypto
 var router = express.Router();
 var mysql = require('mysql2');
+
+var writeController = require('../controllers/ReviewController/reviewWriteController.js');
+var updateController = require('../controllers/ReviewController/reviewUpdateController.js');
+var readController = require('../controllers/ReviewController/reviewReadController.js');
 
 require('dotenv').config();
 
@@ -27,12 +32,16 @@ var storage = multer.diskStorage({
 
 var upload = multer({ storage: storage });
 
+const algorithm = 'aes-192-cbc';
+const key = Buffer.from("123456789012345678901234", "utf8"); // 24바이트 키 (AES-192)
+const iv = Buffer.from("1234567890123456", "utf8"); // 16바이트 IV
+
 //마이페이지 화면 (/myPage)
 router.get('/', function (req, res, next) {
     var { usrLogin, rootLogin, usrid } = require('./index'); //사용자, 관리자 로그인 여부
 
     //마이페이지에 필요한 사용자 정보
-    var usrSql = "SELECT ProfileImg, Nickname, Money, Trust, State FROM USR WHERE uid=?";
+    var usrSql = "SELECT ProfileImg, Nickname, Money, Trust, State, Login FROM USR AS U, PERSON AS P WHERE uid=? and U.uid=P.pid";
 
     //찜한 목록 (최신순 6개)
     var likeSql = "SELECT Bno, Img, Title, Price FROM WISHLIST AS W, BOARD AS B WHERE uid=? and W.Bnum = B.Bno ORDER BY Wno DESC LIMIT 6 OFFSET 0";
@@ -46,7 +55,17 @@ router.get('/', function (req, res, next) {
     //사용자가 찜해둔 목록
     connection.query(usrSql, usrid, (err, usrInfo, fileds) => {
         if (err) throw err;
-        //console.log("마이페이지 정보 : ", usrInfo);
+
+        const date1 = new Date(); //현재 일자
+        const date2 = new Date(usrInfo[0].Login); //가입 일자
+
+        const diffDate = date1.getTime() - date2.getTime();
+        const diff = Math.floor(Math.abs(diffDate / (1000 * 60 * 60 * 24))); //현재 일자 - 가입 일자    
+
+        usrInfo[0].JoinedDate = diff; //가입 일자 추가
+
+        console.log("마이페이지 정보 : ", usrInfo);
+
         connection.query(likeSql, usrid, (err, likeInfo, fields) => {
             if (err) throw err;
             console.log("찜 정보 : ", likeInfo);
@@ -93,6 +112,7 @@ router.post('/myInfo', upload.single("profileImg"), function (req, res, next) {
     var Bdate = req.body.Bdate;
     var Sex = req.body.sex;
     var Email = req.body.email;
+    var passwd_check = req.body.passwd_check;
     var ProfileImg;
 
     if (req.file == undefined) { //이미지가 없는 경우 - 기존 이미지 사용
@@ -102,14 +122,24 @@ router.post('/myInfo', upload.single("profileImg"), function (req, res, next) {
         ProfileImg = '/images/profile/' + req.file.filename; //이미지 경로
     }
 
-    //수정할 정보
-    var datas = [ProfileImg, Lname, Fname, Nickname, Bdate, Sex, Email, usrid];
+    //암호화
+    var encrypt = crypto.createCipheriv(algorithm, key, iv);
+    var passwd = encrypt.update(passwd_check, 'utf8', 'hex') + encrypt.final('hex');
 
-    var updateSql = "UPDATE PERSON AS P, USR AS U SET U.ProfileImg = ?, P.Lname = ?, P.Fname = ?, U.Nickname = ?, P.Bdate = ?, P.Sex = ?, P.EMail = ? WHERE U.uid = ? and U.uid = P.pid";
+    //수정할 정보
+    var datas = [ProfileImg, Lname, Fname, Nickname, Bdate, Sex, Email, usrid, passwd];
+
+    var updateSql = "UPDATE PERSON AS P, USR AS U SET U.ProfileImg = ?, P.Lname = ?, P.Fname = ?, U.Nickname = ?, P.Bdate = ?, P.Sex = ?, P.EMail = ? WHERE U.uid = ? and U.pwd = ? and U.uid = P.pid";
 
     connection.query(updateSql, datas, (err, usrInfo, fileds) => {
         if (err) throw err;
-        res.redirect('/myPage/myInfo');
+
+        if (usrInfo.affectedRows == 0) {
+            res.send("<script>alert('패스워드가 일치하지 않거나, 잘못된 요청으로 인해 변경되지 않았습니다.');history.back();</script>");
+        }
+        else {
+            res.redirect('/myPage/myInfo');
+        }
     });
 })
 
@@ -122,8 +152,14 @@ router.get('/changePwd', function (req, res, next) {
 //마이페이지 - 비밀번호 변경 (POST)
 router.post('/changePwd', function (req, res, next) {
     var { usrid } = require('./index');
-    var passwd = req.body.passwd;
-    var newPasswd = req.body.newPasswd;
+
+    //암호화 (기존 비밀번호)
+    var encrypt1 = crypto.createCipheriv(algorithm, key, iv);
+    var passwd = encrypt1.update(req.body.passwd, 'utf8', 'hex') + encrypt1.final('hex');
+
+    //암호화 (변경 비밀번호)
+    var encrypt2 = crypto.createCipheriv(algorithm, key, iv);
+    var newPasswd = encrypt2.update(req.body.newPasswd, 'utf8', 'hex') + encrypt2.final('hex');
 
     var datas = [newPasswd, usrid, passwd];
 
@@ -149,9 +185,10 @@ router.post("/chargePoint", function (req, res, next) {
     var chargePoint = Number(req.body.update);
     var sumPoint = point + chargePoint;
 
-    var password = req.body.pwd;
+    var encrypt = crypto.createCipheriv(algorithm, key, iv);
+    var encryptResult = encrypt.update(req.body.pwd, 'utf8', 'hex') + encrypt.final('hex');
 
-    var datas = [sumPoint, usrid, password];
+    var datas = [sumPoint, usrid, encryptResult];
 
     var updateSql = "UPDATE USR SET MONEY = ? WHERE uid = ? and Pwd = ?";
 
@@ -173,5 +210,76 @@ router.post("/chargePoint", function (req, res, next) {
         }
     })
 });
+
+//마이페이지 - 리뷰 (작성 및 조회)
+router.get('/productReview', function (req, res, next) {
+    var { usrLogin, rootLogin } = require('./index'); //사용자, 관리자 로그인 여부
+    var { usrid } = require('./index');
+
+    //구매 물품 중 후기 작성 안 한 것
+    var nonReviewSql = "SELECT Bno, Img, Title, Price FROM BOARD AS B LEFT JOIN REVIEW AS R ON B.Bno = R.Bnum WHERE B.Buyer=? AND R.Rno IS NULL ORDER BY Bno DESC LIMIT 6 OFFSET 0";
+
+    //구매 물품 중 후기 작성 한 것
+    var reviewSql = "SELECT Rno, Bno, Img, Title, Price FROM BOARD AS B, REVIEW AS R WHERE B.Buyer=? AND B.Bno = R.Bnum ORDER BY Bno DESC LIMIT 6 OFFSET 0";
+
+    //후기 작성 안 한 것
+    connection.query(nonReviewSql, usrid, (err, nonReviewedItems, fileds) => {
+        if (err) throw err;
+        console.log("후기 작성 가능 : ", nonReviewedItems);
+        connection.query(reviewSql, usrid, (err, reviewedItems, fields) => {
+            if (err) throw err;
+            console.log("후기 작성 : ", reviewedItems);
+            res.render('MypageFunction/productReview', { title: "리뷰", rootLogin, usrLogin, nonReviewedItems, reviewedItems });
+        })
+    });
+});
+
+//마이페이지 - 후기 작성 (GET)
+router.get('/reviewWrite', writeController.writeForm);
+
+//마이페이지 - 후기 작성 (POST)
+router.post('/reviewWrite', writeController.writeData);
+
+//마이페이지 - 후기 수정 (GET)
+router.get('/reviewUpdate', updateController.updateForm);
+
+//마이페이지 - 후기 수정 (POST)
+router.post('/reviewUpdate', updateController.updateData);
+
+//마이페이지 - 후기 확인 (GET)
+router.get('/reviewRead/:Rno', readController.readData);
+
+//마이페이지 - 내 상점 후기
+router.get('/storeReview', function (req, res, next) {
+    var { usrLogin, rootLogin } = require('./index'); //사용자, 관리자 로그인 여부
+    var { usrid } = require('./index');
+
+    //판매 물품 중 후기 작성 된 것
+    var storeReviewSql = "SELECT Rno, Bno, Img, Nickname, Buyer, Score, Rtext FROM BOARD AS B, REVIEW AS R, USR AS U WHERE B.Bid=? AND B.Bno = R.Bnum AND B.Buyer = U.Uid ORDER BY Bno DESC LIMIT 6 OFFSET 0";
+
+    connection.query(storeReviewSql, usrid, (err, storeReviewedItems, fileds) => {
+        if (err) throw err;
+        console.log("작성된 후기 : ", storeReviewedItems);
+
+        var sum = 0; //별점 합계
+
+        for (let i = 0; i < storeReviewedItems.length; i++) {
+            var score = storeReviewedItems[i].Score;
+            sum += score;
+
+            var buyerId = storeReviewedItems[i].Buyer, newBuyerId;
+            newBuyerId = buyerId.slice(0, 4) + '*'.repeat(buyerId.length - 4); //아이디는 4번째자리까지만 표기
+            storeReviewedItems[i].Buyer = newBuyerId;
+        }
+
+        const avg = (sum / storeReviewedItems.length).toFixed(2); //평균 별점
+        const avgStar = Math.floor(avg); //평균 별점을 표시할 별 개수
+
+        var avgScore = { avg, avgStar };
+
+        res.render('MypageFunction/storeReview', { title: "내 상점 후기", rootLogin, usrLogin, avgScore, storeReviewedItems });
+    });
+});
+
 
 module.exports = router;
