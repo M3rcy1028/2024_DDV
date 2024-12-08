@@ -2,8 +2,8 @@ var writeModel = require('../../models/SellModel/sellWriteModel');
 var express = require('express');
 
 exports.writeForm = (req, res) => {
-    var { rootLogin, usrLogin } = require('../../routes/index.js'); //사용자, 관리자 로그인 여부
-    res.render('SellFunction/sellWrite', { title: "상품 등록" , rootLogin, usrLogin});
+    var { rootLogin, usrLogin, usrid } = require('../../routes/index.js'); //사용자, 관리자 로그인 여부
+    res.render('SellFunction/sellWrite', { title: "상품 등록" , rootLogin, usrLogin, usrid});
 }
 
 exports.writeData = (req, res) => {

@@ -9,82 +9,36 @@
     <link rel='stylesheet' href='/vendors/bootstrap/css/bootstrap.min.css' />
     <link rel='stylesheet' href='/vendors/bootstrap/css/bootstrap-grid.min.css' />
     <link rel='stylesheet' href='/vendors/bootstrap/css/bootstrap-reboot.min.css' />
-
-    <title>
-        <%= title %>
-    </title>
-
-    <style>
-        h2 {
-            margin-bottom: 20px;
-        }
-
-        form div {
-            margin-bottom: 10px;
-        }
-
-        form span {
-            display: block;
-            margin-bottom: 5px;
-        }
-
-        form input {
-            width: 300px;
-            padding: 8px;
-            box-sizing: border-box;
-        }
-
-        form select {
-            width: 300px;
-            padding: 8px;
-            box-sizing: border-box;
-        }
-
-        form button {
-            width: 300px;
-        }
-
-        .link a {
-            text-decoration: none;
-            color: rgb(159, 156, 156);
-        }
-
-        .link span {
-            color: rgb(159, 156, 156);
-        }
-    </style>
+    <link rel='stylesheet' href='/stylesheets/rootview.css' />
+    <link rel='stylesheet' href='/stylesheets/login.css' />
 </head>
 
 <body>
     <a href="/" id="home" class="me-auto p-2">
         <img src="/images/design/weblogo.png" alt="로고" style="height: 100px;  width: 200px"></a>
-
-    <h2 class="d-flex justify-content-center">
-        <%= title %>
-    </h2>
-
-    <form class="d-flex align-items-center flex-column">
-        <div>
-            <span>아이디</span>
-            <input type="text" name="id" id="id">
+    
+    <div class="container">
+        <h2 class="form-title"><b><%= title %></b></h2>
+        <form action="/login" method="post" onsubmit="return onWriteSubmit()">
+            <div class="form-group">
+                <input class="form-control" type="text" name="id" id="id" placeholder="아이디">
+            </div>
+            <div class="form-group">
+                <input class="form-control" type="email" name="email" id="email" placeholder="이메일">
+            </div>
+            <div>
+                <span id="find_status"></span>
+            </div>
+            <button type="submit" class="btn btn3" style="width: 100%;" id="find_pwd" onclick="location.href='/getpwd'">찾기</button>
+        </form>
+        <div class="form-footer link">
+            <a href="/findId">아이디를 잊으셨나요?</a>
         </div>
-        <div>
-            <span>이메일</span>
-            <input type="text" name="email" id="email">
+        <div class="form-footer link">
+            <a href="/login">로그인하기</a>
+            <span >|</span>
+            <a href="/joinForm">회원가입하기</a>
         </div>
-        <div>
-            <span id="find_status"></span>
-        </div>
-        <div>
-            <button class="btn btn-dark" id="find_pwd" onclick="location.href='/getpwd'">찾기</button>
-        </div>
-    </form>
-    <div class="d-flex justify-content-center link">
-        <a class="me-2" href="/findId">아이디를 잊으셨나요?</a>
-        <span class="me-2">|</span>
-        <a class="me-2" href="/login">로그인하기</a>
-        <span class="me-2">|</span>
-        <a class="me-2"  href="/joinForm">회원가입하기</a>
     </div>
 </body>
 <script>

@@ -1,0 +1,60 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <link rel='stylesheet' href='/stylesheets/style.css' />
+    <script src="/javascripts/jquery-3.7.1.min.js"></script>
+
+    <!-- Bootstrap CSS -->
+    <link rel='stylesheet' href='/vendors/bootstrap/css/bootstrap.min.css' />
+    <link rel='stylesheet' href='/vendors/bootstrap/css/bootstrap-grid.min.css' />
+    <link rel='stylesheet' href='/vendors/bootstrap/css/bootstrap-reboot.min.css' />
+    <!-- rootbar 디자인 -->
+    <link rel='stylesheet' href='/stylesheets/rootbar.css'/>
+    <link rel='stylesheet' href='/stylesheets/nav.css'/>
+    <link rel='stylesheet' href='/stylesheets/login.css' />
+
+</head>
+
+<body>
+    <%- include('../RootFunction/rootbar.ejs') %>
+    <div class="container">
+        <h2 class="d-flex justify-content-center"><b><%= title %></b></h2><br>
+        <form action="/roots/writeQnA" method="post" onsubmit="return onWriteSubmit()">  
+            <div class="form-group">
+                <label style="text-align: center; margin-left: 15px; margin-bottom: 5px;" for="title"><b>제목</b></label>
+                <input class="form-control" type="text" name="title" id="title">
+            </div>
+            <div class="form-group">
+                <label style="text-align: center; margin-left: 15px; margin-bottom: 5px;" for="question"><b>내용</b></label>
+                <textarea class="form-control" style="height: 150px;" name="question" id="question"></textarea>
+            </div>
+            <div class="form-group">
+                <button class="btn btn-outline-warning" type="submit" style="width: 48%;">올리기</button>
+                <button class="btn btn2" type="button" onclick="location.href='/roots/listQnA'" style="width: 48%;">돌아가기</button>
+            </div>
+            
+        </form>
+    </div>
+
+    <script>
+        function onWriteSubmit(){
+            if ($("#title").val().trim() == ""){
+                var message = "제목을 입력해 주세요.";
+                $("#title").val("");
+                $("#title").focus();
+                alert(message);
+                return false;
+            }
+            if ($("#question").val().trim() == ""){
+                var message = "문의 내용을 입력해 주세요.";
+                $("#question").val("");
+                $("#question").focus();
+                alert(message);
+                return false;
+            }
+        }
+    </script>
+</body>
+
+</html>

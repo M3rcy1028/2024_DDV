@@ -19,6 +19,7 @@ var rootid = "";
 var rootname = "";
 var usrLogin = false;
 var usrid = "";
+// var usrname = "";
 
 const algorithm = 'aes-192-cbc'
 const key = Buffer.from("123456789012345678901234", "utf8"); // 24바이트 키 (AES-192)
@@ -26,6 +27,36 @@ const iv = Buffer.from("1234567890123456", "utf8"); // 16바이트 IV
 
 //시작 화면
 router.get('/', function (req, res, next) {
+  var sql1 = `SELECT Bno, Img, Title, Price, Trade 
+             FROM board 
+             ORDER BY Bno DESC 
+             LIMIT 8 OFFSET 0`; //최신 게시글 8개
+  var sql2 = `SELECT Bno, Img, Title, Price, Trade 
+             FROM board WHERE Trade='거래가능'
+             ORDER BY Hit DESC LIMIT 4`;
+  var sql3 = `SELECT Bno, Img, Title, Price, Trade
+              FROM WISHLIST AS W, BOARD AS B WHERE uid=? and W.Bnum = B.Bno 
+              ORDER BY Wno DESC LIMIT 40`;
+  connection.query(sql1, (err, rows) => {
+    if (err) throw err;
+    console.log(rows);
+    connection.query(sql2, (err, top) => {
+      if (err) throw err;
+      console.log(top);
+      connection.query(sql3, [usrid], (err, list) => {
+        if (err) throw err;
+        console.log(list);
+        res.render('index', { 
+          title: '중고장터', rows: rows, top:top, list:list, 
+          usrid, rootLogin, usrLogin, rootname 
+        });
+      });
+    });
+  });
+});
+
+//시작 화면
+router.get('/topBoard', function (req, res, next) {
   var sql = `SELECT Bno, Img, Title, Price, Trade 
              FROM board 
              ORDER BY Bno DESC 
@@ -34,7 +65,7 @@ router.get('/', function (req, res, next) {
   connection.query(sql, (err, rows) => {
     if (err) throw err;
     console.log(rows);
-    res.render('index', { title: '중고장터', rows: rows, rootLogin, usrLogin, rootname });
+    res.render('index', { title: '중고장터', rows: rows, usrid, rootLogin, usrLogin, rootname });
   });
 });
 
@@ -113,8 +144,8 @@ router.post('/login', function (req, res, next) { // 유저 로그인 입력
     encryptResult,
   ];
 
-  var sql = "SELECT * FROM USR WHERE Uid=? AND Pwd=?;";
-  connection.query(sql, Udatas, function (err, results, fields) {
+  var sql1 = "SELECT * FROM USR WHERE Uid=? AND Pwd=?;";
+  connection.query(sql1, Udatas, function (err, results, fields) {
     if (err) throw err;
     if (results.length > 0) { // db 반환값이 존재할 때
       usrLogin = true;
@@ -208,28 +239,6 @@ router.get('/findPasswd', function (req, res, next) {
   res.render('LoginFunction/findPasswd', { title: '비밀번호 찾기' });
 })
 
-//찜 버튼 눌렀을 때
-router.post('/addWish', function (req, res, next) {
-  var Bno = req.body.idx;
-  var likeCount = req.body.like;
-  var datas = [usrid, Bno]; //사용자 아이디, 게시판 번호
-
-  if (likeCount == 0) { //찜을 하지 않은 경우
-    var insertSql = "INSERT INTO WISHLIST(Uid, Bnum) VALUES(?, ?);"; //wishlist table에 삽입
-    connection.query(insertSql, datas, function (err, rows) {
-      if (err) console.error("err : " + err);
-      res.redirect('/sellBoard/sellRead/' + String(Bno)); //기존에 보고 있던 게시글로 redirect
-    })
-  }
-  else { //찜을 한 경우
-    var deleteSql = "DELETE FROM WISHLIST WHERE Uid=? and Bnum=?"; //wishlist table에서 삭제
-    connection.query(deleteSql, datas, function (err, rows) {
-      if (err) console.error("err : " + err);
-      res.redirect('/sellBoard/sellRead/' + String(Bno)); //기존에 보고 있던 게시글로 redirect
-    })
-  }
-});
-
 router.get('/getpwd', function (req, res) { // 비밀번호 찾기
   const { id, email } = req.query;
   console.log("Check: " + id + " " + email);
@@ -259,9 +268,31 @@ router.get('/getpwd', function (req, res) { // 비밀번호 찾기
   });
 });
 
+//찜 버튼 눌렀을 때
+router.post('/addWish', function (req, res, next) {
+  var Bno = req.body.idx;
+  var likeCount = req.body.like;
+  var datas = [usrid, Bno]; //사용자 아이디, 게시판 번호
+
+  if (likeCount == 0) { //찜을 하지 않은 경우
+    var insertSql = "INSERT INTO WISHLIST(Uid, Bnum) VALUES(?, ?);"; //wishlist table에 삽입
+    connection.query(insertSql, datas, function (err, rows) {
+      if (err) console.error("err : " + err);
+      res.redirect('/sellBoard/sellRead/' + String(Bno)); //기존에 보고 있던 게시글로 redirect
+    })
+  }
+  else { //찜을 한 경우
+    var deleteSql = "DELETE FROM WISHLIST WHERE Uid=? and Bnum=?"; //wishlist table에서 삭제
+    connection.query(deleteSql, datas, function (err, rows) {
+      if (err) console.error("err : " + err);
+      res.redirect('/sellBoard/sellRead/' + String(Bno)); //기존에 보고 있던 게시글로 redirect
+    })
+  }
+});
+
 //메세지 화면
 router.get('/message', function (req, res, next) {
-  res.render('message', { title: '메세지', rootLogin, usrLogin, usrid });
+  res.render('message', { title: '메세지', rootLogin, usrLogin, usrid, usrid });
 })
 
 module.exports = router;

@@ -3,7 +3,7 @@ var express = require('express');
 
 module.exports = {
     readData: function (req, res, next) {
-        var { usrLogin, rootLogin } = require('../../routes/index.js'); //사용자, 관리자 로그인 여부
+        var { usrLogin, rootLogin, rootname } = require('../../routes/index.js'); //사용자, 관리자 로그인 여부
         var { usrid } = require('../../routes/index.js'); //사용자 아이디
 
         console.log("로그인 usrLogin : ", usrLogin, ", usrId : ", usrid);
@@ -42,7 +42,7 @@ module.exports = {
 
             console.log("UpdateEnable : ", UpdateEnable);
 
-            res.render('SellFunction/sellRead', { title: "글 조회", rootLogin, usrLogin, UpdateEnable, row: row[0], usrid, likeCount });
+            res.render('SellFunction/sellRead', { title: "글 조회", rootname, rootLogin, usrLogin, UpdateEnable, row: row[0], usrid, likeCount });
         });
     }
 }
