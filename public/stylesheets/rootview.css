@@ -1,0 +1,154 @@
+.btn-container {
+    display: flex;
+    gap: 10px; /* 버튼 간격 */
+}
+.image-view {
+    width: 300px;
+    height: 300px;
+    border-radius: 0%;
+    object-fit: contain;
+    box-shadow: 0 0 5px rgba(0, 0, 0, 0.3);
+}
+.btn2 {
+    background-color: white; /* 기본 버튼 배경 색상 */
+    border-color: #6c975d; /* 버튼 테두리 색상 */
+    color: black; /* 버튼 글자 색상 */
+}
+.btn2:hover {
+    background-color: #6c975d; /* 호버 시 색상 */
+    border-color: black;
+    color: white; /* 버튼 글자 색상 */
+}
+.btn3 {
+    background-color: #6c975d; /* 호버 시 색상 */
+    border-color: black;
+    color: white; /* 버튼 글자 색상 */
+}
+.btn3:hover {
+    background-color: white; /* 기본 버튼 배경 색상 */
+    border-color: #6c975d; /* 버튼 테두리 색상 */
+    color: black; /* 버튼 글자 색상 */
+}
+/* 테이블 디자인 */
+table.type09, table.type09 th, table.type09 td {
+    text-align: center;
+}
+table.type09 {
+    width: 120%;
+    border-collapse: collapse;
+    text-align: left;
+    line-height: 1.5;
+}
+table.type09 thead th {
+    padding: 10px;
+    font-weight: bold;
+    vertical-align: top;
+    vertical-align: middle;
+    border-bottom: 3px solid #495a42;
+}
+table.type09 tbody th {
+    width: 150px;
+    padding: 10px;
+    font-weight: bold;
+    vertical-align: top;
+    vertical-align: middle;
+    /*border-bottom: 1px solid #ccc;*/
+    background: #edf0ec;
+}
+table.type09 td {
+    width: 350px;
+    padding: 10px;
+    vertical-align: top;
+    vertical-align: middle;
+    /*border-bottom: 1px solid #ccc;*/
+}
+table.type09 td textarea {
+    width: 90%;
+    height: 150px;
+}
+table.type09 td input[type="text"] {
+    width: 80%;
+    box-sizing: border-box; /* 패딩과 테두리를 포함하여 열의 전체 너비 사용 */
+}
+table.type09 td input[type="number"] {
+    width: 80%;
+    box-sizing: border-box; 
+}
+table.type09 td input[type="file"] {
+    width: 80%;
+    box-sizing: border-box; 
+}
+table.type09 td input[type="date"] {
+    width: 80%;
+    box-sizing: border-box; 
+}
+table.type09 td select,
+table.type09 td .category {
+    width: 80%;
+    box-sizing: border-box; /* 테두리와 패딩 포함 너비 */
+}
+a {
+    color: #003458;
+    text-decoration: none; /* 밑줄 제거 */
+}
+
+/* 카드 스타일 */
+.card-container {
+    display: flex;
+    flex-direction: column;
+    gap: 15px;
+    margin-bottom: 20px;
+}
+
+.card {
+    background-color: #ffffff;
+    border: 1px solid #ddd;
+    border-radius: 10px;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+    padding: 20px;
+    width: 900px;
+    margin: 20px auto;
+    text-align: left; /* 전체 카드 내부 내용 왼쪽 정렬 */
+}
+
+.card-title {
+    font-size: 2rem;
+    font-weight: bold;
+    color: #003458;
+    margin-bottom: 10px;
+}
+
+.card-content {
+    font-size: 1.2rem;
+    text-align: left; /* 카드 내용 왼쪽 정렬 */
+}
+
+/* 버튼 그룹 */
+.card-footer {
+    text-align: left; /* 버튼을 카드 내용의 왼쪽에 정렬 */
+    margin-top: 20px; /* 카드 내용과의 간격 */
+    background-color: white; /* 배경색을 흰색으로 설정 */
+    border: none; /* 기본 경계선 제거 */
+    padding: 0; /* 불필요한 여백 제거 */
+}   
+.button-group {
+    display: inline-flex;
+    gap: 20px;
+    justify-content: center;
+}
+
+button {
+    padding: 10px 20px;
+    font-size: 1rem;
+    border-radius: 5px;
+}
+
+/* 비밀번호 입력 */
+.password-input {
+    margin-top: 10px;
+    padding: 8px;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+    width: 90%;
+    max-width: 200px;
+}

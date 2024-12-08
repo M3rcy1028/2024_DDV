@@ -2,10 +2,13 @@
 <html>
 
 <head>
+  <link rel='stylesheet' href='/stylesheets/sidebar.css' />
   <link rel='stylesheet' href='/stylesheets/style.css' />
   <script src="/javascripts/jquery-3.7.1.min.js"></script>
 
   <!-- 상단바 css -->
+  <link rel='stylesheet' href='/stylesheets/rootview.css' />
+  <link rel='stylesheet' href='/stylesheets/rootbar.css'/>
   <link rel='stylesheet' href='/stylesheets/nav.css'/>
 
   <!-- Bootstrap CSS -->
@@ -15,11 +18,7 @@
 
   <!-- Bootstrap Icon -->
   <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
-
-  <title>
-    <%= title %>
-  </title>
-
+  
   <style>
     .adver_carousel {
       width: 1000px;
@@ -47,6 +46,9 @@
     #advertisement .carousel-inner img {
       width: 700px;
       height: 320px;  
+    }
+    .badge.bg-dark {
+        background-color: #6c975d !important; /* 배경색 */
     }
   </style>
 </head>
@@ -92,7 +94,7 @@
     <!-- 게시글 나열 -->
     <div class="d-flex flex-column">
       <div class="d-flex justify-content-center">
-        <h3 id="recent">최근 게시글</h3>
+        <h3 id="recent"><b>최근 게시글</b></h3>
       </div>
       <div class="container text-center" style="width: 1000px;">
         <% for (var line=0; line<2; line++){ var oneItem=rows[i]; %>
@@ -121,8 +123,63 @@
           </div>
           <% } %>
       </div>
+      <br><br><br>
+      <div class="d-flex justify-content-center">
+        <h3 id="hotfive"><b>🔥Hot 4</b></h3>
+      </div>
+      <div class="container text-center" style="width: 1000px;" >
+        <div class="row row-cols-4">
+          <% for (var i = 0; i < top.length; i++) { var oneItem = top[i]; %>
+            <div class="col d-flex flex-column mb-4">
+              <a href="/sellBoard/sellRead/<%= oneItem.Bno %>">
+                <img src="<%= oneItem.Img || 'default-image.jpg' %>" style="width: 240px; height: 280px; object-fit: cover;" class="border rounded mb-3" alt="판매 상품 이미지">
+              </a>
+              <strong id="title">
+                <span class="badge bg-dark">
+                  <%= oneItem.Trade %>
+                </span>
+                <a href="/sellBoard/sellRead/<%= oneItem.Bno %>">
+                  <%= oneItem.Title %>
+                </a>
+              </strong>
+              <p id="price">
+                <%= oneItem.Price %> 원
+              </p>
+            </div>
+          <% } %>
+        </div>
+      </div>
     </div>
-
+    
+    <% if (usrLogin) { %>
+      <br><br><br>
+      <div id="wish" class="d-flex justify-content-center">
+        <h3 ><b>💫위시리스트</b></h3>
+      </div>
+      <div class="container text-center" style="width: 1000px;">
+        <div class="row row-cols-4">
+          <% for (var i = 0; i < 4; i++) { var wishItem = list[i]; if (!wishItem) continue;%>
+            <div class="col d-flex flex-column mb-4">
+              <a href="/sellBoard/sellRead/<%= wishItem.Bno %>">
+                <img src="<%= wishItem.Img || 'default-image.jpg' %>" style="width: 240px; height: 280px; object-fit: cover;" class="border rounded mb-3" alt="판매 상품 이미지">
+              </a>
+              <strong id="title">
+                <span class="badge bg-dark">
+                  <%= wishItem.Trade %>
+                </span>
+                <a href="/sellBoard/sellRead/<%= wishItem.Bno %>">
+                  <%= wishItem.Title %>
+                </a>
+              </strong>
+              <p id="price">
+                <%= wishItem.Price %> 원
+              </p>
+            </div>
+          <% } %>
+        </div>
+      </div>
+    <% } %>
+    </div>
     <!-- Bootstrap JS -->
     <script src="/vendors/bootstrap/js/bootstrap.bundle.min.js"></script>
 

@@ -5,6 +5,10 @@
     <link rel='stylesheet' href='/stylesheets/style.css' />
     <script src="/javascripts/jquery-3.7.1.min.js"></script>
 
+
+    <!-- 알림창 UI -->
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+
     <!-- 상단바 css -->
     <link rel='stylesheet' href='/stylesheets/nav.css' />
 
@@ -29,6 +33,18 @@
             background-color: #f4f7f6;
             margin-top: 20px;
             height: 100%;
+        }
+
+        .input-group .input-group-text {
+            height: 100%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .input-group .form-control {
+            height: auto;
+            /* 높이를 자동으로 설정 */
         }
 
         .card {
@@ -57,12 +73,17 @@
         }
 
         .people-list {
+            margin-top: 20px;
             -moz-transition: .5s;
             -o-transition: .5s;
             -webkit-transition: .5s;
             transition: .5s;
-            height: 520px;
+            height: 590px;
             overflow-y: auto;
+        }
+
+        .people-list::-webkit-scrollbar {
+            display: none;
         }
 
         .people-list .chat-list li {
@@ -86,6 +107,7 @@
 
         .people-list .chat-list img {
             width: 45px;
+            height: 45px;
             border-radius: 50%
         }
 
@@ -171,7 +193,7 @@
 
         /* .chat .chat-history .message:after {
             bottom: 100%;
-            left: 7%;
+            left: 10px;
             border: solid transparent;
             content: " ";
             height: 0;
@@ -208,7 +230,7 @@
 
         /* .chat .chat-history .other-message:after {
             border-bottom-color: #e8f1f3;
-            left: 93%
+            right: 30px
         } */
 
         .chat .chat-message {
@@ -251,187 +273,22 @@
     </style>
 
     <script src="/socket.io/socket.io.js"></script>
-    <script>
-        const socket = io({
-            auth: {
-                usrid: '<%= usrid %>'
-            }
-        });
-        var cnum;
-        var c_sid;
 
-        function sendMessage() {
-            var input = document.getElementById('input');
-            if (input.value) {
-                socket.emit('chat_message', {
-                    message: input.value,
-                    cnum: cnum,
-                    sender: '<%= usrid %>', // 쿠키에서 보내는 사람
-                });
-                input.value = '';
-            }
-        }
-
-        function purchase() {
-            socket.emit('purchase', (cnum));
-        }
-
-        function load_chat_log(btn) {
-            console.log("load chatroom", btn.id)
-            socket.emit('load_chatlog', (btn.id))
-            cnum = btn.id;
-        }
-
-        socket.on('chat_message', (chat) => {
-            const item = document.createElement('li');
-            item.classList.add('clearfix');
-
-            const div = document.createElement('div');
-            if (chat.Sender === '<%= usrid %>') {
-                div.className = 'message my-message float-right';
-            }
-            else {
-                div.className = 'message other-message';
-            }
-            div.innerHTML = chat.Message
-            item.appendChild(div);
-            messages.appendChild(item);
-
-            const scroll = document.querySelector('.chat-history');
-            scroll.scrollTop = scroll.scrollHeight;
-        });
-
-        socket.on('load_chatlog', (chats) => {
-            messages.innerHTML = "";
-            const chatList = [];
-            chats.forEach((chat) => {
-                console.log(chat.Message)
-                if (chat.Sender === '<%= usrid %>') {
-                    chatList.push(`<li class="clearfix">
-                                    <div class="message my-message float-right">${chat.Message}</div>
-                                </li>`)
-                }
-                else {
-                    chatList.push(`<li class="clearfix">
-                                    <div class="message other-message">${chat.Message}</div>
-                                </li>`)
-                }
-            })
-            messages.innerHTML = chatList.join('');
-            const scroll = document.querySelector('.chat-history');
-            scroll.scrollTop = scroll.scrollHeight;
-        })
-
-        socket.on('load_chatrooms', (chatrooms) => {
-            const div = document.getElementById('chat-list')
-            const chatList = [];
-
-            console.log(chatrooms)
-
-            chatrooms.forEach(chatroom => {
-                if (chatroom.Sid === '<%= usrid %>') {
-                    var id = chatroom.Rid;
-                }
-                else {
-                    var id = chatroom.Sid;
-                }
-
-                chatList.push(`<button onclick='load_chat_log(this)' id='${chatroom.Cno}' class="chat-select list-group-item list-group-item-action">
-                    <li class="clearfix">
-                                <img src="https://bootdey.com/img/Content/avatar/avatar3.png" alt="avatar">
-                                <div class="about">
-                                    <div class="name">${id}</div>
-                                    <div class="status"> <i class="fa fa-circle online"></i> online </div>
-                                </div>
-                            </li>
-                </button>`)
-
-
-            });
-            div.innerHTML = chatList.join('')
-
-        })
-
-        socket.on('tradeCompleted', () => {
-            window.location.href = "/";
-        });
-
-        socket.on('needmoney', () => {
-            alert("잔액이 부족합니다. 충전 후 다시 시도해주세요.");
-        });
-    </script>
 </head>
 
 <body>
-    <nav class="header d-flex justify-content-end align-items-center">
-        <a href="/roots/notificationList" class="link p-2">공지사항</a>
-        <% if (!rootLogin && !usrLogin) { %> <!--로그인 안 됨-->
-            <a href="/joinForm" class="link p-2">회원가입</a>
-            <a href="/login" class="link p-2">로그인</a>
-            <% } %>
-                <% if (rootLogin || usrLogin) { %> <!--로그인 됨-->
-                    <a href="/logout" class="link p-2">로그아웃</a>
-                    <% } %>
-    </nav>
-
-    <nav class="d-flex justify-content-between align-items-center mb-3">
-        <div>
-            <a href="/" id="home" class="me-auto p-2">
-                <img src="/images/design/weblogo.jpg" alt="로고" style="height: 50px;">
-            </a>
-        </div>
-
-        <!-- 검색 창 -->
-        <div class="search-box d-flex align-items-center">
-            <form action="/sellBoard/search" method="post" class="d-flex w-100 justify-content-between">
-                <input class="search-txt" name="searchword" id="searchword" type="text" placeholder="상품명 입력" />
-                <button class="search-btn" type="submit">
-                    <i class="bi bi-search"></i>
-                </button>
-            </form>
-        </div>
-
-        <% if (usrLogin) { %> <!--유저 로그인 됨-->
-            <div class="header">
-                <a href="/sellBoard/sellWrite" class="link p-2">판매하기</a>
-                <a href="/myPage" class="link p-2">마이페이지</a>
-                <a href="/message" class="link p-2">메세지</a>
-            </div>
-            <% } else if (rootLogin) { %> <!--관리자 로그인 됨-->
-                <nav class="header">
-                    <a href="/roots/manageUsrList" class="link p-2">회원관리</a>
-                    <a href="/roots/manageBoardList" class="link p-2">게시판관리</a>
-                    <a href="/roots/message" class="link p-2">사이트분석</a>
-                </nav>
-                <% } else { %> <!-- 로그인 안됨-->
-                    <div class="header" style="visibility: hidden;">
-                        <a href="/sellBoard/sellWrite" class="link p-2">판매하기</a>
-                        <a href="/myPage" class="link p-2">마이페이지</a>
-                        <a href="/message" class="link p-2">메세지</a>
-                    </div>
-                    <% } %>
-    </nav>
-
+    <%- include('nav.ejs') %>
     <div class="container">
         <div class="row clearfix">
             <div class="col-lg-12">
                 <div class="card chat-app">
                     <div id="plist" class="people-list">
-                        <div class="input-group">
-                            <div class="input-group-prepend">
-                                <span class="input-group-text"><i class="fa fa-search"></i></span>
-                            </div>
-                            <input type="text" class="form-control" placeholder="Search...">
-                        </div>
                         <ul id="chat-list" class="list-unstyled chat-list mt-2 mb-0">
 
                         </ul>
                     </div>
                     <div class="chat">
                         <div class="chat-header clearfix">
-                            <div class="col-lg-6 hidden-sm text-right float-right">
-                                <button onclick="purchase()" class="btn btn-outline-secondary float-right">구매</button>
-                            </div>
                         </div>
                         <div class="chat-history">
                             <ul id="messages" class="m-b-0">
@@ -440,11 +297,10 @@
                         </div>
                         <div class="chat-message clearfix">
                             <div class="input-group mb-0">
-                                <div class="input-group-prepend" style="flex:auto">
-                                    <span class="input-group-text" style="flex:auto"><input id="input"
-                                            class="form-controll" autocomplete="off" style="flex:auto" /><button
-                                            onclick="sendMessage()"><i class="fa fa-send"></i></button></span>
+                                <div class="input-group-prepend">
+                                    <span class="input-group-text"><i class="fa fa-send"></i></span>
                                 </div>
+                                <input id="input" type="text" class="form-control" autocomplete="off" />
                             </div>
                         </div>
                     </div>
@@ -455,5 +311,195 @@
 
 
 </body>
+
+<script>
+    const socket = io({
+        auth: {
+            usrid: '<%= usrid %>'
+        }
+    });
+    var cnum;
+    var c_sid;
+
+    var inputField = document.getElementById('input');
+
+    // 채팅 입력 시 서버에 메시지 내용과 메타데이터 전송
+    function sendMessage() {
+        if (inputField.value) {
+            socket.emit('chat_message', {
+                message: inputField.value,
+                cnum: cnum,
+                sender: '<%= usrid %>', // 쿠키에서 보내는 사람
+            });
+            inputField.value = '';
+        }
+    }
+
+    inputField.addEventListener('keydown', (event) => {
+        // Enter 키만 메시지를 전송하도록 제한
+        if (event.key === 'Enter') {
+            sendMessage();
+        }
+    });
+
+    // 구매 버튼 클릭 시 서버에 구매 명령 전송
+    function purchase() {
+        // 구매 재확인 메시지 표시
+        Swal.fire({
+            title: '정말 구매하시겠습니까?',
+            icon: 'warning',
+
+            showCancelButton: true, // cancel버튼 보이기. 기본은 원래 없음
+            confirmButtonColor: '#3085d6', // confrim 버튼 색깔 지정
+            cancelButtonColor: '#d33', // cancel 버튼 색깔 지정
+            confirmButtonText: '승인', // confirm 버튼 텍스트 지정
+            cancelButtonText: '취소', // cancel 버튼 텍스트 지정
+
+            reverseButtons: false, // 버튼 순서 거꾸로
+
+        }).then(result => {
+            // 만약 Promise리턴을 받으면,
+            if (result.isConfirmed) { // 만약 모달창에서 confirm 버튼을 눌렀다면
+
+                // 구매 확인 시 서버에 구매 명령 전송
+                socket.emit('purchase', cnum);
+            }
+        });
+    }
+
+    // 채팅방 클릭 시 서버에 채팅 기록 요청
+    function load_chat_log(btn) {
+        console.log("load chatroom", btn.id)
+        socket.emit('load_chatlog', (btn.id))
+        cnum = btn.id;
+    }
+
+    // 단일 채팅 쓰기
+    socket.on('chat_message', (chat) => {
+        const item = document.createElement('li');
+        item.classList.add('clearfix');
+
+        const div = document.createElement('div');
+        if (chat.Sender === '<%= usrid %>') {
+            div.className = 'message my-message float-right';
+        }
+        else {
+            div.className = 'message other-message';
+        }
+        div.innerHTML = chat.Message
+        item.appendChild(div);
+        messages.appendChild(item);
+
+        const scroll = document.querySelector('.chat-history');
+        scroll.scrollTop = scroll.scrollHeight;
+    });
+
+    // 채팅방의 채팅기록 불러오기
+    socket.on('load_chatlog', (chats, sellerId, buyerId, bnum) => {
+        console.log(sellerId)
+        console.log(buyerId)
+        console.log(bnum)
+        // 헤더 생성
+        const chat_header = document.getElementsByClassName('chat-header')[0];
+
+        if (sellerId === '<%= usrid %>') {
+            chat_header.innerHTML = `<img src="/images/profile/basic_profile.jpg" alt="avatar">
+                        <div class="chat-about">
+                            <h5 class="m-b-0">${buyerId}</h5>
+                        </div>
+                        <div class="float-right">
+                            <button onclick="window.location.href='/sellBoard/sellRead/${bnum}'" class="btn btn-outline-secondary">게시글</button>
+                        </div>`
+        }
+        else {
+            chat_header.innerHTML = `<img src="/images/profile/basic_profile.jpg" alt="avatar">
+                        <div class="chat-about">
+                            <h5 class="m-b-0">${sellerId}</h5>
+                        </div>
+                        <div class="float-right">
+                            <button onclick="window.location.href='/sellBoard/sellRead/${bnum}'" class="btn btn-outline-secondary">게시글</button>
+                            <button id="purchase_btn" onclick="purchase()" class="btn btn-outline-secondary">구매</button>
+                        </div>`
+        }
+
+        messages.innerHTML = "";
+        const chatList = [];
+        chats.forEach((chat) => {
+            if (chat.Sender === '<%= usrid %>') {
+                chatList.push(`<li class="clearfix">
+                                <div class="message my-message float-right">${chat.Message}</div>
+                            </li>`)
+            }
+            else {
+                chatList.push(`<li class="clearfix">
+                                <div class="message other-message float-left">${chat.Message}</div>
+                            </li>`)
+            }
+        })
+        messages.innerHTML = chatList.join('');
+        const scroll = document.querySelector('.chat-history');
+        scroll.scrollTop = scroll.scrollHeight;
+    })
+
+    // 채팅방 리스트 불러오기
+    socket.on('load_chatrooms', (chatrooms) => {
+        const div = document.getElementById('chat-list')
+        const chatList = [];
+
+        console.log(chatrooms)
+
+        chatrooms.forEach(chatroom => {
+            if (chatroom.Sid === '<%= usrid %>') {
+                var id = chatroom.Rid;
+            }
+            else {
+                var id = chatroom.Sid;
+            }
+
+            chatList.push(`<button onclick='load_chat_log(this)' id='${chatroom.Cno}' a_img='${chatroom.Image}' class="chat-select list-group-item list-group-item-action">
+                <li class="clearfix">
+                            <img src="${chatroom.Image}" alt="profileImage">
+                            <div class="about">
+                                <div class="name">${id}</div>
+                                <div class="status"> ${chatroom.Lastmsg} </div>
+                            </div>
+                        </li>
+            </button>`)
+        });
+        div.innerHTML = chatList.join('')
+
+    })
+
+    socket.on('tradeCompleted', () => {
+        Swal.fire({
+            title: '구매가 완료되었습니다.',
+            icon: 'success',
+
+            confirmButtonColor: '#3085d6', // confrim 버튼 색깔 지정
+        }).then(result => {
+            // 메인으로 돌아가기
+            window.location.href = "/";
+        });
+    });
+
+    socket.on('needmoney', () => {
+        Swal.fire({
+            title: '포인트가 부족합니다.',
+            text: '충전 후 다시 시도해주세요.',
+            icon: 'error',
+
+            confirmButtonColor: '#3085d6', // confrim 버튼 색깔 지정
+        });
+    });
+
+    socket.on('alreadyComplete', () => {
+        Swal.fire({
+            title: '이미 구매한 상품입니다.',
+            icon: 'success',
+
+            confirmButtonColor: '#3085d6', // confrim 버튼 색깔 지정
+        });
+    })
+</script>
 
 </html>

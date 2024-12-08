@@ -1,52 +1,48 @@
-<nav class="header d-flex justify-content-end align-items-center">
-    <a href="/roots/notificationList" class="link p-2">공지사항</a>
-    <% if (!rootLogin && !usrLogin) { %> <!--로그인 안 됨-->
-        <a href="/joinForm" class="link p-2">회원가입</a>
-        <a href="/login" class="link p-2">로그인</a>
-        <% } %>
-            <% if (rootLogin || usrLogin) { %> <!--로그인 됨-->
-                <a href="/logout" class="link p-2">로그아웃</a>
-                <% } %>
-</nav>
+<% if (rootLogin) { %> <!-- 관리자 로그인됨 -->
+<%- include('RootFunction/rootbar.ejs') %>
+<% } else { %> 
 
-<nav class="d-flex justify-content-between align-items-center mb-3">
+<% if (usrLogin) { %> <!--유저 로그인 됨-->
+<nav class="header d-flex justify-content-end align-items-center">
+    <div class="header"></div>
+    <b>유저 <%= usrid %>님</b>
+</nav><% } %> 
+
+<nav class="header d-flex justify-content-between align-items-center mb-3">
     <div>
         <a href="/" id="home" class="me-auto p-2">
             <img src="/images/design/weblogo.png" alt="로고" style="height: 100px;  width: 200px">
         </a>
     </div>
-
-    <!-- 검색 창 -->
-    <div class="search-box d-flex align-items-center">
-        <form action="/sellBoard/search" method="post" class="d-flex w-100 justify-content-between">
-            <input class="search-txt" name="searchword" id="searchword" type="text" placeholder="상품명 입력" />
+    <!-- 검색창 -->
+    <div class="d-flex align-items-center">
+        <form action="/sellBoard/search" method="post" class="d-flex justify-content-center align-items-center">
+            <input  class="search-txt" name="searchword" id="searchword" type="text" placeholder="상품명 입력" style="margin-left: 80px; width: 500px; height: 40px; text-align: center; border: 1px solid white; background-color: #edf0ec;" />
             <button class="search-btn" type="submit">
                 <i class="bi bi-search"></i>
             </button>
         </form>
     </div>
-
-    <% if (usrLogin) { %> <!--유저 로그인 됨-->
+    <div>
+        <a href="/roots/notificationList" class="link p-2">공지사항</a>
+        <a href="/roots/listQnA" class="link p-2">문의하기</a>
+        <% if (rootLogin || usrLogin) { %> <!--로그인 됨-->
+            <a href="/logout" class="link p-2">로그아웃</a>
         <div class="header">
             <a href="/sellBoard/sellWrite" class="link p-2">판매하기</a>
             <a href="/myPage/" class="link p-2">마이페이지</a>
             <a href="/message" class="link p-2">메세지</a>
         </div>
-        <% } else if (rootLogin) { %> <!--관리자 로그인 됨-->
-            <nav class="header">
-                <a href="/roots/manageUsrList" class="link p-2">회원관리</a>
-                <a href="/roots/manageBoardList" class="link p-2">게시판관리</a>
-                <a href="/roots/manageAnalytics" class="link p-2">사이트분석</a>
-            </nav>
-            <% } else { %> <!-- 로그인 안됨-->
-                <div class="header" style="visibility: hidden;">
-                    <a href="/sellBoard/sellWrite" class="link p-2">판매하기</a>
-                    <a href="/myPage" class="link p-2">마이페이지</a>
-                    <a href="/message" class="link p-2">메세지</a>
-                </div>
-                <% } %>
+        <% } %>
+        <% if (!rootLogin && !usrLogin) { %> <!--로그인 안 됨-->
+            <div>
+                <a href="/joinForm" class="link p-2">회원가입</a>
+                <a href="/login" class="link p-2">로그인</a>
+            </div>
+        <% } %>
+        
+    </div>
 </nav>
-
 <hr> <!-- 구분선 -->
 
 <div class="menu-bar d-flex">
@@ -64,6 +60,11 @@
         </ul>
     </div>
     <a href="/sellBoard/sellList" , class="link p-2">전체 보기</a>
+    <a href="/#hotfive" class="link p-2">🔥Hot 4</a>
+    <% if (usrLogin) { %> <!-- 유저로그인 -->
+        <a href="/#wish" class="link p-2">💫위시리스트</a>
+    <% } %>
 </div>
 
-<hr> <!-- 구분선 -->
+<hr> <!-- 구분선 --><br>
+<% } %>

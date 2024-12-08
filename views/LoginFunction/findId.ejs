@@ -10,82 +10,39 @@
     <link rel='stylesheet' href='/vendors/bootstrap/css/bootstrap.min.css' />
     <link rel='stylesheet' href='/vendors/bootstrap/css/bootstrap-grid.min.css' />
     <link rel='stylesheet' href='/vendors/bootstrap/css/bootstrap-reboot.min.css' />
-
-    <title>
-        <%= title %>
-    </title>
-
-    <style>
-        h2 {
-            margin-bottom: 20px;
-        }
-
-        form div {
-            margin-bottom: 10px;
-        }
-
-        form span {
-            display: block;
-            margin-bottom: 5px;
-        }
-
-        form input {
-            width: 300px;
-            padding: 8px;
-            box-sizing: border-box;
-        }
-
-        form select {
-            width: 300px;
-            padding: 8px;
-            box-sizing: border-box;
-        }
-
-        form button {
-            width: 300px;
-        }
-
-        .link a {
-            text-decoration: none;
-            color: rgb(159, 156, 156);
-        }
-
-        .link span {
-            color: rgb(159, 156, 156);
-        }
-    </style>
+    <link rel='stylesheet' href='/stylesheets/rootview.css' />
+    <link rel='stylesheet' href='/stylesheets/login.css' />
 </head>
 
 <body>
     <a href="/" id="home" class="me-auto p-2">
         <img src="/images/design/weblogo.png" alt="로고" style="height: 100px;  width: 200px"></a>
-
-    <h2 class="d-flex justify-content-center">
-        <%= title %>
-    </h2>
-
-    <form action="/findid" class="d-flex align-items-center flex-column">
-        <div>
-            <span>성</span>
-            <input type="text" name="lname" id="lname" required>
-            <span>이름</span>
-            <input type="text" name="fname" id="fname" required>
-            <span>이메일</span>
-            <input type="text" name="email" id="email" required>
-        </div>
-        <div>
-            <span id="find_status"></span>
-        </div>
-        <div>
-            <button class="btn btn-dark" id="find_id" onclick="location.href='/getid'">찾기</button>
-        </div>
-    </form>
-    <div class="d-flex justify-content-center link">
-        <a class="me-2" href="/findPasswd">비밀번호를 잊으셨나요?</a>
-        <span class="me-2">|</span>
-        <a class="me-2" href="/login">로그인하기</a>
-        <span class="me-2">|</span>
-        <a class="me-2"  href="/joinForm">회원가입하기</a>
+    
+    <div class="container">
+        <h2 class="form-title"><b><%= title %></b></h2>
+        <form action="/findid">
+            <div class="form-group">
+                <input class="form-control" type="text" name="lname" id="lname" placeholder="성">
+            </div>
+            <div class="form-group">
+                <input class="form-control" type="text" name="fname" id="fname" placeholder="이름">
+            </div>
+            <div class="form-group">
+                <input class="form-control" type="email" name="email" id="email" placeholder="이메일">
+            </div>
+            <div>
+                <span style="text-align: center;" id="find_status"></span>
+            </div>
+            <button class="btn btn3" style="width: 100%;"  id="find_id" onclick="location.href='/getid'">찾기</button>
+            <div class="form-footer link">
+                <a href="/findPasswd">비밀번호를 잊으셨나요?</a>
+            </div>
+            <div class="form-footer link">
+                <a href="/login">로그인하기</a>
+                <span>|</span>
+                <a href="/joinForm">회원가입하기</a>
+            </div>
+        </form>
     </div>
 </body>
 <script>

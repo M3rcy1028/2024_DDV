@@ -53,28 +53,48 @@ io.on('connection', (socket) => {
   console.log(userId)
   // 채팅방 가져오기 (sid 또는 rid와 일치하는 채팅방)
   const query = `SELECT * FROM chatroom WHERE sid = ? OR rid = ?`;
-  db.query(query, [userId, userId], (err, results) => {
+  db.query(query, [userId, userId], async (err, results) => {
     if (err) {
       console.error('쿼리 오류:', err);
       return res.status(500).send('서버 오류');
     }
-    console.log(results)
-    socket.emit('load_chatrooms', results);
+
+    // Promise 배열 생성
+    const promises = results.map((result) => {
+      return new Promise((resolve, reject) => {
+        // 마지막 채팅기록
+        db.query('SELECT Message FROM msglog WHERE Cnum = ? ORDER BY Mtime DESC LIMIT 1', [result.Cno], (_err, msg) => {
+          result["Lastmsg"] = msg.length > 0 ? msg[0].Message : '메시지 없음';
+        })
+
+        if (userId === result.Sid) {
+          // Rid로 프로필 가져오기
+          db.query(`SELECT ProfileImg FROM usr WHERE uid = ?`, [result.Rid], (err, img) => {
+            if (err) return reject(err);
+            result['Image'] = img.length > 0 ? img[0].ProfileImg : null;
+            resolve();
+          });
+        } else {
+          // Sid로 가져오기
+          db.query(`SELECT ProfileImg FROM usr WHERE uid = ?`, [result.Sid], (err, img) => {
+            if (err) return reject(err);
+            result['Image'] = img.length > 0 ? img[0].ProfileImg : null;
+            resolve();
+          });
+        }
+      });
+    });
+
+    // 모든 Promise가 완료될 때까지 대기
+    try {
+      await Promise.all(promises);
+      console.log(results);
+      socket.emit('load_chatrooms', results);
+    } catch (err) {
+      console.error('프로필 이미지 가져오기 오류:', err);
+      res.status(500).send('서버 오류');
+    }
   });
-
-  // if (chatroomId) {
-  //   // cnum에 해당하는 채팅 기록을 DB에서 가져오기
-  //   db.query('SELECT Message, Sender FROM MSGLOG WHERE Cnum = ?',
-  //     [chatroomId],
-  //     (_err, results) => {
-  //       results.forEach((row) => {
-  //         console.log(row.Message);  // 각 메시지를 로그로 확인
-
-  //         // 각 메시지를 'chat_message' 이벤트로 클라이언트에게 전송
-  //         socket.emit('chat_message', row.Message, row.Sender, row.Receiver);
-  //       })
-  //     });
-  // }
 
   // 왼쪽 채팅방 클릭 시, 오른쪽에 채팅방 로그 불러오기
   socket.on('load_chatlog', (cno) => {
@@ -88,8 +108,10 @@ io.on('connection', (socket) => {
     // DB에서 로그 불러오기
     db.query('SELECT Message, Sender FROM MSGLOG WHERE Cnum = ?',
       [cno],
-      (_err, results) => {
-        socket.emit('load_chatlog', results);
+      (_err, msgs) => {
+        db.query("SELECT Rid, Sid, Bnum FROM chatroom WHERE Cno=?", [cno], (_err, ids) => {
+          socket.emit('load_chatlog', msgs, ids[0].Rid, ids[0].Sid, ids[0].Bnum);
+        });
       });
   })
 
@@ -114,7 +136,7 @@ io.on('connection', (socket) => {
     io.to(data.cnum).emit('chat_message', msg);
   });
 
-  // 구매 버튼 누름
+  // 구매 버튼 누를 시
   socket.on('purchase', (cnum) => {
     console.log("purchase", cnum);
 
@@ -124,7 +146,7 @@ io.on('connection', (socket) => {
     var price;
     var ok;
 
-    // 구매자 판매자 가져오고
+    // 구매자 판매자 가져오기
     db.query("SELECT * FROM chatroom WHERE Cno=?", [cnum], (_err, result) => {
       if (result.length === 0) {
         console.log("Chatroom not found");
@@ -142,6 +164,11 @@ io.on('connection', (socket) => {
           return;
         }
 
+        if (result[0].Trade == '거래완료') {
+          socket.emit("alreadyComplete");
+          return;
+        }
+
         price = result[0].Price;
 
         // 구매자 돈 확인 및 차감
@@ -153,8 +180,10 @@ io.on('connection', (socket) => {
               // 판매자 돈 +
               db.query("UPDATE usr SET Money=Money+? WHERE Uid=?", [price, Seller]);
 
-              // 게시글 거래완료로 바꾸기
-              db.query("UPDATE board SET Trade='거래완료' WHERE Bno=?", [BoardNum], () => {
+              // 채팅방 삭제?
+
+              // 게시글 구매자 및 거래완료로 바꾸기
+              db.query("UPDATE board SET Trade='거래완료', Buyer=? WHERE Bno=?", [Buyer, BoardNum], () => {
                 // 거래 완료 이벤트 전송
                 socket.emit('tradeCompleted');
               });
