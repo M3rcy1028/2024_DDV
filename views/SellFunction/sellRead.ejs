@@ -10,7 +10,7 @@
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 
     <!-- 상단바 css -->
-    <link rel='stylesheet' href='/stylesheets/rootbar.css'/>
+    <link rel='stylesheet' href='/stylesheets/rootbar.css' />
     <link rel='stylesheet' href='/stylesheets/nav.css' />
 
     <!-- Bootstrap CSS -->
@@ -42,6 +42,16 @@
 
         #sub-info {
             color: #686969;
+        }
+
+        /* 별점 css */
+        .rating {
+            width: 400px;
+        }
+
+        .rating-star {
+            font-size: 14px;
+            color: #6c975d;
         }
     </style>
 </head>
@@ -107,19 +117,19 @@
                                     <button type="submit" class="btn btn-dark">메세지 보내기</button>
                                 </form>
                                 <%}%>
-                            <form action="/addWish" method="post" onsubmit="return onAddWishlist()">
-                                <input type="hidden" name="idx" value="<%=row.Bno%>" /> <!-- 게시글 번호 -->
-                                <input type="hidden" name="like" value="<%=likeCount%>" /> <!-- 찜 여부 -->
-                                <button type="submit" class="btn btn-outline-dark" id="wishBtn">
-                                    <% if (likeCount==0) { %> <!-- 찜을 하지 않은 경우-->
-                                        <i class="bi bi-heart me-2"></i>
-                                        <% } else { %>
-                                            <i class="bi bi-heart-fill me-2"></i>
-                                            <% } %>
-                                                찜하기
-                                </button>
-                            </form>
-                            <%}%>
+                                    <form action="/addWish" method="post" onsubmit="return onAddWishlist()">
+                                        <input type="hidden" name="idx" value="<%=row.Bno%>" /> <!-- 게시글 번호 -->
+                                        <input type="hidden" name="like" value="<%=likeCount%>" /> <!-- 찜 여부 -->
+                                        <button type="submit" class="btn btn-outline-dark" id="wishBtn">
+                                            <% if (likeCount==0) { %> <!-- 찜을 하지 않은 경우-->
+                                                <i class="bi bi-heart me-2"></i>
+                                                <% } else { %>
+                                                    <i class="bi bi-heart-fill me-2"></i>
+                                                    <% } %>
+                                                        찜하기
+                                        </button>
+                                    </form>
+                                    <%}%>
                     </div>
                     <!-- 글 작성자에게만 보이는 버튼-->
                     <% if (UpdateEnable) { %>
@@ -140,64 +150,110 @@
             </div>
         </div>
 
-        <!-- Bootstrap JS -->
-        <script src="/vendors/bootstrap/js/bootstrap.bundle.min.js"></script>
+        <!-- 리뷰 확인-->
+        <% if ((row.Trade==="거래완료" ) && (review)){ %>
+            <div class="mt-5">
+                <hr>
+                <div class="mb-2">
+                    <%= review.Nickname %> (<%= review.Buyer %>)
+                </div>
+                <div class="rating mb-2">
+                    <input type="hidden" name="rating" id="ratingValue" value="<%= review.Score %>">
+                    <i class="rating-star bi bi-star"></i>
+                    <i class="rating-star bi bi-star"></i>
+                    <i class="rating-star bi bi-star"></i>
+                    <i class="rating-star bi bi-star"></i>
+                    <i class="rating-star bi bi-star"></i>
+                </div>
+                <p>
+                    <%= review.Rtext %>
+                </p>
+            </div>
+            <% } %>
 
-        <script>
-            //rootLogin, usrLogin 값
-            var rootLogin = '<%= rootLogin %>';
-            var usrLogin = '<%= usrLogin %>';
+                <!-- Bootstrap JS -->
+                <script src="/vendors/bootstrap/js/bootstrap.bundle.min.js"></script>
 
-            //문자열로 처리된 값 boolean으로 변경
-            usrLogin = (usrLogin === 'true');
-            rootLogin = (rootLogin === 'true');
+                <script>
+                    //rootLogin, usrLogin 값
+                    var rootLogin = '<%= rootLogin %>';
+                    var usrLogin = '<%= usrLogin %>';
 
-            console.log("서버에서 전달된 rootLogin 값:", rootLogin);
-            console.log("서버에서 전달된 usrLogin 값:", usrLogin);
+                    //문자열로 처리된 값 boolean으로 변경
+                    usrLogin = (usrLogin === 'true');
+                    rootLogin = (rootLogin === 'true');
 
-            async function onDeleteSubmit(event) {
-                event.preventDefault(); //form 제출 막기
+                    console.log("서버에서 전달된 rootLogin 값:", rootLogin);
+                    console.log("서버에서 전달된 usrLogin 값:", usrLogin);
 
-                // 삭제 여부 확인
-                var result = await Swal.fire({
-                    title: "삭제하시겠습니까?",
-                    text: "삭제 후 게시물 복구가 불가능합니다",
-                    icon: "warning",
-                    showCancelButton: true,
-                    confirmButtonColor: "#3085d6",
-                    cancelButtonColor: "#d33",
-                    confirmButtonText: "삭제",
-                    cancelButtonText: "취소"
-                });
+                    async function onDeleteSubmit(event) {
+                        event.preventDefault(); //form 제출 막기
 
-                // 삭제가 확인된 경우
-                if (result.isConfirmed) {
-                    // 삭제 완료 알림창 띄우기
-                    await Swal.fire({
-                        title: "삭제 완료",
-                        text: "삭제가 완료되었습니다",
-                        icon: "success"
-                    });
+                        // 삭제 여부 확인
+                        var result = await Swal.fire({
+                            title: "삭제하시겠습니까?",
+                            text: "삭제 후 게시물 복구가 불가능합니다",
+                            icon: "warning",
+                            showCancelButton: true,
+                            confirmButtonColor: "#3085d6",
+                            cancelButtonColor: "#d33",
+                            confirmButtonText: "삭제",
+                            cancelButtonText: "취소"
+                        });
 
-                    event.target.submit(); //form 제출
-                }
+                        // 삭제가 확인된 경우
+                        if (result.isConfirmed) {
+                            // 삭제 완료 알림창 띄우기
+                            await Swal.fire({
+                                title: "삭제 완료",
+                                text: "삭제가 완료되었습니다",
+                                icon: "success"
+                            });
 
-                return false;
-            }
+                            event.target.submit(); //form 제출
+                        }
 
-            function onAddWishlist() {
-                if (!usrLogin) { //로그인하지 않은 경우
-                    //로그인 후 이용 가능 알림창
-                    Swal.fire({
-                        icon: "error",
-                        title: "로그인 필요",
-                        text: "로그인 후 이용 가능합니다",
-                        footer: '<a href="/login" style="text-decoration: none;">로그인 하시겠습니까?</a>'
-                    });
-                    return false;
-                }
-            }
-        </script>
+                        return false;
+                    }
+
+                    function onAddWishlist() {
+                        if (!usrLogin) { //로그인하지 않은 경우
+                            //로그인 후 이용 가능 알림창
+                            Swal.fire({
+                                icon: "error",
+                                title: "로그인 필요",
+                                text: "로그인 후 이용 가능합니다",
+                                footer: '<a href="/login" style="text-decoration: none;">로그인 하시겠습니까?</a>'
+                            });
+                            return false;
+                        }
+                    }
+                </script>
+
+                <script>
+                    window.onload = function () {
+                        const ratingStars = [...document.getElementsByClassName("rating-star")]; // 별점 요소
+                        const ratingInput = document.getElementById("ratingValue"); // 점수 값
+
+                        //별을 업데이트하는 함수
+                        function updateStars(index) {
+                            ratingStars.forEach((star, i) => {
+                                if (i <= index) {
+                                    star.classList.add("bi-star-fill");
+                                    star.classList.remove("bi-star");
+                                } else {
+                                    star.classList.remove("bi-star-fill");
+                                    star.classList.add("bi-star");
+                                }
+                            });
+                        }
+
+                        //초기 상태
+                        if (ratingInput.value) {
+                            updateStars(parseInt(ratingInput.value) - 1);
+                        }
+                    };
+                </script>
 </body>
 
 </html>

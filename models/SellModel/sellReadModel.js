@@ -15,25 +15,28 @@ module.exports = {
         var updateSql = 'UPDATE board SET Hit = Hit + 1 WHERE Bno = ?';
         var selectSql = 'SELECT Nickname, Bno, Bid, Title, Content, Img, Trade, TradePlace, Updated, Hit, Category, Price FROM usr, board WHERE Bno=? and usr.uid = board.bid;'
         var likeSql = 'SELECT COUNT(*) AS LikeCount FROM WISHLIST WHERE Bnum=? and uid=?'; //찜을 눌렀는지 확인
+        var reviewSql = "SELECT Rno, Nickname, Buyer, Score, Rtext FROM BOARD AS B, REVIEW AS R, USR AS U WHERE B.Bno=? AND B.Bno = R.Bnum AND B.Buyer = U.Uid";
 
         //조회 수 증가
-        connection.query(updateSql, Bno, (err, result) => {
+        connection.query(updateSql, Bno, (err) => {
             if (err) throw err;
             //게시글 조회
             connection.query(selectSql, Bno, (err, row, fileds) => {
                 if (err) throw err;
+                connection.query(reviewSql, Bno, (err, review) => {
+                    if (err) throw err;
+                    if (usrid !== undefined) { //로그인을 한 경우
+                        //찜을 했는지 확인
+                        connection.query(likeSql, [Bno, usrid], (err, likeCount) => {
+                            if (err) throw err;
 
-                if (usrid !== undefined) { //로그인을 한 경우
-                    //찜을 했는지 확인
-                    connection.query(likeSql, [Bno, usrid], (err, likeCount) => {
-                        if (err) throw err;
-
-                        callback(row, likeCount[0].LikeCount);
-                    });
-                } //로그인을 하지 않은 경우
-                else {
-                    callback(row, 0);
-                }
+                            callback(row, review, likeCount[0].LikeCount);
+                        });
+                    } //로그인을 하지 않은 경우
+                    else {
+                        callback(row, review, 0);
+                    }
+                })
             })
         })
     }
