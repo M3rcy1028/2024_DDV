@@ -1,0 +1,70 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <link rel='stylesheet' href='/stylesheets/style.css' />
+    <script src="/javascripts/jquery-3.7.1.min.js"></script>
+
+    <!-- 상단바 css -->
+    <link rel='stylesheet' href='/stylesheets/nav.css' />
+
+    <!-- Bootstrap CSS -->
+    <link rel='stylesheet' href='/vendors/bootstrap/css/bootstrap.min.css' />
+    <link rel='stylesheet' href='/vendors/bootstrap/css/bootstrap-grid.min.css' />
+    <link rel='stylesheet' href='/vendors/bootstrap/css/bootstrap-reboot.min.css' />
+
+    <!-- Bootstrap Icon -->
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
+    <link rel='stylesheet' href='/stylesheets/rootview.css' />
+    <link rel='stylesheet' href='/stylesheets/login.css' />
+
+    <style>
+        form {
+            width: 400px;
+        }
+    </style>
+
+    <title>
+        <%= title %>
+    </title>
+</head>
+
+<body>
+    <!-- 상단 바 -->
+    <%- include('nav.ejs') %>
+
+        <h2 class="d-flex justify-content-center"><b>
+                <%= title %>
+            </b></h2><br>
+
+        <div class="d-flex justify-content-center">
+            <form action="/reportUsr" method="post" onsubmit="return onWriteSubmit()">
+                <div class="form-group">
+                    <label style="text-align: center; margin-left: 15px; margin-bottom: 5px;"
+                        for="reportId"><b>아이디</b></label>
+                    <input class="form-control" name="reportId" id="reportId" value="<%= reportId %>" readonly>
+                    <label style="text-align: center; margin-left: 15px; margin-bottom: 5px;"
+                        for="reason"><b>신고사유</b></label>
+                    <textarea class="form-control" style="height: 150px;" name="reason" id="reason"></textarea>
+                </div>
+                <button class="btn btn3" style="width: 100%;" type="submit" id="submitBtn">등록하기</button>
+            </form>
+        </div>
+
+        <script>
+            function onWriteSubmit() {
+                if ($("#reason").val().trim() == "") {
+                    var message = "신고 사유를 입력해 주세요.";
+                    $("#reason").val("");
+                    $("#reason").focus();
+                    alert(message);
+                    return false;
+                }
+            }
+        </script>
+
+        <!-- Bootstrap JS -->
+        <script src="/vendors/bootstrap/js/bootstrap.bundle.min.js"></script>
+</body>
+
+</html>

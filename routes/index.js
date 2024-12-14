@@ -308,4 +308,29 @@ router.post('/recentProduct', function (req, res, next) {
   });
 })
 
+//신고하기 (GET)
+router.get('/reportUsr', function (req, res, next) {
+  const reportId = req.query.reportId;
+  res.render('reportUsr', { title: "신고하기", rootLogin, usrLogin, usrid, reportId });
+})
+
+//신고하기 (POST)
+router.post('/reportUsr', function (req, res, next) {
+  const reportId = req.body.reportId;
+  const reason = req.body.reason;
+
+  console.log(reportId);
+  var insertSql = "INSERT INTO REPORTED_USR(Uid, Reason) VALUES(?, ?)";
+
+  connection.query(insertSql, [reportId, reason], function (err, rows) {
+    if (err) {
+      console.error("err: " + err);
+      return res.status(500).send("데이터베이스 오류 발생");
+    }
+    console.log("rows: " + JSON.stringify(rows));
+
+    res.redirect("/"); //시작페이지로 redirect
+  });
+})
+
 module.exports = router;
