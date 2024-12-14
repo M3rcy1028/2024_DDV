@@ -46,9 +46,9 @@ router.get('/', function (req, res, next) {
       connection.query(sql3, [usrid], (err, list) => {
         if (err) throw err;
         console.log(list);
-        res.render('index', { 
-          title: '중고장터', rows: rows, top:top, list:list, 
-          usrid, rootLogin, usrLogin, rootname 
+        res.render('index', {
+          title: '중고장터', rows: rows, top: top, list: list,
+          usrid, rootLogin, usrLogin, rootname
         });
       });
     });
@@ -293,6 +293,19 @@ router.post('/addWish', function (req, res, next) {
 //메세지 화면
 router.get('/message', function (req, res, next) {
   res.render('message', { title: '메세지', rootLogin, usrLogin, usrid, usrid });
+})
+
+//최근 본 상품
+router.post('/recentProduct', function (req, res, next) {
+  const viewedProductIds = req.body.products;
+  var selectSql = "SELECT Bno, Img FROM BOARD WHERE Bno IN (?)"; //이미지 정보 가져오기
+
+  connection.query(selectSql, [viewedProductIds], (err, results) => {
+    if (err) throw err;
+    console.log(results);
+
+    res.json({ results });
+  });
 })
 
 module.exports = router;

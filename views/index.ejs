@@ -8,8 +8,9 @@
 
   <!-- 상단바 css -->
   <link rel='stylesheet' href='/stylesheets/rootview.css' />
-  <link rel='stylesheet' href='/stylesheets/rootbar.css'/>
-  <link rel='stylesheet' href='/stylesheets/nav.css'/>
+  <link rel='stylesheet' href='/stylesheets/rootbar.css' />
+  <link rel='stylesheet' href='/stylesheets/nav.css' />
+  <link rel='stylesheet' href='/stylesheets/rightbar.css' />
 
   <!-- Bootstrap CSS -->
   <link rel='stylesheet' href='/vendors/bootstrap/css/bootstrap.min.css' />
@@ -18,7 +19,7 @@
 
   <!-- Bootstrap Icon -->
   <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
-  
+
   <style>
     .adver_carousel {
       width: 1000px;
@@ -43,12 +44,15 @@
       text-decoration: none;
       color: black;
     }
+
     #advertisement .carousel-inner img {
       width: 700px;
-      height: 320px;  
+      height: 320px;
     }
+
     .badge.bg-dark {
-        background-color: #6c975d !important; /* 배경색 */
+      background-color: #6c975d !important;
+      /* 배경색 */
     }
   </style>
 </head>
@@ -57,132 +61,141 @@
   <!-- 상단 바 -->
   <%- include('nav.ejs') %>
 
-  <div class="d-flex flex-column">
-    <div class="d-flex justify-content-center">
-      <div id="advertisement" class="carousel slide carousel-fade adver_carousel" data-bs-ride="carousel">
-        <div class="carousel-inner">
-          <div class="carousel-item active">
-            <img src="/images/advertisement/main.png" class="d-block w-100" alt="광고이미지1">
-          </div>
-          <div class="carousel-item">
-            <img src="/images/advertisement/event.png" class="d-block w-100" alt="광고이미지2">
-          </div>
-          <div class="carousel-item">
-            <img src="/images/advertisement/christmas.png" class="d-block w-100" alt="광고이미지3">
-          </div>
-          <div class="carousel-item">
-            <img src="/images/advertisement/coding.png" class="d-block w-100" alt="광고이미지4">
-          </div>
-          <div class="carousel-item">
-            <img src="/images/advertisement/room.png" class="d-block w-100" alt="광고이미지5">
-          </div>
-          <div class="carousel-item">
-            <img src="/images/advertisement/clothes.png" class="d-block w-100" alt="광고이미지6">
+    <!-- 오른쪽 사이드 바 (최근 본 상품) -->
+    <%- include('rightBar.ejs') %>
+
+      <div class="content-wrapper">
+        <div class="d-flex justify-content-center">
+          <div id="advertisement" class="carousel slide carousel-fade adver_carousel" data-bs-ride="carousel">
+            <div class="carousel-inner">
+              <div class="carousel-item active">
+                <img src="/images/advertisement/main.png" class="d-block w-100" alt="광고이미지1">
+              </div>
+              <div class="carousel-item">
+                <img src="/images/advertisement/event.png" class="d-block w-100" alt="광고이미지2">
+              </div>
+              <div class="carousel-item">
+                <img src="/images/advertisement/christmas.png" class="d-block w-100" alt="광고이미지3">
+              </div>
+              <div class="carousel-item">
+                <img src="/images/advertisement/coding.png" class="d-block w-100" alt="광고이미지4">
+              </div>
+              <div class="carousel-item">
+                <img src="/images/advertisement/room.png" class="d-block w-100" alt="광고이미지5">
+              </div>
+              <div class="carousel-item">
+                <img src="/images/advertisement/clothes.png" class="d-block w-100" alt="광고이미지6">
+              </div>
+            </div>
+            <button class="carousel-control-prev" type="button" data-bs-target="#advertisement" data-bs-slide="prev">
+              <span class="carousel-control-prev-icon" aria-hidden="true"></span>
+              <span class="visually-hidden">Previous</span>
+            </button>
+            <button class="carousel-control-next" type="button" data-bs-target="#advertisement" data-bs-slide="next">
+              <span class="carousel-control-next-icon" aria-hidden="true"></span>
+              <span class="visually-hidden">Next</span>
+            </button>
           </div>
         </div>
-        <button class="carousel-control-prev" type="button" data-bs-target="#advertisement" data-bs-slide="prev">
-          <span class="carousel-control-prev-icon" aria-hidden="true"></span>
-          <span class="visually-hidden">Previous</span>
-        </button>
-        <button class="carousel-control-next" type="button" data-bs-target="#advertisement" data-bs-slide="next">
-          <span class="carousel-control-next-icon" aria-hidden="true"></span>
-          <span class="visually-hidden">Next</span>
-        </button>
-      </div>
-    </div>
-    <br>
-    <!-- 게시글 나열 -->
-    <div class="d-flex flex-column">
-      <div class="d-flex justify-content-center">
-        <h3 id="recent"><b>최근 게시글</b></h3>
-      </div>
-      <div class="container text-center" style="width: 1000px;">
-        <% for (var line=0; line<2; line++){ var oneItem=rows[i]; %>
-          <div class="row row-cols-4">
-            <% for (var i=0; i<4; i++) { var num=line*4 + i; if(num>= rows.length){
-              break;}
-              var oneItem=rows[num]; %>
-              <div class="d-flex flex-column col">
-                <a href="/sellBoard/sellRead/<%=oneItem.Bno%>">
-                  <img src="<%= oneItem.Img %>" style="width: 240px; height: 280px; object-fit: cover;"
-                    class="border rounded mb-3" alt="판매 상품 이미지">
-                </a>
-                <b name="title" id="title">
-                  <span class="badge bg-dark">
-                    <%= oneItem.Trade %>
-                  </span>
-                  <a href="/sellBoard/sellRead/<%=oneItem.Bno%>">
-                    <%= oneItem.Title %>
-                  </a>
-                </b>
-                <p name="price" id="price">
-                  <%= oneItem.Price %> 원
-                </p>
+        <br>
+
+        <!-- 게시글 나열 -->
+        <div class="d-flex flex-column">
+          <div class="d-flex justify-content-center">
+            <h3 id="recent"><b>최근 게시글</b></h3>
+          </div>
+          <div class="container text-center" style="width: 1000px;">
+            <% for (var line=0; line<2; line++){ var oneItem=rows[i]; %>
+              <div class="row row-cols-4">
+                <% for (var i=0; i<4; i++) { var num=line*4 + i; if(num>= rows.length){
+                  break;}
+                  var oneItem=rows[num]; %>
+                  <div class="d-flex flex-column col">
+                    <a href="/sellBoard/sellRead/<%=oneItem.Bno%>">
+                      <img src="<%= oneItem.Img %>" style="width: 240px; height: 280px; object-fit: cover;"
+                        class="border rounded mb-3" alt="판매 상품 이미지">
+                    </a>
+                    <b name="title" id="title">
+                      <span class="badge bg-dark">
+                        <%= oneItem.Trade %>
+                      </span>
+                      <a href="/sellBoard/sellRead/<%=oneItem.Bno%>">
+                        <%= oneItem.Title %>
+                      </a>
+                    </b>
+                    <p name="price" id="price">
+                      <%= oneItem.Price %> 원
+                    </p>
+                  </div>
+                  <% } %>
               </div>
               <% } %>
           </div>
-          <% } %>
-      </div>
-      <br><br><br>
-      <div class="d-flex justify-content-center">
-        <h3 id="hotfive"><b>🔥Hot 4</b></h3>
-      </div>
-      <div class="container text-center" style="width: 1000px;" >
-        <div class="row row-cols-4">
-          <% for (var i = 0; i < top.length; i++) { var oneItem = top[i]; %>
-            <div class="col d-flex flex-column mb-4">
-              <a href="/sellBoard/sellRead/<%= oneItem.Bno %>">
-                <img src="<%= oneItem.Img || 'default-image.jpg' %>" style="width: 240px; height: 280px; object-fit: cover;" class="border rounded mb-3" alt="판매 상품 이미지">
-              </a>
-              <strong id="title">
-                <span class="badge bg-dark">
-                  <%= oneItem.Trade %>
-                </span>
-                <a href="/sellBoard/sellRead/<%= oneItem.Bno %>">
-                  <%= oneItem.Title %>
-                </a>
-              </strong>
-              <p id="price">
-                <%= oneItem.Price %> 원
-              </p>
+          <br><br><br>
+          <div class="d-flex justify-content-center">
+            <h3 id="hotfive"><b>🔥Hot 4</b></h3>
+          </div>
+          <div class="container text-center" style="width: 1000px;">
+            <div class="row row-cols-4">
+              <% for (var i=0; i < top.length; i++) { var oneItem=top[i]; %>
+                <div class="col d-flex flex-column mb-4">
+                  <a href="/sellBoard/sellRead/<%= oneItem.Bno %>">
+                    <img src="<%= oneItem.Img || 'default-image.jpg' %>"
+                      style="width: 240px; height: 280px; object-fit: cover;" class="border rounded mb-3"
+                      alt="판매 상품 이미지">
+                  </a>
+                  <strong id="title">
+                    <span class="badge bg-dark">
+                      <%= oneItem.Trade %>
+                    </span>
+                    <a href="/sellBoard/sellRead/<%= oneItem.Bno %>">
+                      <%= oneItem.Title %>
+                    </a>
+                  </strong>
+                  <p id="price">
+                    <%= oneItem.Price %> 원
+                  </p>
+                </div>
+                <% } %>
             </div>
-          <% } %>
+          </div>
         </div>
-      </div>
-    </div>
-    
-    <% if (usrLogin) { %>
-      <br><br><br>
-      <div id="wish" class="d-flex justify-content-center">
-        <h3 ><b>💫위시리스트</b></h3>
-      </div>
-      <div class="container text-center" style="width: 1000px;">
-        <div class="row row-cols-4">
-          <% for (var i = 0; i < 4; i++) { var wishItem = list[i]; if (!wishItem) continue;%>
-            <div class="col d-flex flex-column mb-4">
-              <a href="/sellBoard/sellRead/<%= wishItem.Bno %>">
-                <img src="<%= wishItem.Img || 'default-image.jpg' %>" style="width: 240px; height: 280px; object-fit: cover;" class="border rounded mb-3" alt="판매 상품 이미지">
-              </a>
-              <strong id="title">
-                <span class="badge bg-dark">
-                  <%= wishItem.Trade %>
-                </span>
-                <a href="/sellBoard/sellRead/<%= wishItem.Bno %>">
-                  <%= wishItem.Title %>
-                </a>
-              </strong>
-              <p id="price">
-                <%= wishItem.Price %> 원
-              </p>
-            </div>
-          <% } %>
-        </div>
-      </div>
-    <% } %>
-    </div>
-    <!-- Bootstrap JS -->
-    <script src="/vendors/bootstrap/js/bootstrap.bundle.min.js"></script>
 
+        <% if (usrLogin) { %>
+          <br><br><br>
+          <div id="wish" class="d-flex justify-content-center">
+            <h3><b>💫위시리스트</b></h3>
+          </div>
+          <div class="container text-center" style="width: 1000px;">
+            <div class="row row-cols-4">
+              <% for (var i=0; i < 4; i++) { var wishItem=list[i]; if (!wishItem) continue;%>
+                <div class="col d-flex flex-column mb-4">
+                  <a href="/sellBoard/sellRead/<%= wishItem.Bno %>">
+                    <img src="<%= wishItem.Img || 'default-image.jpg' %>"
+                      style="width: 240px; height: 280px; object-fit: cover;" class="border rounded mb-3"
+                      alt="판매 상품 이미지">
+                  </a>
+                  <strong id="title">
+                    <span class="badge bg-dark">
+                      <%= wishItem.Trade %>
+                    </span>
+                    <a href="/sellBoard/sellRead/<%= wishItem.Bno %>">
+                      <%= wishItem.Title %>
+                    </a>
+                  </strong>
+                  <p id="price">
+                    <%= wishItem.Price %> 원
+                  </p>
+                </div>
+                <% } %>
+            </div>
+          </div>
+          <% } %>
+      </div>
+      <!-- Bootstrap JS -->
+      <script src="/vendors/bootstrap/js/bootstrap.bundle.min.js"></script>
+
+      <script src="/javascripts/rightBar.js"></script>
 </body>
 
 </html>

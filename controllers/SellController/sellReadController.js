@@ -44,7 +44,7 @@ module.exports = {
             }
 
             /* 리뷰가 있는 경우 */
-            if (review) {
+            if (review.length) {
                 /* 아이디 4번 째자리까지만 표기하기 */
                 var Buyer = review[0].Buyer, newBuyer;
                 newBuyer = Buyer.slice(0, 4) + '*'.repeat(Buyer.length - 4);
