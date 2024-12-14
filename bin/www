@@ -51,79 +51,63 @@ io.on('connection', (socket) => {
   const userId = socket.handshake.auth.usrid;
 
   console.log(userId)
-  // 채팅방 가져오기 (sid 또는 rid와 일치하는 채팅방)
-  const query = `SELECT * FROM chatroom WHERE sid = ? OR rid = ?`;
-  db.query(query, [userId, userId], async (err, results) => {
-    if (err) {
-      console.error('쿼리 오류:', err);
-      return res.status(500).send('서버 오류');
-    }
 
-    // // Promise 배열 생성
-    // const promises = results.map((result) => {
-    //   return new Promise((resolve, reject) => {
-    //     // 마지막 채팅기록
-    //     db.query('SELECT Message FROM msglog WHERE Cnum = ? ORDER BY Mtime DESC LIMIT 1', [result.Cno], (_err, msg) => {
-    //       result["Lastmsg"] = msg.length > 0 ? msg[0].Message : '메시지 없음';
-    //     })
+  function load_chatroom() {
+    // 채팅방 가져오기 (sid 또는 rid와 일치하는 채팅방)
+    const query = `SELECT * FROM chatroom WHERE sid = ? OR rid = ?`;
+    db.query(query, [userId, userId], async (err, results) => {
+      if (err) {
+        console.error('쿼리 오류:', err);
+        return res.status(500).send('서버 오류');
+      }
 
-    //     if (userId === result.Sid) {
-    //       // Rid로 프로필 가져오기
-    //       db.query(`SELECT ProfileImg FROM usr WHERE uid = ?`, [result.Rid], (err, img) => {
-    //         if (err) return reject(err);
-    //         result['Image'] = img.length > 0 ? img[0].ProfileImg : null;
-    //         resolve();
-    //       });
-    //     } else {
-    //       // Sid로 가져오기
-    //       db.query(`SELECT ProfileImg FROM usr WHERE uid = ?`, [result.Sid], (err, img) => {
-    //         if (err) return reject(err);
-    //         result['Image'] = img.length > 0 ? img[0].ProfileImg : null;
-    //         resolve();
-    //       });
-    //     }
-    //   });
-    // });
-    const promises = results.map((result) => {
-      return new Promise((resolve, reject) => {
-        // 마지막 채팅 기록 가져오기
-        db.query('SELECT Message FROM msglog WHERE Cnum = ? ORDER BY Mtime DESC LIMIT 1', [result.Cno], (_err, msg) => {
-          if (_err) {
-            result["Lastmsg"] = '오류 발생';
-            return reject(_err);
-          }
-          result["Lastmsg"] = Array.isArray(msg) && msg.length > 0 ? msg[0].Message : '메시지 없음';
-
-          const profileQuery = userId === result.Sid
-            ? 'SELECT ProfileImg FROM usr WHERE uid = ?'
-            : 'SELECT ProfileImg FROM usr WHERE uid = ?';
-
-          const userIdParam = userId === result.Sid ? result.Rid : result.Sid;
-
-          // 프로필 이미지 가져오기
-          db.query(profileQuery, [userIdParam], (err, img) => {
-            if (err) {
-              result["Image"] = null;
-              return reject(err);
+      const promises = results.map((result) => {
+        return new Promise((resolve, reject) => {
+          // 마지막 채팅 기록 가져오기
+          db.query('SELECT Message, Mtime FROM msglog WHERE Cnum = ? ORDER BY Mtime DESC LIMIT 1', [result.Cno], (_err, msg) => {
+            if (_err) {
+              result["Lastmsg"] = '오류 발생';
+              return reject(_err);
             }
-            result['Image'] = img.length > 0 ? img[0].ProfileImg : null;
-            resolve(); // 모든 작업 완료 후 resolve 호출
+            result["Lastmsg"] = Array.isArray(msg) && msg.length > 0 ? msg[0].Message : '메시지 없음';
+            result["Ltime"] = msg[0].Mtime;
+
+            const profileQuery = 'SELECT ProfileImg FROM usr WHERE uid = ?';
+
+            const userIdParam = userId === result.Sid ? result.Rid : result.Sid;
+
+            // 프로필 이미지 가져오기
+            db.query(profileQuery, [userIdParam], (err, img) => {
+              if (err) {
+                result["Image"] = null;
+                return reject(err);
+              }
+              result['Image'] = img.length > 0 ? img[0].ProfileImg : null;
+              resolve(); // 모든 작업 완료 후 resolve 호출
+            });
           });
         });
       });
+
+
+      // 모든 Promise가 완료될 때까지 대기
+      try {
+        await Promise.all(promises);
+        // results를 Ltime 내림차순으로 정렬 Ltime은 타임스탬프
+        results.sort((a, b) => b.Ltime - a.Ltime);
+
+        console.log(results)
+
+        socket.emit('load_chatrooms', results);
+      } catch (err) {
+        console.error('프로필 이미지 가져오기 오류:', err);
+        res.status(500).send('서버 오류');
+      }
     });
 
+  }
 
-    // 모든 Promise가 완료될 때까지 대기
-    try {
-      await Promise.all(promises);
-      console.log(results);
-      socket.emit('load_chatrooms', results);
-    } catch (err) {
-      console.error('프로필 이미지 가져오기 오류:', err);
-      res.status(500).send('서버 오류');
-    }
-  });
+  load_chatroom();
 
   // 왼쪽 채팅방 클릭 시, 오른쪽에 채팅방 로그 불러오기
   socket.on('load_chatlog', (cno) => {
@@ -139,31 +123,53 @@ io.on('connection', (socket) => {
       [cno],
       (_err, msgs) => {
         db.query("SELECT Rid, Sid, Bnum FROM chatroom WHERE Cno=?", [cno], (_err, ids) => {
-          socket.emit('load_chatlog', msgs, ids[0].Rid, ids[0].Sid, ids[0].Bnum);
+
+          const profileQuery = 'SELECT ProfileImg FROM usr WHERE uid = ?';
+
+          const userIdParam = userId === ids[0].Sid ? ids[0].Rid : ids[0].Sid;
+
+          // 프로필 이미지 가져오기
+          db.query(profileQuery, [userIdParam], (err, img) => {
+            if (err) {
+              ids[0]["Image"] = null;
+              return reject(err);
+            }
+            ids[0]['Image'] = img.length > 0 ? img[0].ProfileImg : null;
+            socket.emit('load_chatlog', msgs, ids[0].Rid, ids[0].Sid, ids[0].Bnum, ids[0].Image);
+          });
         });
       });
   })
 
   // 채팅 전송 시, DB에 로그 저장하기
   socket.on('chat_message', (data) => {
-    console.log(socket.id, ":", data)
-    try {
-      db.query("INSERT INTO msglog (cnum, sender, message) VALUES (?,?,?)", [data.cnum, data.sender, data.message], (err, result) => {
-        if (err) {
-          console.error(err);
-        }
-      })
-    } catch (e) {
-      return;
-    }
-    msg = {
-      Sender: data.sender,
-      Message: data.message
-    }
+    console.log(socket.id, ":", data);
 
-    // 같은 채팅방에 전송
-    io.to(data.cnum).emit('chat_message', msg);
+    // 채팅 메시지 로그 저장
+    db.query(
+      "INSERT INTO msglog (cnum, sender, message) VALUES (?,?,?)",
+      [data.cnum, data.sender, data.message],
+      (err, result) => {
+        if (err) {
+          console.error("DB 저장 중 에러:", err);
+          return; // 에러 발생 시 종료
+        }
+
+        // 메시지 구성
+        const msg = {
+          Sender: data.sender,
+          Message: data.message
+        };
+
+        // 같은 채팅방에 메시지 전송
+        io.to(data.cnum).emit('chat_message', msg);
+
+        // DB 작업 완료 후 채팅방 상태 갱신
+        load_chatroom();
+      }
+    );
   });
+
 
   // 구매 버튼 누를 시
   socket.on('purchase', (cnum) => {

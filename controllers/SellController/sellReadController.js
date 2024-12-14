@@ -9,6 +9,7 @@ module.exports = {
         console.log("로그인 usrLogin : ", usrLogin, ", usrId : ", usrid);
 
         var UpdateEnable = false; //글 수정 가능 여부
+        var isWriter = false; // 글 작성자 여부
 
         var Bno = req.params.Bno;
         readModel.getData(Bno, usrid, (row, likeCount) => {
@@ -40,9 +41,13 @@ module.exports = {
                 UpdateEnable = false;
             }
 
+            if (Bid === usrid) {
+                isWriter = true;
+            }
+
             console.log("UpdateEnable : ", UpdateEnable);
 
-            res.render('SellFunction/sellRead', { title: "글 조회", rootname, rootLogin, usrLogin, UpdateEnable, row: row[0], usrid, likeCount });
+            res.render('SellFunction/sellRead', { title: "글 조회", rootname, rootLogin, usrLogin, UpdateEnable, row: row[0], usrid, likeCount, isWriter });
         });
     }
 }

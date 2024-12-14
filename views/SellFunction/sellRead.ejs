@@ -10,7 +10,7 @@
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 
     <!-- 상단바 css -->
-    <link rel='stylesheet' href='/stylesheets/rootbar.css'/>
+    <link rel='stylesheet' href='/stylesheets/rootbar.css' />
     <link rel='stylesheet' href='/stylesheets/nav.css' />
 
     <!-- Bootstrap CSS -->
@@ -99,7 +99,7 @@
                     <div class="d-flex">
                         <% if (!rootLogin){ %> <!-- 관리자에게 숨기기 -->
                             <!-- 글 작성자에게는 숨겨진 버튼-->
-                            <% if (usrLogin && !UpdateEnable) { %>
+                            <% if (usrLogin && !isWriter) { %>
                                 <form action="/sellBoard/newchat" method="post">
                                     <input type="hidden" name="rid" value="<%=row.realBid%>" />
                                     <input type="hidden" name="idx" value="<%=row.Bno%>" />
@@ -107,19 +107,19 @@
                                     <button type="submit" class="btn btn-dark">메세지 보내기</button>
                                 </form>
                                 <%}%>
-                            <form action="/addWish" method="post" onsubmit="return onAddWishlist()">
-                                <input type="hidden" name="idx" value="<%=row.Bno%>" /> <!-- 게시글 번호 -->
-                                <input type="hidden" name="like" value="<%=likeCount%>" /> <!-- 찜 여부 -->
-                                <button type="submit" class="btn btn-outline-dark" id="wishBtn">
-                                    <% if (likeCount==0) { %> <!-- 찜을 하지 않은 경우-->
-                                        <i class="bi bi-heart me-2"></i>
-                                        <% } else { %>
-                                            <i class="bi bi-heart-fill me-2"></i>
-                                            <% } %>
-                                                찜하기
-                                </button>
-                            </form>
-                            <%}%>
+                                    <form action="/addWish" method="post" onsubmit="return onAddWishlist()">
+                                        <input type="hidden" name="idx" value="<%=row.Bno%>" /> <!-- 게시글 번호 -->
+                                        <input type="hidden" name="like" value="<%=likeCount%>" /> <!-- 찜 여부 -->
+                                        <button type="submit" class="btn btn-outline-dark" id="wishBtn">
+                                            <% if (likeCount==0) { %> <!-- 찜을 하지 않은 경우-->
+                                                <i class="bi bi-heart me-2"></i>
+                                                <% } else { %>
+                                                    <i class="bi bi-heart-fill me-2"></i>
+                                                    <% } %>
+                                                        찜하기
+                                        </button>
+                                    </form>
+                                    <%}%>
                     </div>
                     <!-- 글 작성자에게만 보이는 버튼-->
                     <% if (UpdateEnable) { %>
