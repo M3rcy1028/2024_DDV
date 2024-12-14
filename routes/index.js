@@ -298,9 +298,9 @@ router.get('/message', function (req, res, next) {
 //최근 본 상품
 router.post('/recentProduct', function (req, res, next) {
   const viewedProductIds = req.body.products;
-  var selectSql = "SELECT Bno, Img FROM BOARD WHERE Bno IN (?)"; //이미지 정보 가져오기
+  var selectSql = "SELECT Bno, Img FROM BOARD WHERE Bno IN (?) ORDER BY FIELD(Bno, ?)"; //이미지 정보 가져오기
 
-  connection.query(selectSql, [viewedProductIds], (err, results) => {
+  connection.query(selectSql, [viewedProductIds, viewedProductIds], (err, results) => {
     if (err) throw err;
     console.log(results);
 
