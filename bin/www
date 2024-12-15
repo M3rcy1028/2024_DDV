@@ -8,6 +8,7 @@ var app = require('../app');
 var debug = require('debug')('dbproject:server');
 var http = require('http');
 var { Server } = require("socket.io")
+var sse = require('./sse');
 
 const mysql = require('mysql2');
 const dotenv = require('dotenv');
@@ -106,8 +107,9 @@ io.on('connection', (socket) => {
     });
 
   }
-
-  load_chatroom();
+  socket.on('load_chatrooms', () => {
+    load_chatroom();
+  })
 
   // 왼쪽 채팅방 클릭 시, 오른쪽에 채팅방 로그 불러오기
   socket.on('load_chatlog', (cno) => {
@@ -231,8 +233,178 @@ io.on('connection', (socket) => {
       });
     });
   });
-});
 
+  ///////// 경매 관련 ////////////
+  var usr_Anum = 1;
+
+  function auction_end(Anum) {
+    // 게시글 timeover 수정
+    db.query('UPDATE auction SET Timeover = 1 WHERE Ano = ?', Anum, () => { });
+
+
+  }
+
+  var interval = null;
+
+  //// 경매 게시글 접속
+  socket.on('auction_join', (Anum) => {
+    socket.join('a' + Anum);
+
+    usr_Anum = Anum;
+
+    // 해당 게시글 메시지 로그 출력
+    db.query('SELECT msg, Sender FROM auction_msg WHERE Anum = ?',
+      [Anum],
+      (_err, msgs) => {
+        socket.emit('auction_load_chatlog', msgs);
+      });
+
+    const valid_time = 12000; // 20분
+
+    // 페이지 타이머
+    interval = setInterval(() => {
+      const interval_sql = `SELECT Stime FROM auction WHERE Ano=?;`;
+      db.query(interval_sql, [usr_Anum], (_err, time) => {
+        seconds = (Date.now() - time[0].Stime) / 1000; // 게시후 지난 시간
+        var remain_time = valid_time - seconds; // 마감까지 남은 시간
+        if (remain_time >= 0) {
+          var minutes = Math.floor(remain_time / 60);
+          var remainingSeconds = Math.floor(remain_time % 60);
+
+          var formatted_time = `${minutes}:${remainingSeconds.toString().padStart(2, '0')}`;
+          socket.emit('auction_timer', formatted_time);
+        }
+        else { // 타이머 종료 시
+          // 게시글 db 업데이트
+          db.query('UPDATE auction SET Timeover = 1 WHERE Ano = ?', Anum, () => { });
+          socket.emit('auction_timer', "00:00");
+          clearInterval(interval);
+        }
+
+      })
+    }, 1000);
+  });
+
+  // 연결 해제 시 처리
+  socket.on("disconnect", () => {
+    console.log("클라이언트 연결 해제");
+    clearInterval(interval);
+  });
+
+  //// 채팅 입력 시
+  socket.on('auction_chat_message', (data) => {
+    console.log(socket.id, ":", data);
+
+    // 메시지 로그 DB에 저장
+    db.query(
+      "INSERT INTO auction_msg (Anum, Sender, msg) VALUES (?,?,?)",
+      [data.Anum, data.sender, data.message],
+      (err, result) => {
+        if (err) {
+          console.error("DB 저장 중 에러:", err);
+          return; // 에러 발생 시 종료
+        }
+
+        // 메시지 구성
+        const msg = {
+          Sender: data.sender,
+          Message: data.message
+        };
+
+        // 같은 페이지에 메시지 전송
+        io.to('a' + data.Anum).emit('auction_chat_message', msg);
+      }
+    );
+  });
+
+  //// 호가 입력 시
+  socket.on('auction_asking', (data) => {
+    console.log("asking", data.Anum);
+    const AuctionNum = data.Anum;
+    const AskedPrice = data.Aprice;
+    const Buyer = data.Buyer;
+
+    console.log(AuctionNum, AskedPrice, Buyer)
+
+    // 구매자의 포인트 가져오기
+    db.query("SELECT Money FROM usr WHERE uid = ?", [Buyer], (err, result) => {
+      if (err || result.length === 0) {
+        console.error("구매자의 포인트를 가져오는 데 실패했습니다.", err);
+        return;
+      }
+
+      const buyerMoney = result[0].Money;
+
+      if (buyerMoney >= AskedPrice) {
+        // 기존 구매자 정보 가져오기
+        db.query("SELECT Emoney, Buyer FROM auction WHERE Ano = ?", [AuctionNum], (err, oldResult) => {
+          if (err || oldResult.length === 0) {
+            console.error("기존 구매자 정보를 가져오는 데 실패했습니다.", err);
+            return;
+          }
+
+          const oldBuyer = oldResult[0].Buyer;
+          const oldEmoney = oldResult[0].Emoney;
+
+          const queries = [];
+
+          console.log(oldBuyer, oldEmoney)
+
+          // 기존 구매자의 돈 복구 (기존 구매자가 있을 때만 실행)
+          if (oldBuyer) {
+            queries.push(
+              new Promise((resolve, reject) => {
+                db.query("UPDATE usr SET Money = Money + ? WHERE uid = ?", [oldEmoney, oldBuyer], (err) => {
+                  if (err) reject(err);
+                  else resolve();
+                });
+              })
+            );
+          }
+
+          // 새로운 구매자의 돈 차감
+          queries.push(
+            new Promise((resolve, reject) => {
+              db.query("UPDATE usr SET Money = Money - ? WHERE uid = ?", [AskedPrice, Buyer], (err) => {
+                if (err) reject(err);
+                else resolve();
+              });
+            })
+          );
+
+          // 새로운 입찰가와 구매자 정보 저장
+          queries.push(
+            new Promise((resolve, reject) => {
+              db.query(
+                "UPDATE auction SET Emoney = ?, Buyer = ? WHERE Ano = ?",
+                [AskedPrice, Buyer, AuctionNum],
+                (err) => {
+                  if (err) reject(err);
+                  else resolve();
+                }
+              );
+            })
+          );
+
+          // 모든 쿼리 완료 후 클라이언트에게 업데이트 전송
+          Promise.all(queries)
+            .then(() => {
+              io.to('a' + AuctionNum).emit('auction_update_emoney', AskedPrice);
+              console.log(`Auction ${AuctionNum} updated with new bid: ${AskedPrice}`);
+            })
+            .catch((error) => {
+              console.error("DB 작업 중 오류 발생:", error);
+            });
+        });
+      } else {
+        console.log("구매자의 포인트가 부족합니다.");
+      }
+    });
+  });
+
+
+
+});
 
 /**
  * Normalize a port into a number, string, or false.

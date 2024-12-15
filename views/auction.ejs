@@ -13,89 +13,104 @@
     <!-- Bootstrap Icon -->
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
     <!-- rootbar 디자인 -->
-    <link rel='stylesheet' href='/stylesheets/rootbar.css'/>
-    <link rel='stylesheet' href='/stylesheets/rootview.css'/>
-    <link rel='stylesheet' href='/stylesheets/nav.css'/>
+    <link rel='stylesheet' href='/stylesheets/rootbar.css' />
+    <link rel='stylesheet' href='/stylesheets/rootview.css' />
+    <link rel='stylesheet' href='/stylesheets/nav.css' />
 </head>
-    <style>
-        .read-box {
-            width: 900px;
-            padding: 20px;
-            border-radius: 5px;
-            box-shadow: 0.5px 0.5px 2px 1px #eee;
-        }
+<style>
+    .read-box {
+        width: 900px;
+        padding: 20px;
+        border-radius: 5px;
+        box-shadow: 0.5px 0.5px 2px 1px #eee;
+    }
 
-        .board-content span {
-            margin-bottom: 10px;
-        }
+    .board-content span {
+        margin-bottom: 10px;
+    }
 
-        .sub-info span {
-            color: gray;
-        }
+    .sub-info span {
+        color: gray;
+    }
 
-        .board-content p {
-            height: 100%;
-        }
-        /* 공통 스타일 */
-        body {
-            font-family: Arial, sans-serif;
-            margin: 0;
-            padding: 20px;
-            text-align: center;
-        }
-    </style>
+    .board-content p {
+        height: 100%;
+    }
+
+    /* 공통 스타일 */
+    body {
+        font-family: Arial, sans-serif;
+        margin: 0;
+        padding: 20px;
+    }
+</style>
 
 
 <body>
     <br><br>
     <%- include('nav.ejs') %>
-    <!--<h2 class="card-title"><%= title %></h2><br>-->
-    <!-- 게시물 카드 -->
-    <div class="card-container">
-        <div class="card">
-            <h2 class="card-title"><%= title %></h2><br>
-            <div class="card-content">
-                <img src="../public/images/product/slipper.jpg" width="300" height="300" alt="판매 상품 이미지">
-                <p><strong>작성자:</strong> 작성자 이름</p>
-                <p><strong>구매자: </strong> 구매자 이름</p>
-                <p><strong>현재 가격:</strong> 100,000원</p>
-                <p>상품내용</p>
-            </div>
-            <!-- 버튼 섹션 -->
-        </div>
-    </div>
-    <div style="display: flex; justify-content: center; align-items: center;">
-        <div style="display: flex;">
-            <div class="card" style="width: 450px; margin: 0; height: 300px;">
-                <form action="/index/buyAuction" method="post" onsubmit="return onWriteSubmit()" class="d-flex align-items-center flex-column">
-                    <table>
-                        <tr class="d-flex flex-column">
-                            <td>가격 입력</td>
-                            <td><input type="number" name="price" id="price"></td>
-                        </tr>
-                        <td>
-                            <div class="button-group" style="display: flex; justify-content: space-between; width: 100%; margin-top: 10px;">
-                                <button class="btn btn2" type="submit" style="width: 100%;">올리기</button>
-                            </div>
-                        </td>
-                    </table>
-                </form>
-            </div>
-            <div class="card" style="width: 450px; margin: 0;">
-                <form action="/roots/notificationWrite" method="post" onsubmit="return onWriteSubmit()" class="d-flex align-items-center flex-column">
-                    <h3><strong>댓글</strong></h3>
-                    <table>
-                        <tr class="d-flex flex-column">
-                            <td> 우나륜 : 아 개노잼 왜 아무도 안함</td>
-                            <td> 김태관 : 이게 뭐임</td>
-                            <td> 김재용 : 뭐임</td>
-                        </tr>
-                    </table>
-                </form>
+        <!--<h2 class="card-title"><%= title %></h2><br>-->
+        <!-- 게시물 카드 -->
+        <div class="card-container">
+            <div class="card">
+                <h2 class="card-title">
+                    <%= title %>
+                </h2><br>
+                <div class="card-content">
+                    <img src="../public/images/product/slipper.jpg" width="300" height="300" alt="판매 상품 이미지">
+                    <p><strong>작성자:</strong> 작성자 이름</p>
+                    <p><strong>구매자: </strong> 구매자 이름</p>
+                    <p><strong>현재 가격:</strong> 100,000원</p>
+                    <p>상품내용</p>
+                </div>
+                <!-- 버튼 섹션 -->
             </div>
         </div>
-    </div>
-    
-    
+        <div style="display: flex; justify-content: center; align-items: center;">
+            <div style="display: flex;">
+                <div class="card" style="width: 450px; margin: 0; height: 300px;">
+                    <form action="/index/buyAuction" method="post" onsubmit="return onWriteSubmit()"
+                        class="d-flex align-items-center flex-column">
+                        <table>
+                            <tr class="d-flex flex-column">
+                                <td>가격 입력</td>
+                                <td><input type="number" name="price" id="price"></td>
+                            </tr>
+                            <td>
+                                <div class="button-group"
+                                    style="display: flex; justify-content: space-between; width: 100%; margin-top: 10px;">
+                                    <button class="btn btn2" type="submit" style="width: 100%;">올리기</button>
+                                </div>
+                            </td>
+                        </table>
+                    </form>
+                </div>
+                <div class="card" style="width: 450px; margin: 0;">
+                    <form action="/roots/notificationWrite" method="post" onsubmit="return onWriteSubmit()"
+                        class="d-flex align-items-center flex-column">
+                        <h3><strong>댓글</strong></h3>
+                        <table>
+                            <tr class="d-flex flex-column">
+                                <td> 우나륜 : 아 개노잼 왜 아무도 안함</td>
+                                <td> 김태관 : 이게 뭐임</td>
+                                <td> 김재용 : 뭐임</td>
+                            </tr>
+                        </table>
+                    </form>
+                </div>
+            </div>
+        </div>
+
+
 </body>
+<script>
+    const socket = io({
+        auth: {
+            usrid: '<%= usrid %>'
+        }
+    });
+
+
+</script>
+
 </html>
