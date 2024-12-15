@@ -6,7 +6,7 @@
     <script src="/javascripts/jquery-3.7.1.min.js"></script>
 
     <!-- 상단바 css -->
-    <link rel='stylesheet' href='/stylesheets/nav.css'/>
+    <link rel='stylesheet' href='/stylesheets/nav.css' />
 
     <!-- Bootstrap CSS -->
     <link rel='stylesheet' href='/vendors/bootstrap/css/bootstrap.min.css' />
@@ -47,6 +47,41 @@
             text-decoration: none;
             color: black;
         }
+
+        .pagination {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            gap: 5px;
+        }
+
+        .pagination a,
+        .pagination .current-page {
+            padding: 8px 12px;
+            border: 1px solid #ddd;
+            text-decoration: none;
+            background-color: #6c975d;
+            color: white;
+            border-radius: 4px;
+        }
+
+        .pagination a:hover {
+            background-color: #f0f0f0;
+        }
+
+        .pagination .current-page {
+            padding: 8px 12px;
+            background-color: #007bff;
+            color: white;
+            border: none;
+        }
+
+        .pagination .first-page,
+        .pagination .prev-page,
+        .pagination .next-page,
+        .pagination .last-page {
+            font-weight: bold;
+        }
     </style>
 </head>
 
@@ -54,58 +89,93 @@
     <!-- 상단 바 -->
     <%- include('../nav.ejs') %>
 
-    <div class="mb-4">
-        <nav style="--bs-breadcrumb-divider: '>';" aria-label="breadcrumb">
-            <ol class="breadcrumb">
-                <li class="breadcrumb-item"><a href="/">홈</a></li>
-                <li class="breadcrumb-item"><a href="/sellBoard/sellList">전체보기</a></li>
-                <li class="breadcrumb-item active" aria-current="page"><b>
-                        <%=categoryName%>
-                    </b></li>
-            </ol>
-        </nav>
-    </div>
+        <div class="mb-4">
+            <nav style="--bs-breadcrumb-divider: '>';" aria-label="breadcrumb">
+                <ol class="breadcrumb">
+                    <li class="breadcrumb-item"><a href="/">홈</a></li>
+                    <li class="breadcrumb-item"><a href="/sellBoard/sellList">전체보기</a></li>
+                    <li class="breadcrumb-item active" aria-current="page"><b>
+                            <%=categoryName%>
+                        </b></li>
+                </ol>
+            </nav>
+        </div>
 
-    <div class="d-flex">
-        <!-- 왼쪽 카테고리 선택 bar -->
-        <nav class="leftnav nav flex-column">
-            <b>카테고리</b>
-            <ul class="menu">
-                <% for(var category in categories){ %>
-                    <li><a class=link href="/sellBoard/sellList/category/<%=categories[category]%>">
-                            <%= category %>
-                        </a></li>
-                    <% }%>
-            </ul>
-        </nav>
+        <div class="d-flex">
+            <!-- 왼쪽 카테고리 선택 bar -->
+            <nav class="leftnav nav flex-column">
+                <b>카테고리</b>
+                <ul class="menu">
+                    <% for(var category in categories){ %>
+                        <li><a class=link href="/sellBoard/sellList/category/<%=categories[category]%>">
+                                <%= category %>
+                            </a></li>
+                        <% }%>
+                </ul>
+            </nav>
 
-        <!-- 게시글 나열 -->
-        <div class="container text-center">
-            <% for (var line=0; line<4; line++){ var oneItem=rows[i]; %>
-                <div class="row row-cols-4">
-                    <% for (var i=0; i<4; i++) { var num=line*4 + i; if(num>= rows.length){
-                        break;}
-                        var oneItem=rows[num]; %>
-                        <div class="col">
-                            <a href="/sellBoard/sellRead/<%=oneItem.Bno%>">
-                                <img src="<%= oneItem.Img %>" style="width: 240px; height: 280px; object-fit: cover;"
-                                    class="border rounded mb-3" alt="판매 상품 이미지">
-                            </a>
-                            <b name="title" id="title">
-                                <span class="badge bg-dark">
-                                    <%= oneItem.Trade %>
-                                </span>
+            <!-- 게시글 나열 -->
+            <div class="container text-center">
+                <% for (var line=0; line<4; line++){ var oneItem=rows[i]; %>
+                    <div class="row row-cols-4">
+                        <% for (var i=0; i<4; i++) { var num=line*4 + i; if(num>= rows.length){
+                            break;}
+                            var oneItem=rows[num]; %>
+                            <div class="col">
                                 <a href="/sellBoard/sellRead/<%=oneItem.Bno%>">
-                                    <%= oneItem.Title %>
+                                    <img src="<%= oneItem.Img %>"
+                                        style="width: 240px; height: 280px; object-fit: cover;"
+                                        class="border rounded mb-3" alt="판매 상품 이미지">
                                 </a>
-                            </b>
-                            <p name="price" id="price">
-                                <%= oneItem.Price %> 원
-                            </p>
-                        </div>
-                        <% } %>
-                </div>
+                                <b name="title" id="title">
+                                    <span class="badge bg-dark">
+                                        <%= oneItem.Trade %>
+                                    </span>
+                                    <a href="/sellBoard/sellRead/<%=oneItem.Bno%>">
+                                        <%= oneItem.Title %>
+                                    </a>
+                                </b>
+                                <p name="price" id="price">
+                                    <%= oneItem.Price %> 원
+                                </p>
+                            </div>
+                            <% } %>
+                    </div>
+                    <% } %>
+            </div>
+        </div>
+
+        <div class="pagination">
+            <% if (currentPage> 1) { %>
+                <!-- 첫 페이지로 가는 링크 -->
+                <a href="?page=1" class="first-page">First</a>
+
+                <!-- 이전 페이지로 가는 링크 -->
+                <a href="?page=<%= currentPage - 1 %>" class="prev-page">Previous</a>
                 <% } %>
+
+                    <!-- 페이지 번호들 -->
+                    <% for (let i=1; i <=totalPages; i++) { %>
+                        <% if (i===currentPage) { %>
+                            <!-- 현재 페이지는 링크 대신 텍스트로 표시 -->
+                            <span class="current-page">
+                                <%= i %>
+                            </span>
+                            <% } else { %>
+                                <!-- 다른 페이지는 링크로 표시 -->
+                                <a href="?page=<%= i %>" class="page-number">
+                                    <%= i %>
+                                </a>
+                                <% } %>
+                                    <% } %>
+
+                                        <% if (currentPage < totalPages) { %>
+                                            <!-- 다음 페이지로 가는 링크 -->
+                                            <a href="?page=<%= currentPage + 1 %>" class="next-page">Next</a>
+
+                                            <!-- 마지막 페이지로 가는 링크 -->
+                                            <a href="?page=<%= totalPages %>" class="last-page">Last</a>
+                                            <% } %>
         </div>
 
         <!-- Bootstrap JS -->
