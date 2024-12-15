@@ -61,6 +61,18 @@
             color: gray;
             text-decoration: none;
         }
+
+        /* 후기 */
+        .review {
+            padding-top: 30px;
+            padding-bottom: 30px;
+            background-color: white;
+
+            box-shadow: 0 0 2px rgba(0, 0, 0, 0.3);
+            /* 다른 요소들보다 위에 위치 */
+
+            border-radius: 10px 10px 10px 10px;
+        }
     </style>
 </head>
 
@@ -170,22 +182,27 @@
 
             <!-- 리뷰 확인-->
             <% if ((row.Trade==="거래완료" ) && (review)){ %>
-                <div class="mt-5">
-                    <hr>
-                    <div class="mb-2">
+                <hr>
+                <div class="d-flex justify-content-center mt-5 review" style="gap: 450px;">
+                    <div>
+                        <div class="mb-2">
+                            <b>상점 후기</b>
+                        </div>
+                        <div class="rating mb-2">
+                            <input type="hidden" name="rating" id="ratingValue" value="<%= review.Score %>">
+                            <i class="rating-star bi bi-star"></i>
+                            <i class="rating-star bi bi-star"></i>
+                            <i class="rating-star bi bi-star"></i>
+                            <i class="rating-star bi bi-star"></i>
+                            <i class="rating-star bi bi-star"></i>
+                        </div>
+                        <p>
+                            <%= review.Rtext %>
+                        </p>
+                    </div>
+                    <div class="d-flex align-items-center">
                         <%= review.Nickname %> (<%= review.Buyer %>)
                     </div>
-                    <div class="rating mb-2">
-                        <input type="hidden" name="rating" id="ratingValue" value="<%= review.Score %>">
-                        <i class="rating-star bi bi-star"></i>
-                        <i class="rating-star bi bi-star"></i>
-                        <i class="rating-star bi bi-star"></i>
-                        <i class="rating-star bi bi-star"></i>
-                        <i class="rating-star bi bi-star"></i>
-                    </div>
-                    <p>
-                        <%= review.Rtext %>
-                    </p>
                 </div>
                 <% } %>
 

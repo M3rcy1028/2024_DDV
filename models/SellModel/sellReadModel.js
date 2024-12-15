@@ -12,9 +12,13 @@ const connection = mysql.createPool({
 
 module.exports = {
     getData(Bno, usrid, callback) {
+        //조회수
         var updateSql = 'UPDATE board SET Hit = Hit + 1 WHERE Bno = ?';
+        //게시글 정보
         var selectSql = 'SELECT Nickname, Bno, Bid, Title, Content, Img, Trade, TradePlace, Updated, Hit, Category, Price FROM usr, board WHERE Bno=? and usr.uid = board.bid;'
-        var likeSql = 'SELECT COUNT(*) AS LikeCount FROM WISHLIST WHERE Bnum=? and uid=?'; //찜을 눌렀는지 확인
+        //찜 여부
+        var likeSql = 'SELECT EXISTS(SELECT 1 FROM WISHLIST WHERE Bnum=? AND uid=?) AS LikeCount';
+        //후기
         var reviewSql = "SELECT Rno, Nickname, Buyer, Score, Rtext FROM BOARD AS B, REVIEW AS R, USR AS U WHERE B.Bno=? AND B.Bno = R.Bnum AND B.Buyer = U.Uid";
 
         //조회 수 증가
