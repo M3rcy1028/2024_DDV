@@ -38,8 +38,8 @@
             </b></h2><br>
 
         <div class="d-flex justify-content-center">
-            <form action="/reportUsr" method="post" onsubmit="return onWriteSubmit()">
-                <div class="form-group">
+            <form id="reportForm" onsubmit="return onWriteSubmit(event)">
+                <div class=" form-group">
                     <label style="text-align: center; margin-left: 15px; margin-bottom: 5px;"
                         for="reportId"><b>아이디</b></label>
                     <input class="form-control" name="reportId" id="reportId" value="<%= reportId %>" readonly>
@@ -52,14 +52,46 @@
         </div>
 
         <script>
-            function onWriteSubmit() {
+            function onWriteSubmit(event) {
+                event.preventDefault();  // 폼 제출을 막음
+
+                // 신고 사유가 빈칸인지 체크
                 if ($("#reason").val().trim() == "") {
                     var message = "신고 사유를 입력해 주세요.";
-                    $("#reason").val("");
-                    $("#reason").focus();
+                    $("#reason").val(""); // reason 필드를 초기화
+                    $("#reason").focus(); // focus 설정
                     alert(message);
-                    return false;
+                    return false; // 폼 제출을 중단
                 }
+
+                // 서버로 보낼 데이터 준비
+                var reportId = $("#reportId").val(); // 신고할 사용자 ID
+                var reason = $("#reason").val().trim(); // 신고 사유
+
+                // AJAX 요청
+                $.ajax({
+                    type: "POST",
+                    url: "/reportUsr",  // 서버 URL
+                    data: JSON.stringify({
+                        reportId: reportId,
+                        reason: reason
+                    }),
+                    contentType: "application/json",  // 서버로 보내는 데이터 형식
+                    dataType: "json",  // 서버에서 받을 데이터 형식
+                    success: function (response) {
+                        if (response.success) {
+                            alert(response.message);  //성공 메시지 표시
+                            window.location.href = '/';  //시작 페이지로 redirect
+                        } else {
+                            alert("신고에 실패했습니다.");  //실패 메시지 표시
+                        }
+                    },
+                    error: function (xhr, status, error) {
+                        //서버에서 오류가 발생한 경우
+                        console.error("Error: " + error);
+                        alert("서버 오류가 발생했습니다. 나중에 다시 시도해 주세요.");
+                    }
+                })
             }
         </script>
 

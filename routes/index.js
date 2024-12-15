@@ -319,18 +319,34 @@ router.post('/reportUsr', function (req, res, next) {
   const reportId = req.body.reportId;
   const reason = req.body.reason;
 
-  console.log(reportId);
+  console.log('Received reportId:', reportId);  // 받은 데이터 확인
+  console.log('Received reason:', reason);  // 받은 이유 확인
+
+  if (!reportId || !reason) {
+    return res.status(400).json({
+      success: false,
+      message: "아이디와 신고사유를 모두 입력해야 합니다."
+    });
+  }
+
   var insertSql = "INSERT INTO REPORTED_USR(Uid, Reason) VALUES(?, ?)";
 
   connection.query(insertSql, [reportId, reason], function (err, rows) {
     if (err) {
       console.error("err: " + err);
-      return res.status(500).send("데이터베이스 오류 발생");
+      return res.status(500).json({
+        success: false,
+        message: "데이터베이스 오류 발생"
+      });
     }
     console.log("rows: " + JSON.stringify(rows));
 
-    res.redirect("/"); //시작페이지로 redirect
+    // 성공적인 처리 후 응답을 JSON 형식으로 반환
+    res.json({
+      success: true,
+      message: "신고가 정상적으로 처리되었습니다."
+    });
   });
-})
+});
 
 module.exports = router;
