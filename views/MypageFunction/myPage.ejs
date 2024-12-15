@@ -10,6 +10,7 @@
 
     <!-- 상단바 css -->
     <link rel='stylesheet' href='/stylesheets/nav.css' />
+    <link rel='stylesheet' href='/stylesheets/rightbar.css' />
 
     <!-- Bootstrap CSS -->
     <link rel='stylesheet' href='/vendors/bootstrap/css/bootstrap.min.css' />
@@ -65,22 +66,27 @@
         .nav-underline .nav-link.active {
             color: #6c975d !important;
         }
-        
+
         .nav-link:hover {
             color: #5a8348;
         }
-        
+
         .btn3 {
-            background-color: #6c975d; /* 호버 시 색상 */
+            background-color: #6c975d;
+            /* 호버 시 색상 */
             /* border-color: black; */
-            color: white; /* 버튼 글자 색상 */
+            color: white;
+            /* 버튼 글자 색상 */
             height: 30px;
             font-size: small;
         }
+
         .btn3:hover {
-            background-color: white; /* 기본 버튼 배경 색상 */
+            background-color: white;
+            /* 기본 버튼 배경 색상 */
             border-color: #6c975d;
-            color: black; /* 버튼 글자 색상 */
+            color: black;
+            /* 버튼 글자 색상 */
         }
     </style>
 </head>
@@ -89,248 +95,257 @@
     <!-- 상단 바 -->
     <%- include('../nav.ejs') %>
 
-        <!-- 제목 -->
-        <h2>
-            <%= title %>
-        </h2>
+        <!-- 오른쪽 사이드 바 (최근 본 상품) -->
+        <%- include('../rightBar.ejs') %>
 
-        <ul class="nav nav-underline mb-4">
-            <li class="nav-item">
-                <a class="nav-link active" aria-current="page" href="/myPage">홈</a>
-            </li>
-            <li class="nav-item">
-                <a class="nav-link" href="/myPage/productReview">리뷰</a>
-            </li>
-            <li class="nav-item">
-                <a class="nav-link" href="/myPage/storeReview">내 상점 후기</a>
-            </li>
-        </ul>
+            <!-- 제목 -->
+            <h2>
+                <%= title %>
+            </h2>
 
-        <!-- 사용자 정보 -->
-        <div class="usr-info d-flex align-items-center mb-4 border">
-            <div class="left-info me-4">
-                <img src="<%=usrInfo.ProfileImg%>" class="profile-image">
+            <ul class="nav nav-underline mb-4">
+                <li class="nav-item">
+                    <a class="nav-link active" aria-current="page" href="/myPage">홈</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" href="/myPage/productReview">리뷰</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" href="/myPage/storeReview">내 상점 후기</a>
+                </li>
+            </ul>
+
+            <!-- 사용자 정보 -->
+            <div class="usr-info d-flex align-items-center mb-4 border">
+                <div class="left-info me-4">
+                    <img src="<%=usrInfo.ProfileImg%>" class="profile-image">
+                </div>
+                <div class="right-info d-flex flex-column">
+                    <h4 class="mb-2">
+                        <%=usrInfo.Nickname%>의 상점
+                    </h4>
+                    <span class="mb-4">
+                        <%=usrInfo.State%>
+                    </span>
+                    <div class="sub-info d-flex mb-2 border">
+                        <span class="text-center" id="point">포인트<br>
+                            <%=usrInfo.Money%>
+                        </span>
+                        <span class="text-center">신뢰도<br>
+                            <%=usrInfo.Trust%>
+                        </span>
+                        <hr>
+                        <span class="text-center">가입한지<br>
+                            <%=usrInfo.JoinedDate%> 일
+                        </span>
+                    </div>
+                    <div>
+                        <!--<input type="text" id="chargePoint">-->
+                        <button type="button" class="btn btn3" id="pointBtn">포인트 충전</button>
+                        <button type="button" class="btn btn3" id="infoBtn" onclick="location.href='/myPage/myInfo'">
+                            회원정보 수정</button>
+                        <button type="button" class="btn btn3" id="passwdBtn"
+                            onclick="location.href='/myPage/changePwd'">비밀번호 변경</button>
+                    </div>
+                </div>
             </div>
-            <div class="right-info d-flex flex-column">
-                <h4 class="mb-2">
-                    <%=usrInfo.Nickname%>의 상점
-                </h4>
-                <span class="mb-4">
-                    <%=usrInfo.State%>
-                </span>
-                <div class="sub-info d-flex mb-2 border">
-                    <span class="text-center" id="point">포인트<br>
-                        <%=usrInfo.Money%>
-                    </span>
-                    <span class="text-center">신뢰도<br>
-                        <%=usrInfo.Trust%>
-                    </span>
-                    <hr>
-                    <span class="text-center">가입한지<br>
-                        <%=usrInfo.JoinedDate%> 일
-                    </span>
-                </div>
-                <div>
-                    <!--<input type="text" id="chargePoint">-->
-                    <button type="button" class="btn btn3" id="pointBtn">포인트 충전</button>
-                    <button type="button" class="btn btn3" id="infoBtn"
-                        onclick="location.href='/myPage/myInfo'">
-                        회원정보 수정</button>
-                    <button type="button" class="btn btn-secondary btn-sm" id="passwdBtn"
-                        onclick="location.href='/myPage/changePwd'">비밀번호 변경</button>
-                </div>
-            </div>
-        </div>
-        <div>
-            <nav>
-                <div class="nav nav-tabs" id="nav-tab" role="tablist">
-                    <button class="nav-link active" id="nav-like-tab" data-bs-toggle="tab" data-bs-target="#nav-like"
-                        type="button" role="tab" aria-controls="nav-home" aria-selected="true">
-                        찜 목록
-                    </button>
-                    <button class="nav-link" id="nav-buy-tab" data-bs-toggle="tab" data-bs-target="#nav-buy"
-                        type="button" role="tab" aria-controls="nav-profile" aria-selected="false">
-                        구매 내역
-                    </button>
-                    <button class="nav-link" id="nav-sell-tab" data-bs-toggle="tab" data-bs-target="#nav-sell"
-                        type="button" role="tab" aria-controls="nav-contact" aria-selected="false">
-                        판매 내역
-                    </button>
-                </div>
-            </nav>
-            <div class="tab-content" id="nav-tabContent">
-                <div class="tab-pane fade show active" id="nav-like" role="tabpanel" aria-labelledby="nav-home-tab"
-                    tabindex="0">
-                    <% if (likeInfo.length===0) { %>
-                        <!-- 일정한 높이 설정을 위한 빈 컬럼 표시 -->
-                        <div class="d-flex justify-content-center align-items-center" style="height: 210px;">
-                            찜 내역이 없습니다
-                        </div>
-                        <% } else {%>
-                            <div class="row row-cols-6">
-                                <% for (var i=0; i<6; i++){ if(i>= likeInfo.length){
-                                    break;
-                                    }
-                                    var likeItem=likeInfo[i];
-                                    %>
-                                    <div class="d-flex flex-column col border text-center ms-3">
-                                        <a href="/sellBoard/sellRead/<%=likeItem.Bno%>">
-                                            <img src="<%= likeItem.Img %>"
-                                                style="width: 170px; height: 210px; object-fit: cover;" alt="찜 목록 이미지">
-                                        </a>
-                                        <b name="title" id="title">
+            <div>
+                <nav>
+                    <div class="nav nav-tabs" id="nav-tab" role="tablist">
+                        <button class="nav-link active" id="nav-like-tab" data-bs-toggle="tab"
+                            data-bs-target="#nav-like" type="button" role="tab" aria-controls="nav-home"
+                            aria-selected="true">
+                            찜 목록
+                        </button>
+                        <button class="nav-link" id="nav-buy-tab" data-bs-toggle="tab" data-bs-target="#nav-buy"
+                            type="button" role="tab" aria-controls="nav-profile" aria-selected="false">
+                            구매 내역
+                        </button>
+                        <button class="nav-link" id="nav-sell-tab" data-bs-toggle="tab" data-bs-target="#nav-sell"
+                            type="button" role="tab" aria-controls="nav-contact" aria-selected="false">
+                            판매 내역
+                        </button>
+                    </div>
+                </nav>
+                <div class="tab-content" id="nav-tabContent">
+                    <div class="tab-pane fade show active" id="nav-like" role="tabpanel" aria-labelledby="nav-home-tab"
+                        tabindex="0">
+                        <% if (likeInfo.length===0) { %>
+                            <!-- 일정한 높이 설정을 위한 빈 컬럼 표시 -->
+                            <div class="d-flex justify-content-center align-items-center" style="height: 210px;">
+                                찜 내역이 없습니다
+                            </div>
+                            <% } else {%>
+                                <div class="row row-cols-6">
+                                    <% for (var i=0; i<6; i++){ if(i>= likeInfo.length){
+                                        break;
+                                        }
+                                        var likeItem=likeInfo[i];
+                                        %>
+                                        <div class="d-flex flex-column col border text-center ms-3">
                                             <a href="/sellBoard/sellRead/<%=likeItem.Bno%>">
-                                                <%= likeItem.Title %>
+                                                <img src="<%= likeItem.Img %>"
+                                                    style="width: 170px; height: 210px; object-fit: cover;"
+                                                    alt="찜 목록 이미지">
                                             </a>
-                                        </b>
-                                        <p name="price" id="price">
-                                            <%= likeItem.Price %> 원
-                                        </p>
-                                    </div>
-                                    <% } %>
+                                            <b name="title" id="title">
+                                                <a href="/sellBoard/sellRead/<%=likeItem.Bno%>">
+                                                    <%= likeItem.Title %>
+                                                </a>
+                                            </b>
+                                            <p name="price" id="price">
+                                                <%= likeItem.Price %> 원
+                                            </p>
+                                        </div>
+                                        <% } %>
+                                </div>
+                                <% } %>
+                    </div>
+                    <div class="tab-pane fade" id="nav-buy" role="tabpanel" aria-labelledby="nav-profile-tab"
+                        tabindex="0">
+                        <% if (buyInfo.length===0) { %>
+                            <!-- 일정한 높이 설정을 위한 빈 컬럼 표시 -->
+                            <div class="d-flex justify-content-center align-items-center" style="height: 210px;">
+                                구매 내역이 없습니다
                             </div>
-                            <% } %>
-                </div>
-                <div class="tab-pane fade" id="nav-buy" role="tabpanel" aria-labelledby="nav-profile-tab" tabindex="0">
-                    <% if (buyInfo.length===0) { %>
-                        <!-- 일정한 높이 설정을 위한 빈 컬럼 표시 -->
-                        <div class="d-flex justify-content-center align-items-center" style="height: 210px;">
-                            구매 내역이 없습니다
-                        </div>
-                        <% } else {%>
-                            <div class="row row-cols-6">
-                                <% for (var i=0; i<6; i++){ if(i>= buyInfo.length){
-                                    break;
-                                    }
-                                    var buyItem=buyInfo[i]; %>
-                                    <div class="d-flex flex-column col border text-center ms-3">
-                                        <a href="/sellBoard/sellRead/<%=buyItem.Bno%>">
-                                            <img src="<%= buyItem.Img %>"
-                                                style="width: 170px; height: 210px; object-fit: cover;" alt="구매 목록 이미지">
-                                        </a>
-                                        <b name="title" id="title">
+                            <% } else {%>
+                                <div class="row row-cols-6">
+                                    <% for (var i=0; i<6; i++){ if(i>= buyInfo.length){
+                                        break;
+                                        }
+                                        var buyItem=buyInfo[i]; %>
+                                        <div class="d-flex flex-column col border text-center ms-3">
                                             <a href="/sellBoard/sellRead/<%=buyItem.Bno%>">
-                                                <%= buyItem.Title %>
+                                                <img src="<%= buyItem.Img %>"
+                                                    style="width: 170px; height: 210px; object-fit: cover;"
+                                                    alt="구매 목록 이미지">
                                             </a>
-                                        </b>
-                                        <p name="price" id="price">
-                                            <%= buyItem.Price %> 원
-                                        </p>
-                                    </div>
-                                    <% } %>
+                                            <b name="title" id="title">
+                                                <a href="/sellBoard/sellRead/<%=buyItem.Bno%>">
+                                                    <%= buyItem.Title %>
+                                                </a>
+                                            </b>
+                                            <p name="price" id="price">
+                                                <%= buyItem.Price %> 원
+                                            </p>
+                                        </div>
+                                        <% } %>
+                                </div>
+                                <% } %>
+                    </div>
+                    <div class="tab-pane fade" id="nav-sell" role="tabpanel" aria-labelledby="nav-contact-tab"
+                        tabindex="0">
+                        <% if (sellInfo.length===0) { %>
+                            <!-- 일정한 높이 설정을 위한 빈 컬럼 표시 -->
+                            <div class="d-flex justify-content-center align-items-center" style="height: 210px;">
+                                판매 내역이 없습니다
                             </div>
-                            <% } %>
-                </div>
-                <div class="tab-pane fade" id="nav-sell" role="tabpanel" aria-labelledby="nav-contact-tab" tabindex="0">
-                    <% if (sellInfo.length===0) { %>
-                        <!-- 일정한 높이 설정을 위한 빈 컬럼 표시 -->
-                        <div class="d-flex justify-content-center align-items-center" style="height: 210px;">
-                            판매 내역이 없습니다
-                        </div>
-                        <% } else {%>
-                            <div class="row row-cols-6">
-                                <% for (var i=0; i<6; i++){ if(i>= sellInfo.length){
-                                    break;
-                                    }
-                                    var sellItem=sellInfo[i];
-                                    %>
-                                    <div class="d-flex flex-column col border text-center ms-3">
-                                        <a href="/sellBoard/sellRead/<%=sellItem.Bno%>">
-                                            <img src="<%= sellItem.Img %>"
-                                                style="width: 170px; height: 210px; object-fit: cover;" alt="판매 목록 이미지">
-                                        </a>
-                                        <b name="title" id="title">
+                            <% } else {%>
+                                <div class="row row-cols-6">
+                                    <% for (var i=0; i<6; i++){ if(i>= sellInfo.length){
+                                        break;
+                                        }
+                                        var sellItem=sellInfo[i];
+                                        %>
+                                        <div class="d-flex flex-column col border text-center ms-3">
                                             <a href="/sellBoard/sellRead/<%=sellItem.Bno%>">
-                                                <%= sellItem.Title %>
+                                                <img src="<%= sellItem.Img %>"
+                                                    style="width: 170px; height: 210px; object-fit: cover;"
+                                                    alt="판매 목록 이미지">
                                             </a>
-                                        </b>
-                                        <p name="price" id="price">
-                                            <%= sellItem.Price %> 원
-                                        </p>
-                                    </div>
-                                    <% } %>
-                            </div>
-                            <% } %>
+                                            <b name="title" id="title">
+                                                <a href="/sellBoard/sellRead/<%=sellItem.Bno%>">
+                                                    <%= sellItem.Title %>
+                                                </a>
+                                            </b>
+                                            <p name="price" id="price">
+                                                <%= sellItem.Price %> 원
+                                            </p>
+                                        </div>
+                                        <% } %>
+                                </div>
+                                <% } %>
+                    </div>
                 </div>
             </div>
-        </div>
 
-        <!-- Bootstrap JS -->
-        <script src="/vendors/bootstrap/js/bootstrap.bundle.min.js"></script>
+            <!-- Bootstrap JS -->
+            <script src="/vendors/bootstrap/js/bootstrap.bundle.min.js"></script>
 
-        <script>
-            $(function () {
-                $("#pointBtn").on("click", postPoint);
+            <script>
+                $(function () {
+                    $("#pointBtn").on("click", postPoint);
 
-                async function postPoint() {
-                    // 데이터 처리
-                    var Point = "<%=usrInfo.Money%>";
+                    async function postPoint() {
+                        // 데이터 처리
+                        var Point = "<%=usrInfo.Money%>";
 
-                    // 데이터 입력
-                    const { value: formValues } = await Swal.fire({
-                        title: "포인트 충전",
-                        html: `
+                        // 데이터 입력
+                        const { value: formValues } = await Swal.fire({
+                            title: "포인트 충전",
+                            html: `
                             <input id="chargePoint" class="swal2-input" placeholder="충전할 포인트">
                             <input id="password" type="password" class="swal2-input" placeholder="비밀번호">
                         `,
-                        focusConfirm: false,
-                        preConfirm: () => {
-                            var chargePoint = document.getElementById("chargePoint").value.trim();
-                            var password = document.getElementById("password").value.trim();
+                            focusConfirm: false,
+                            preConfirm: () => {
+                                var chargePoint = document.getElementById("chargePoint").value.trim();
+                                var password = document.getElementById("password").value.trim();
 
-                            if (chargePoint == "") {
-                                Swal.fire("알림", "충전 포인트를 입력하세요", "warning");
-                                return;
-                            }
-
-                            if (password == "") {
-                                Swal.fire("알림", "비밀번호를 입력하세요", "warning");
-                                return;
-                            }
-
-                            return [chargePoint, password];
-                        }
-                    });
-
-                    if (formValues) {
-                        const [chargePoint, password] = formValues;
-
-                        console.log("충전할 포인트:", chargePoint);
-                        console.log("비밀번호:", password);
-
-                        $.ajax({
-                            type: "POST",
-                            url: "/myPage/chargePoint",
-                            data: {
-                                point: Point,
-                                update: chargePoint,
-                                pwd: password
-                            },
-                            dataType: "json",
-                            success: function (response) {
-                                // 포인트 충전 성공
-                                if (response.success) {
-                                    Swal.fire("성공", "포인트가 충전되었습니다!", "success")
-                                        .then(() => {
-                                            $("#point").html("포인트<br>" + response.sumPoint); // 화면에 새 포인트 표시
-                                        });
+                                if (chargePoint == "") {
+                                    Swal.fire("알림", "충전 포인트를 입력하세요", "warning");
+                                    return;
                                 }
-                            },
-                            error: function (xhr, status, e) {
-                                // 서버가 401 상태 코드를 반환
-                                if (xhr.status === 401) {
-                                    Swal.fire("실패", "패스워드가 일치하지 않거나, 잘못된 요청으로 인해 변경되지 않았습니다.", "error");
-                                } else {
-                                    console.log("Error: ", status, e);
-                                    Swal.fire("실패", "포인트 충전 중 오류가 발생했습니다.", "error");
+
+                                if (password == "") {
+                                    Swal.fire("알림", "비밀번호를 입력하세요", "warning");
+                                    return;
                                 }
+
+                                return [chargePoint, password];
                             }
                         });
-                    }
-                }
-            });
-        </script>
 
+                        if (formValues) {
+                            const [chargePoint, password] = formValues;
+
+                            console.log("충전할 포인트:", chargePoint);
+                            console.log("비밀번호:", password);
+
+                            $.ajax({
+                                type: "POST",
+                                url: "/myPage/chargePoint",
+                                data: {
+                                    point: Point,
+                                    update: chargePoint,
+                                    pwd: password
+                                },
+                                dataType: "json",
+                                success: function (response) {
+                                    // 포인트 충전 성공
+                                    if (response.success) {
+                                        Swal.fire("성공", "포인트가 충전되었습니다!", "success")
+                                            .then(() => {
+                                                $("#point").html("포인트<br>" + response.sumPoint); // 화면에 새 포인트 표시
+                                            });
+                                    }
+                                },
+                                error: function (xhr, status, e) {
+                                    // 서버가 401 상태 코드를 반환
+                                    if (xhr.status === 401) {
+                                        Swal.fire("실패", "패스워드가 일치하지 않거나, 잘못된 요청으로 인해 변경되지 않았습니다.", "error");
+                                    } else {
+                                        console.log("Error: ", status, e);
+                                        Swal.fire("실패", "포인트 충전 중 오류가 발생했습니다.", "error");
+                                    }
+                                }
+                            });
+                        }
+                    }
+                });
+            </script>
+
+            <script src="/javascripts/rightBar.js"></script>
 </body>
 
 </html>

@@ -272,7 +272,7 @@ router.get('/storeReview', function (req, res, next) {
             storeReviewedItems[i].Buyer = newBuyerId;
         }
 
-        const avg = (sum / storeReviewedItems.length).toFixed(2); //평균 별점
+        const avg = sum > 0 ? (sum / storeReviewedItems.length).toFixed(2) : 0;
         const avgStar = Math.floor(avg); //평균 별점을 표시할 별 개수
 
         var avgScore = { avg, avgStar };
