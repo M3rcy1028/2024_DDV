@@ -2,9 +2,11 @@
 
     2024_DDV/
     │
-    ├── public/images      # required  
-    ├── routes/            # displayed images
-    ├── views/             # 
+    ├── controllers        # 경매, 리뷰, 상품 게시판 기능 구현
+    ├── models             # 경매, 리뷰, 상품 게시판 데이터베이스 연동
+    ├── public/images      # 웹사이트 디자인 및 상품 이미지 저장 폴더
+    ├── routes/
+    ├── views/             # 웹페이지 디자인
     └── README.md
 
 ### 주요 라이브러리
