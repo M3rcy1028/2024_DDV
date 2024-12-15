@@ -6,10 +6,11 @@ exports.getList = (req, res, next) => {
 
     var page = req.params.page; //페이지 번호 (1페이지부터 시작)
     const itemNums = 16; //한 페이지에 보일 최대 아이템 수
-    
-    listModel.getList(page, itemNums, (rows) => {
+
+    listModel.getList(page, itemNums, (rows, totalPages) => {
         console.log('rows: ' + JSON.stringify(rows));
-        res.render('SellFunction/sellList', { title: "전체 보기", rootLogin, usrLogin, usrid, rows: rows });
+        console.log(page, totalPages);
+        res.render('SellFunction/sellList', { title: "전체 보기", rootLogin, usrLogin, usrid, rows: rows, currentPage: page, totalPages });
     })
 }
 
@@ -27,9 +28,9 @@ exports.getCategoryList = (req, res, next) => {
     var categoryNum = Number(req.params.categoryNum); //카테고리 번호
     var categoryName = Object.keys(categories).find(key => categories[key] === categoryNum); //카테고리 이름
 
-    listModel.getCategoryList(page, itemNums, categoryName, (rows) => {
+    listModel.getCategoryList(page, itemNums, categoryName, (rows, totalPages) => {
         console.log('rows: ' + JSON.stringify(rows));
-        res.render('SellFunction/sellListCategory', { title: "카테고리별 보기", rootLogin, usrLogin, usrid, rows: rows, categoryName: categoryName });
+        res.render('SellFunction/sellListCategory', { title: "카테고리별 보기", rootLogin, usrLogin, usrid, rows: rows, categoryName: categoryName, currentPage: page, totalPages });
     })
 }
 
