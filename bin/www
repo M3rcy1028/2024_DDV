@@ -8,7 +8,6 @@ var app = require('../app');
 var debug = require('debug')('dbproject:server');
 var http = require('http');
 var { Server } = require("socket.io")
-var sse = require('./sse');
 
 const mysql = require('mysql2');
 const dotenv = require('dotenv');
