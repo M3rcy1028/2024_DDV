@@ -70,7 +70,7 @@ io.on('connection', (socket) => {
               return reject(_err);
             }
             result["Lastmsg"] = Array.isArray(msg) && msg.length > 0 ? msg[0].Message : '메시지 없음';
-            result["Ltime"] = msg[0].Mtime;
+            result["Ltime"] = Array.isArray(msg) && msg.length > 0 ? msg[0].Mtime : '메시지 없음';
 
             const profileQuery = 'SELECT ProfileImg FROM usr WHERE uid = ?';
 
@@ -137,6 +137,7 @@ io.on('connection', (socket) => {
             }
             ids[0]['Image'] = img.length > 0 ? img[0].ProfileImg : null;
             socket.emit('load_chatlog', msgs, ids[0].Rid, ids[0].Sid, ids[0].Bnum, ids[0].Image);
+            console.log(ids)
           });
         });
       });
@@ -258,7 +259,7 @@ io.on('connection', (socket) => {
         socket.emit('auction_load_chatlog', msgs);
       });
 
-    const valid_time = 12000; // 20분
+    const valid_time = 600; // 10분
 
     // 페이지 타이머
     interval = setInterval(() => {

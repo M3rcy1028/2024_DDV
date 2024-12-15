@@ -55,7 +55,7 @@ module.exports = {
                 review[0].Buyer = newBuyer;
             }
 
-            res.render('SellFunction/sellRead', { title: "글 조회", rootname, rootLogin, usrLogin, UpdateEnable, row: row[0], review: review[0], usrid, likeCount });
+            res.render('SellFunction/sellRead', { title: "글 조회", rootname, rootLogin, usrLogin, UpdateEnable, row: row[0], review: review[0], usrid, isWriter, likeCount });
         });
     }
 }

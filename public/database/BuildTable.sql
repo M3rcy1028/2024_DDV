@@ -45,16 +45,16 @@ CREATE TABLE USR (
 CREATE TABLE REPORTED_USR (
 	Rno SMALLINT NOT NULL AUTO_INCREMENT,
     Uid VARCHAR (100) NOT NULL,
-    Reason TEXT NOT NULL,					-- 신고사유
-    Accepted TINYINT DEFAULT 0,             -- 신고 접수 여부
+    Reason TEXT NOT NULL,					# 신고사유
+    Accepted TINYINT DEFAULT 0,			-- 1 : 신고 확인
     PRIMARY KEY (Rno, Uid),
     FOREIGN KEY (Uid) REFERENCES USR (Uid) ON DELETE CASCADE
 );
 -- question and answer
 CREATE TABLE QNA (
 	num SMALLINT NOT NULL AUTO_INCREMENT,
-    uid VARCHAR(100) NOT NULL,		-- 질문자
-    rname VARCHAR(100),	-- 답변한 관리자 닉네임
+    uid VARCHAR(100) NOT NULL,		# 질문자
+    rname VARCHAR(100),	# 답변한 관리자 닉네임
     title VARCHAR(100) NOT NULL,
     question TEXT NOT NULL, 
     answer TEXT, 
@@ -66,7 +66,7 @@ CREATE TABLE QNA (
 CREATE TABLE BOARD (
 	Bno SMALLINT NOT NULL AUTO_INCREMENT,
     Bid VARCHAR (100) NOT NULL,
-    Buyer VARCHAR(100) NOT NULL DEFAULT "None",	-- 구매자 아이디
+    Buyer VARCHAR(100) NOT NULL DEFAULT "None",	# 구매자 아이디
     Title VARCHAR(100) NOT NULL,
     Content TEXT NOT NULL, 
     Img VARCHAR(100) NOT NULL DEFAULT "",
@@ -85,7 +85,7 @@ CREATE TABLE BOARD (
 -- wishlist
 CREATE TABLE WISHLIST (
 	Wno SMALLINT NOT NULL AUTO_INCREMENT,
-    Uid VARCHAR (100) NOT NULL,	-- 찜하기 누른 유저의 아이디
+    Uid VARCHAR (100) NOT NULL,	# 찜하기 누른 유저의 아이디
     Bnum SMALLINT NOT NULL,
     PRIMARY KEY (Wno, Uid, Bnum),
     FOREIGN KEY (Bnum) REFERENCES BOARD (Bno) ON DELETE CASCADE,
@@ -94,9 +94,9 @@ CREATE TABLE WISHLIST (
 -- prodect review
 CREATE TABLE REVIEW (
 	Rno SMALLINT NOT NULL AUTO_INCREMENT,
-    Bnum SMALLINT NOT NULL,	-- 구매한 상품 게시물 번호
-    Rtext VARCHAR (200) NOT NULL, -- 구매 후기
-    Score SMALLINT NOT NULL, --1~5점
+    Bnum SMALLINT NOT NULL,	# 구매한 상품 게시물 번호
+    Rtext VARCHAR (200) NOT NULL, # 구매 후기
+    Score SMALLINT NOT NULL, #1~5점
     PRIMARY KEY (Rno, Bnum),
     FOREIGN KEY (Bnum) REFERENCES BOARD (Bno) ON DELETE CASCADE
 );
@@ -122,23 +122,26 @@ CREATE TABLE MSGLOG (
 );
 -- 경매
 CREATE TABLE AUCTION (
-	Ano SMALLINT NOT NULL AUTO_INCREMENT,
+   Ano SMALLINT NOT NULL AUTO_INCREMENT,
     Title VARCHAR(100) NOT NULL,
     Content TEXT NOT NULL,
+    Img varchar(100) NOT NULL DEFAULT "",
     Seller VARCHAR(100) NOT NULL,
     Smoney MEDIUMINT NOT NULL,
     Buyer VARCHAR(100) DEFAULT 'NULL',
-    Emoney MEDIUMINT DEFAULT 0,		-- max money in auction
-    Timeover TINYINT DEFAULT 0, 	-- set 1 means timeover
+    Emoney MEDIUMINT DEFAULT 0,      -- max money in auction
+    Stime timestamp DEFAULT now(),
+    Timeover TINYINT DEFAULT 0,    -- set 1 means timeover
     PRIMARY KEY (Ano, Seller),
     FOREIGN KEY (Seller) REFERENCES USR(Uid) ON DELETE CASCADE
 );
 -- 경매 반응 채팅
 CREATE TABLE AUCTION_MSG (
-	Mno MEDIUMINT NOT NULL AUTO_INCREMENT,
-	Anum SMALLINT NOT NULL,
-    msg TEXT NOT NULL,
-    PRIMARY KEY (Mno, Anum),
+   Mno MEDIUMINT NOT NULL AUTO_INCREMENT,
+   Anum SMALLINT NOT NULL,
+   Sender varchar(100) NOT NULL,
+   msg TEXT NOT NULL,
+	PRIMARY KEY (Mno, Anum),
     FOREIGN KEY (Anum) REFERENCES AUCTION (Ano) ON DELETE CASCADE
 );
 
