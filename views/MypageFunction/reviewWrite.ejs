@@ -70,6 +70,7 @@
         <form action="/myPage/reviewWrite" method="post" onsubmit="return onWriteSubmit()">
             <table class="d-flex justify-content-center">
                 <input type="hidden" name="idx" value="<%=row.Bno%>">
+                <input type="hidden" name="seller" value="<%=row.Bid%>">
                 <input type="hidden" name="rating" id="ratingValue" value="3">
                 <tr>
                     <td>
