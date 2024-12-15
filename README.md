@@ -28,6 +28,9 @@ npm install http-errors
 ### 데이터베이스 구조
 ![스크린샷 2024-12-15 132332](https://github.com/user-attachments/assets/c759b96c-b2d7-4334-8505-bb7ce4fc88b3)
 
+### 설명 및 시연 영상
+https://youtu.be/RSHVBHfslwM
+
 ### 팀원 및 역할
 
 | Name            | GitHub Username                          | Main Contribution Area(s)         |
