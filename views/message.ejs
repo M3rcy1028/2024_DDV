@@ -238,6 +238,18 @@
             padding: 20px
         }
 
+        .profile-img {
+            position: relative;
+            top: 0;
+            left: 0;
+            transform: translate(50, 50);
+            width: 45px;
+            height: 45px;
+            border-radius: 50%;
+            object-fit: cover;
+            margin: auto;
+        }
+
         .online,
         .offline,
         .me {
@@ -395,7 +407,7 @@
     });
 
     // 채팅방의 채팅기록 불러오기
-    socket.on('load_chatlog', (chats, sellerId, buyerId, bnum) => {
+    socket.on('load_chatlog', (chats, sellerId, buyerId, bnum, pfImg) => {
         console.log(sellerId)
         console.log(buyerId)
         console.log(bnum)
@@ -403,7 +415,7 @@
         const chat_header = document.getElementsByClassName('chat-header')[0];
 
         if (sellerId === '<%= usrid %>') {
-            chat_header.innerHTML = `<img src="/images/profile/basic_profile.jpg" alt="avatar">
+            chat_header.innerHTML = `<img class="profile-img" src="${pfImg}" alt="avatar">
                         <div class="chat-about">
                             <h5 class="m-b-0">${buyerId}</h5>
                         </div>
@@ -412,7 +424,7 @@
                         </div>`
         }
         else {
-            chat_header.innerHTML = `<img src="/images/profile/basic_profile.jpg" alt="avatar">
+            chat_header.innerHTML = `<img class="profile-img" src="${pfImg}" alt="avatar">
                         <div class="chat-about">
                             <h5 class="m-b-0">${sellerId}</h5>
                         </div>
@@ -463,7 +475,7 @@
 
             chatList.push(`<button onclick='load_chat_log(this)' id='${chatroom.Cno}' a_img='${chatroom.Image}' class="chat-select list-group-item list-group-item-action">
                 <li class="clearfix">
-                            <img src="${chatroom.Image}" alt="profileImage">
+                            <img class="profile-img" src="${chatroom.Image}" alt="profileImage">\
                             <div class="about">
                                 <div class="name">${id}</div>
                                 <div class="status"> ${lastMsg} </div>
@@ -505,6 +517,8 @@
             confirmButtonColor: '#3085d6', // confrim 버튼 색깔 지정
         });
     })
+
+    socket.emit('load_chatrooms');
 </script>
 
 </html>

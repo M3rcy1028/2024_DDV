@@ -9,6 +9,7 @@ module.exports = {
         console.log("로그인 usrLogin : ", usrLogin, ", usrId : ", usrid);
 
         var UpdateEnable = false; //글 수정 가능 여부
+        var isWriter = false; // 글 작성자 여부
 
         var Bno = req.params.Bno;
         readModel.getData(Bno, usrid, (row, review, likeCount) => {
@@ -43,6 +44,9 @@ module.exports = {
                 UpdateEnable = false;
             }
 
+            if (Bid === usrid) {
+                isWriter = true;
+            }
             /* 리뷰가 있는 경우 */
             if (review.length) {
                 /* 아이디 4번 째자리까지만 표기하기 */

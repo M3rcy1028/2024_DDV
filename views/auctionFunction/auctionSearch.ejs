@@ -1,0 +1,119 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <link rel='stylesheet' href='/stylesheets/style.css' />
+    <script src="/javascripts/jquery-3.7.1.min.js"></script>
+
+    <!-- 상단바 css -->
+    <link rel='stylesheet' href='/stylesheets/nav.css'/>
+
+    <!-- Bootstrap CSS -->
+    <link rel='stylesheet' href='/vendors/bootstrap/css/bootstrap.min.css' />
+    <link rel='stylesheet' href='/vendors/bootstrap/css/bootstrap-grid.min.css' />
+    <link rel='stylesheet' href='/vendors/bootstrap/css/bootstrap-reboot.min.css' />
+
+    <!-- Bootstrap Icon -->
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
+
+    <title>
+        <%= title %>
+    </title>
+
+    <style>
+        .breadcrumb a {
+            text-decoration: none;
+            color: black;
+        }
+
+        /* 왼쪽 카테고리 선택 바*/
+        .leftnav {
+            width: 200px;
+        }
+
+        .leftnav b {
+            margin-bottom: 10px;
+        }
+
+        .menu {
+            list-style: none;
+            padding-left: 0
+        }
+
+        .menu li {
+            margin-bottom: 10px;
+        }
+
+        #title a {
+            text-decoration: none;
+            color: black;
+        }
+    </style>
+</head>
+
+<body>
+    <!-- 상단 바 -->
+    <%- include('../nav.ejs') %>
+
+    <div class="mb-4">
+        <nav style="--bs-breadcrumb-divider: '>';" aria-label="breadcrumb">
+            <ol class="breadcrumb">
+                <li class="breadcrumb-item"><a href="/">홈</a></li>
+                <li class="breadcrumb-item active" aria-current="page"><b>전체보기</b></li>
+            </ol>
+        </nav>
+    </div>
+
+    <div class="d-flex">
+        <!-- 왼쪽 카테고리 선택 bar -->
+        <nav class="leftnav nav flex-column">
+            <b>카테고리</b>
+            <ul class="menu">
+                <% for(var category in categories){ %>
+                    <li><a class=link href="/sellBoard/sellList/category/<%=categories[category]%>">
+                            <%= category %>
+                        </a></li>
+                    <% }%>
+            </ul>
+        </nav>
+
+        <!-- 게시글 나열 -->
+        <div class="container text-center">
+            <h5 class="mb-4">
+                <%= title %>
+            </h5>
+            
+            <% for (var line=0; line<4; line++){ var oneItem=rows[i]; %>
+                <div class="row row-cols-4">
+                    <% for (var i=0; i<4; i++) { var num=line*4 + i; if(num>= rows.length){
+                        break;}
+                        var oneItem=rows[num]; %>
+                        <div class="d-flex flex-column col">
+                            <a href="/sellBoard/sellRead/<%=oneItem.Bno%>">
+                                <img src="<%= oneItem.Img %>" style="width: 240px; height: 280px; object-fit: cover;"
+                                    class="border rounded mb-3" alt="판매 상품 이미지">
+                            </a>
+                            <b name="title" id="title">
+                                <span class="badge bg-dark">
+                                    <%= oneItem.Trade %>
+                                </span>
+                                <a href="/sellBoard/sellRead/<%=oneItem.Bno%>">
+                                    <%= oneItem.Title %>
+                                </a>
+                            </b>
+                            <p name="price" id="price">
+                                <%= oneItem.Price %> 원
+                            </p>
+                        </div>
+                        <% } %>
+                </div>
+                <% } %>
+            </div>
+        </div>
+
+        <!-- Bootstrap JS -->
+        <script src="/vendors/bootstrap/js/bootstrap.bundle.min.js"></script>
+
+</body>
+
+</html>

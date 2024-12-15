@@ -8,6 +8,7 @@ const sharp = require('sharp'); // 이미지 크기 조정
 const Chart = require('chart'); //차트 추가
 const multer = require('multer');
 var mysql = require('mysql2');
+const { pid } = require('process');
 
 require('dotenv').config();
 
@@ -450,7 +451,7 @@ router.get('/manageReportedUsr', function (req, res, next) {
   var sql1 = "SELECT COUNT(*) AS total FROM REPORTED_USR;";
   // 회원 데이터 가져오기
   var sql2 = `SELECT r.Rno, u.Uno, CONCAT(p.Lname, ' ', p.Fname) AS Name, p.Pid, 
-              u.Nickname, r.Reason
+              u.Nickname, r.Reason, r.Accepted
               FROM PERSON p JOIN USR u ON p.Pid = u.Uid JOIN REPORTED_USR r ON u.Uid=r.Uid
               ORDER BY ${order} ${sort}
               LIMIT ? OFFSET ?;`;
@@ -481,6 +482,68 @@ router.get('/manageReportedUsr', function (req, res, next) {
         rootname
       });
     });
+  });
+});
+
+router.post('/ReportUsrAccepted', function(req, res, next) { // 신고 접수
+  var sql = `UPDATE REPORTED_USR NATURAL JOIN USR
+              SET Trust = Trust - 1, Accepted = 1
+              WHERE Uid=? AND Rno=?;`;
+  console.log("Pid : " + req.body.Pid + req.body.Rno);
+  connection.query(sql, [req.body.Pid, req.body.Rno], (err, rows) => {
+    if (err) {
+      console.error("err: " + err);
+      return res.status(500).send("데이터베이스 오류");
+    }
+    console.log("유저 신뢰도 차감 완료");
+    res.redirect('/roots/manageReportedUsr');
+  })
+});
+
+router.post('/ReportUsrDelete', function(req, res, next) { // 신고 삭제
+  //
+  var datas = [
+    req.body.Rno,
+    req.body.Pid
+  ]
+  // 해당 게시물 삭제 쿼리
+  var sql1 = "DELETE FROM REPORTED_USR WHERE Rno=? AND Uid=?";
+  console.log('sql1 : ' + sql1)
+  connection.query(sql1, datas, function (err, results) {
+    if (err) {
+      console.error("err: " + err);
+      return res.status(500).send("데이터베이스 오류 발생");
+    }
+    if (results.affectedRows == 0) {
+      res.send("<script>alert('비밀번호가 틀렸습니다.');history.back();</script>");
+    }
+    else { // 삭제 성공 -> Rno 재정렬
+      var sql2 = "ALTER TABLE REPORTED_USR AUTO_INCREMENT=1;";
+      console.log('sql2 : ' + sql2)
+      connection.query(sql2, function (err, results) {
+        if (err) {
+          console.error("err: " + err);
+          return res.status(500).send("데이터베이스 오류");
+        }
+        var sql3 = "SET @COUNT = 0;";
+        console.log('sql3 : ' + sql3)
+        connection.query(sql3, function (err, results) {
+          if (err) {
+            console.error("err: " + err);
+            return res.status(500).send("데이터베이스 오류");
+          }
+          var sql4 = "UPDATE REPORTED_USR SET Rno = @COUNT:=@COUNT+1;";
+          console.log('sql4 : ' + sql4)
+          connection.query(sql4, function (err) {
+            if (err) {
+              console.error("err: " + err);
+              return res.status(500).send("데이터베이스 오류");
+            }
+            res.redirect('/roots/manageReportedUsr');
+          });
+        });
+      });
+    }
   });
 });
 
@@ -541,7 +604,7 @@ router.post('/addRoot', function (req, res, next) { // 관리자 추가
       res.send("<script>alert('잘못된 요청으로 인해 변경되지 않았습니다.');history.back();</script>");
     }
     else { // 수정 성공
-      res.redirect('/roots/manageRootList/');
+      res.redirect('/roots/manageRootList');
     }
   });
 });
@@ -559,7 +622,7 @@ router.post('/updateRoot', function (req, res, next) { // 관리자 수정
       res.send("<script>alert('잘못된 요청으로 인해 변경되지 않았습니다.');history.back();</script>");
     }
     else { // 수정 성공
-      res.redirect('/roots/manageRootList/');
+      res.redirect('/roots/manageRootList');
     }
   });
 });
@@ -577,7 +640,7 @@ router.post('/deleteRoot', function (req, res, next) { // 관리자 삭제
       res.send("<script>alert('잘못된 요청으로 인해 변경되지 않았습니다.');history.back();</script>");
     }
     else { // 수정 성공
-      res.redirect('/roots/manageRootList/');
+      res.redirect('/roots/manageRootList');
     }
   });
 });

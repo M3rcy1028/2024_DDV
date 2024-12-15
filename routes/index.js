@@ -295,6 +295,11 @@ router.get('/message', function (req, res, next) {
   res.render('message', { title: '메세지', rootLogin, usrLogin, usrid, usrid });
 })
 
+// 경매 화면
+router.get('/auction', function (req, res, next) {
+  res.render('auction', { title: '경매', rootLogin, usrLogin, rootid, usrid });
+})
+
 //최근 본 상품
 router.post('/recentProduct', function (req, res, next) {
   const viewedProductIds = req.body.products;
@@ -348,5 +353,4 @@ router.post('/reportUsr', function (req, res, next) {
     });
   });
 });
-
 module.exports = router;
